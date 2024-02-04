@@ -3,7 +3,7 @@
  <img height=50px src="https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/public/logo.png" alt="Project logo"></a>
 </p>
 
-<h3 align="center">ducklab</h3>
+<!-- <h3 align="center">ducklab</h3> -->
 
 <div align="center">
 
@@ -41,11 +41,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them.
+Install NodeJs 16 or above.
 
-```
-Give examples
-```
+[https://nodejs.org/](https://nodejs.org/)
 
 ### Installing
 
