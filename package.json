@@ -1,12 +1,20 @@
 {
   "name": "ducklab",
-  "version": "0.7.0",
+  "version": "0.2.0",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
+  "license": "Apache-2.0",
+  "homepage": "https://ducklab.netlify.app",
+  "keywords": [
+    "duckdb",
+    "sql",
+    "notebooks",
+    "wasm"
+  ],
   "dependencies": {
     "@duckdb/duckdb-wasm": "1.28.1-dev99.0",
     "@mdi/font": "7.0.96",
