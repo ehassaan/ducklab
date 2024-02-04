@@ -1,0 +1,168 @@
+<template>
+  <div class="table-container">
+    <v-data-table-server :fixed-header="true" :items-per-page="itemsPerPage" :headers="columns" :items="props.rows"
+      :items-length="1000" hide-actions :loading="loading" fixed-footer class="result" item-value="name" density="compact"
+      :hide-no-data="true" @update:options="onRequest">
+
+      <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+        <tr class="header-row">
+          <template v-for="column in columns" :key="column.key">
+            <td>
+              <span class="table-cell cursor-pointer header" @click="() => toggleSort(column)">{{ column.title }}</span>
+              <template v-if="isSorted(column)">
+                <v-icon :icon="getSortIcon(column)"></v-icon>
+              </template>
+            </td>
+          </template>
+        </tr>
+      </template>
+
+      <!-- <template v-for="slot in columns" :key="slot.key" #[getHeaderSlotName(slot)]="{ column }">
+        <span class="table-cell header">{{ column.title.toUpperCase() }}</span>
+      </template> -->
+
+      <template v-slot:item="{ item }">
+        <tr>
+          <td v-for="col in columns" :key="col.key" class="table-cell">{{ clamp(item[col.key]) }}</td>
+        </tr>
+      </template>
+      <template v-slot:bottom>
+      </template>
+    </v-data-table-server>
+    <p class="note" v-if="rows.length >= props.maxRows">Showing first {{ props.maxRows }} rows only</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { TableColumn } from '@/entities/TableColumn';
+import { ref, computed, type PropType } from 'vue';
+
+let emit = defineEmits(["on-request"]);
+
+let props = defineProps({
+  columns: {
+    type: Object as PropType<TableColumn[]>,
+    default: () => []
+  },
+  rows: {
+    type: Object as PropType<any[]>,
+    default: () => []
+  },
+  maxRows: {
+    type: Number,
+    required: true
+  },
+  loading: Boolean,
+  pagination: Object as PropType<{
+    page?: number,
+    rowsPerPage?: number,
+    sortBy?: string,
+    descending?: boolean,
+    rowsNumber?: number
+  }>,
+  maxTextLength: {
+    type: Number,
+    default: 80
+  },
+});
+let initialLoad = ref(true);
+
+let columns = computed(() => props.columns.map(col => {
+  let format = (x: any) => "asd+ " + x;
+  if (col.type === "datetime") {
+    format = (x: any) => "asd+ " + x.toISOString();
+  }
+  console.log("COlumn: ", col)
+  return {
+    key: col.key,
+    title: col.label,
+  };
+}));
+
+let rows = computed(() => props.rows.map((row, index) => {
+  return {
+    key: index,
+    index: index,
+    columns: row
+  }
+}));
+
+const itemsPerPage = ref(100);
+
+function clamp(text: string) {
+  if (text.length > props.maxTextLength) {
+    return text.slice(0, props.maxTextLength) + '...';
+  }
+  return text;
+}
+
+function getHeaderSlotName(slot: any) {
+  return `header.${slot.key}`;
+}
+
+function onRequest(params: any) {
+  console.log("Request: ", params, initialLoad.value);
+
+  if (initialLoad.value) {
+    initialLoad.value = false;
+    return;
+  }
+  const { page, itemsPerPage, sortBy, groupBy, search } = params;
+  // const filter = props.filter
+
+  emit("on-request", {
+    page: page,
+    rowsPerPage: itemsPerPage,
+    sortBy: sortBy,
+    groupBy: groupBy,
+    search: search
+  });
+
+  console.log("Rows: ", rows.value, props.rows);
+}
+
+</script>
+
+<style lang="less" scoped>
+.table-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  font-size: 12px !important;
+
+  .note {
+    font-size: 12px;
+    padding: 5px 0 1px 8px;
+    color: rgb(var(--theme-color-background));
+    background-color: rgb(var(--theme-color-header));
+  }
+}
+
+.result {
+  overflow: auto;
+  background-color: rgb(var(--theme-color-cell-bg, blue));
+
+  .table-cell {
+    font-size: 12px;
+    max-width: 200px;
+    min-width: 50px;
+    text-wrap: wrap;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    max-height: 40px;
+    color: rgb(var(--theme-color-cell-text));
+  }
+
+  .header-row {
+    background-color: rgb(var(--theme-color-header));
+  }
+  .header {
+    font-weight: bold;
+    cursor: pointer;
+    max-width: 150px;
+    color: rgb(var(--theme-color-background));
+  }
+}
+</style>

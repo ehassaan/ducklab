@@ -1,0 +1,256 @@
+<template>
+  <div class="container" @keydown="onKeyChange" @keyup="onKeyChange" @focusout="onFocusOut">
+    <div class="cell-sidebar">
+      <div class="inputs">
+        <div v-if="cellType != 'Raw'" class="text-field" color="primary">
+          <label>Name</label>
+          <input @input="onNameInput" :value="props.dataset.name" :class="{ error: !isNameValid }" ref="nameInput" />
+        </div>
+        <v-select class="dropdown" v-model="cellType" :items="['View', 'Raw']" density="compact" :hide-details="true">
+          <template #label>
+            <label class="dropdown-label">Cell Type</label>
+          </template>
+          <template #selection="{ item }">
+            <span style="font-size: 12px; padding-left: 5px;">{{ item.title }}</span>
+          </template>
+          <template #item="{ props, item }">
+            <v-list-item v-bind="props" density="compact">
+              <template #title>
+                <span style="font-size: 12px">{{ item.title }}</span>
+              </template>
+            </v-list-item>
+          </template>
+        </v-select>
+      </div>
+      <CellToolbar class="toolbar" @execute="execute" @delete="emit('delete-cell')" @new="emit('new-cell')"></CellToolbar>
+    </div>
+    <QueryEditor class="console" v-model="vmQuery"></QueryEditor>
+    <TableLayout :columns="columns" :rows="rows" :class="{ table: true, hidden: rows.length == 0 }"
+      @on-request="onRequest" :loading="loading" :pagination="pagination" :max-rows="batchSize"></TableLayout>
+    <v-snackbar v-model="showError" :timeout="4000">{{ error }}</v-snackbar>
+  </div>
+</template>
+
+<script setup lang="ts">
+import TableLayout from '@/components/DataTable.vue';
+import type { TableColumn } from '@/entities/TableColumn';
+import { ref } from 'vue';
+import { PropType } from 'vue';
+import { TabularDataset } from '@/core/entities/tabular/TabularDataset';
+import CellToolbar from './CellToolbar.vue';
+import QueryEditor from "./QueryEditor.vue";
+import { onBeforeMount } from 'vue';
+import { ITabularResultSet } from '@/core/entities/tabular/ITabularResultSet';
+import { useNotebookStore } from '@/store/notebook';
+
+
+let props = defineProps({
+  dataset: {
+    type: Object as PropType<TabularDataset>,
+    required: true
+  }
+});
+let emit = defineEmits(['new-cell', 'delete-cell', 'cell-renamed']);
+let columns = ref<TableColumn[]>([]);
+let rows = ref<any[]>([]);
+let loading = ref(false);
+let pagination = ref({
+  // page: 1, rowsNumber: 1000, rowsPerPage: 50, 
+  sortBy: undefined
+});
+let showError = ref(false);
+let error = ref(null);
+let cellType = ref('View');
+let vmQuery = ref("");
+let notebookStore = useNotebookStore();
+let nameInput = ref<HTMLInputElement | null>(null);
+let isNameValid = ref(true);
+let batchSize = ref(10);
+let keyMap: { [key: string]: boolean } = {};
+
+
+onBeforeMount(() => {
+  vmQuery.value = props.dataset.getSourceQuery();
+  console.log("Mounted: ", vmQuery.value);
+});
+
+function onNameInput(event: any) {
+  let idx = notebookStore.datasets.findIndex(ds => ds.name === event.target.value);
+  isNameValid.value = idx < 0;
+  console.log("Renamed: ", event.target.value, isNameValid.value);
+  if (isNameValid.value) {
+    emit('cell-renamed', event.target.value);
+  }
+}
+
+async function onKeyChange(event: KeyboardEvent) {
+  keyMap[event.key] = event.type === 'keydown';
+  if (keyMap['Shift'] && keyMap["Enter"]) {
+    event.preventDefault();
+    await execute();
+  }
+}
+
+async function onFocusOut() {
+  keyMap = {}
+}
+
+async function execute() {
+  console.log("Running: ", vmQuery.value);
+  props.dataset.setSourceQuery(vmQuery.value);
+  batchSize.value = notebookStore.dataSource?.batchSize ?? 10;
+  await fetchResults();
+}
+
+async function fetchResults() {
+  rows.value = [];
+  columns.value = [];
+  showError.value = false;
+  error.value = null;
+  // pagination.value.page = 1;
+  // pagination.value.sortBy = undefined;
+  // pagination.value.rowsNumber = 0;
+
+  try {
+    loading.value = true;
+    let items: ITabularResultSet = { columns: [], values: [] };
+    if (cellType.value === 'Raw') {
+      items = await props.dataset.dataSource.query({
+        rawQuery: vmQuery.value
+      }, batchSize.value, 0);
+    }
+    else {
+      items = await props.dataset.fetchPage(batchSize.value, 0);
+    }
+    console.log(items, pagination.value);
+    columns.value = items.columns.map(item => ({ key: item.name, label: item.name, type: item.type }))
+    rows.value = items.values;
+    // pagination.value.rowsNumber = rows.value.length;
+    loading.value = false;
+  }
+  catch (e: any) {
+    console.log(e);
+    error.value = e;
+    showError.value = true;
+    loading.value = false;
+  }
+}
+
+async function onRequest(params: any) {
+  console.log("Req args: ", params);
+  loading.value = true;
+
+  if (params.sortBy) {
+    props.dataset.setSort(params.sortBy);
+  }
+  await fetchResults();
+  pagination.value.sortBy = params.sortBy;
+  // pagination.value.rowsNumber = rows.value.length;
+  loading.value = false;
+}
+
+</script>
+
+<style lang="less" scoped>
+.container:focus-within {
+  // background-color: var(--theme-color-background-alternate);
+  // background-color: rgb(var(--theme-color-secondary));
+}
+
+.container {
+  // flex: 1;
+  // padding: 5px;
+  margin: 7px;
+  background-color: rgb(var(--theme-color-secondary));
+  box-shadow: 1px 2px 3px 2px var(--theme-color-shadow);
+  display: grid;
+  grid-template-columns: minmax(auto, 1fr) minmax(0, 10fr);
+  grid-template-rows: auto auto;
+  height: auto;
+  position: relative;
+  grid-template-areas:
+    'sidebar console'
+    'table table';
+
+  .cell-sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    align-self: start;
+
+    .toolbar {
+      margin: 5px;
+    }
+
+    .inputs {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+
+      .error {
+        border-color: var(--theme-color-error, blue) !important;
+      }
+
+      .text-field {
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        color: var(--theme-color-primary, blue);
+
+        label {
+          margin-right: 5px;
+          margin-left: 3px;
+          font-size: 8px;
+        }
+
+        input {
+          padding: 3px;
+          border-bottom: 1px solid rgba(var(--theme-color-inactive), 0.4);
+          outline: none;
+          height: 24px;
+          width: 100px;
+          box-sizing: border-box;
+        }
+
+        input:hover {
+          border-bottom: 1px solid;
+          border-color: var(--theme-color-border, blue);
+        }
+
+        input:focus {
+          border-bottom: 2px solid;
+          border-color: var(--theme-color-border, blue);
+        }
+      }
+
+      .dropdown {
+        width: 90px;
+
+        .dropdown-label {
+          font-size: 8px !important;
+          margin-left: 4px;
+        }
+      }
+    }
+
+
+  }
+
+  .console {
+    grid-area: console;
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .table {
+    grid-area: table;
+    max-height: 400px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+}
+</style>
