@@ -11,12 +11,17 @@
             <label class="dropdown-label">Cell Type</label>
           </template>
           <template #selection="{ item }">
+
             <span style="font-size: 12px; padding-left: 5px;">{{ item.title }}</span>
           </template>
           <template #item="{ props, item }">
             <v-list-item v-bind="props" density="compact">
               <template #title>
-                <span style="font-size: 12px">{{ item.title }}</span>
+                <v-tooltip activator="parent" top>{{ item.value === 'View' ? constants.TOOLTIP_CELLTYPE_VIEW :
+                  constants.TOOLTIP_CELLTYPE_RAW }}</v-tooltip>
+
+                <span style="font-size: 12px"> {{
+                  item.title }}</span>
               </template>
             </v-list-item>
           </template>
@@ -42,6 +47,7 @@ import QueryEditor from "./QueryEditor.vue";
 import { onBeforeMount } from 'vue';
 import { ITabularResultSet } from '@/core/entities/tabular/ITabularResultSet';
 import { useNotebookStore } from '@/store/notebook';
+import constants from '@/constants/constants';
 
 
 let props = defineProps({
