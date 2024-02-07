@@ -202,6 +202,7 @@ async function requestPermission(file: FileSystemReference) {
   flex-direction: column;
   height: 100%;
   padding: 8px;
+  overflow: auto;
 
   .spacer {
     border-bottom: solid rbg(var(--theme-color-border)) 1px;

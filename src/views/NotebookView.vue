@@ -81,6 +81,7 @@ function deleteCell(ds: TabularDataset) {
         scrollbar-width: 20px;
         width: 100%;
         margin: 5px;
+        padding: 5px 25px 5px 25px;
 
         .cell-container {
             display: flex;
