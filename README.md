@@ -28,6 +28,10 @@
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
 - [🚀 Deployment ](#-deployment-)
+- [Contribute](#contribute)
+  - [Implement a new feature](#implement-a-new-feature)
+  - [Request a new feature](#request-a-new-feature)
+  - [Fix a bug](#fix-a-bug)
 - [⛏️ Built Using ](#️-built-using-)
 - [🎉 Acknowledgements ](#-acknowledgements-)
 
@@ -74,6 +78,23 @@ npm run dev
 ## 🚀 Deployment <a name = "deployment"></a>
 
 Application has no backend, build can be generated using `pnpm run build` and `dist` folder can be deployed as a static application on any static site hosting.
+
+## Contribute
+
+Contributions are most welcome. There are various ways you can contribute,
+
+### Implement a new feature
+1. Create an issue and provide your reasoning on why you want to add this feature.
+2. Discuss your approach and design.
+3. Implement the feature and submit your PR.
+
+### Request a new feature
+1. Open an issue and provide details about your feature request.
+2. In case other tools implement that functionality then it will be helpful to share the reference for inspiration and design.
+
+### Fix a bug
+1. If you are resolving an issue, please add fix: #<issue number> <short message> in your PR title (e.g.fix: #3899 update entities encoding/decoding).
+2. Provide a short description of the bug in your PR and/or link to the issue.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
