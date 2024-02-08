@@ -28,7 +28,7 @@
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
 - [🚀 Deployment ](#-deployment-)
-- [Contribute](#contribute)
+- [💬 Contribute](#-contribute)
   - [Implement a new feature](#implement-a-new-feature)
   - [Request a new feature](#request-a-new-feature)
   - [Fix a bug](#fix-a-bug)
@@ -79,7 +79,7 @@ npm run dev
 
 Application has no backend, build can be generated using `pnpm run build` and `dist` folder can be deployed as a static application on any static site hosting.
 
-## Contribute
+## 💬 Contribute
 
 Contributions are most welcome. There are various ways you can contribute,
 
