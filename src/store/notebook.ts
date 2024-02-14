@@ -49,6 +49,7 @@ export const useNotebookStore = defineStore('notebook', () => {
     const cell = new NotebookCell(Math.random().toString(), dataSource.value, dataset);
     cells.value.splice(index + 1, 0, cell);
     dsIndex.value++;
+    unsavedChanges.value = true;
     return cell;
   }
 
@@ -59,6 +60,7 @@ export const useNotebookStore = defineStore('notebook', () => {
         return;
       }
     }
+    unsavedChanges.value = true;
   }
 
   function getCell(cellId: string) {
