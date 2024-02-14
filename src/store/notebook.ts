@@ -57,10 +57,10 @@ export const useNotebookStore = defineStore('notebook', () => {
     for (let i = 0; i < cells.value.length; i++) {
       if (cells.value[i].id === cell.id) {
         cells.value.splice(i, 1);
+        unsavedChanges.value = true;
         return;
       }
     }
-    unsavedChanges.value = true;
   }
 
   function getCell(cellId: string) {
