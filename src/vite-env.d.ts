@@ -8,10 +8,11 @@ declare module '*.vue' {
 
 
 
-interface Window extends Window{
-  showOpenFilePicker: any,
-  showDirectoryPicker: any,
-  requestPermission: any
+interface Window extends Window {
+  showOpenFilePicker: any;
+  showDirectoryPicker: any;
+  requestPermission: any;
+  showSaveFilePicker: any;
 }
 
 

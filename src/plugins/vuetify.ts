@@ -12,11 +12,11 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components';
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
-import { mdiFile, mdiFolder, mdiDelete, mdiPlus, mdiClose, mdiPlay, mdiArrowDown, mdiChevronDown, mdiChevronUp, mdiArrowUp, mdiChevronRight, mdiMoonFirstQuarter, mdiSunAngle, mdiLightbulb } from "@mdi/js";
+import { mdiFile, mdiFolder, mdiDelete, mdiPlus, mdiClose, mdiPlay, mdiArrowDown, mdiChevronDown, mdiChevronUp, mdiArrowUp, mdiChevronRight, mdiMoonFirstQuarter, mdiSunAngle, mdiLightbulb, mdiFloppy, mdiCodeBraces } from "@mdi/js";
 import { useDark } from '@vueuse/core';
 
 
-let isDark = useDark();
+const isDark = useDark();
 
 const classicLight = {
   dark: false,
@@ -45,6 +45,7 @@ const duckLabDark = {
     surface: '#F2B56B',
     primary: '#226368',
     secondary: '#024959',
+    'primary-contrast': '#fff',
   }, //226368
 }
 
@@ -55,6 +56,7 @@ const duckLabLight = {
     surface: '#024959',
     primary: '#024873',
     secondary: '#F2B56B',
+    'primary-contrast': '#fff', // contrast primary
   },
 }
 
@@ -86,7 +88,9 @@ export default createVuetify({
       angleUp: mdiChevronUp,
       angleRight: mdiChevronRight,
       moon: mdiMoonFirstQuarter,
-      light: mdiLightbulb
+      light: mdiLightbulb,
+      save: mdiFloppy,
+      code: mdiCodeBraces
     },
     sets: {
       mdi,

@@ -2,9 +2,9 @@
 
 export interface FileSystemReference {
     name: string;
-    type: "csv" | "parquet" | "folder" | "sqlnb" | "g.html";
+    type: "csv" | "parquet" | "folder" | "sql" | "html";
     path: string;
-    handle?: FileSystemHandle;
+    handle?: FileSystemFileHandle | FileSystemDirectoryHandle;
     file?: File,
     isCode?: boolean,
     parent?: FileSystemReference;

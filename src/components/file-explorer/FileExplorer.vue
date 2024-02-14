@@ -5,6 +5,10 @@
         <v-tab value="notebooks">Files</v-tab>
       </v-tabs>
       <div class="toolbar">
+        <v-btn class="toolbar-btn" @click="save" color="primary" size="sm" outline dense>
+          <v-icon icon="$save"></v-icon>
+          <v-tooltip activator="parent" top>Save Notebook</v-tooltip>
+        </v-btn>
         <v-btn class="toolbar-btn" @click="openFile" color="primary" size="sm" outline dense>
           <v-icon icon="$file"></v-icon>
           <v-tooltip activator="parent" top>Open File</v-tooltip>
@@ -44,7 +48,7 @@
 
           <div class="filelist">
             <NestedListItem @select="onSelect" :selectable="true" v-if="storageStore.root" :file="storageStore.root"
-              @prompt-permission="requestPermission"></NestedListItem>
+              @prompt-permission="requestPermission" @open-code="f => emit('open-code', f)"></NestedListItem>
           </div>
         </div>
       </div>
@@ -69,7 +73,9 @@ let emit = defineEmits([
   'copy',
   'cut',
   'paste',
-  'remove'
+  'remove',
+  'save',
+  'open-code'
 ]);
 
 let props = defineProps({
@@ -161,17 +167,8 @@ function onToolbarAction(event: 'remove' | 'copy' | 'cut' | 'download') {
   emit(event, files);
 }
 
-function onNavigate(dir: FileSystemReference) {
-  if (dir.type !== 'folder') return;
-  cwd.value = dir;
-  console.log("Explorer folder: ", cwd.value);
-}
-
-function onNavigateUpward() {
-  // let parent = getParentDir(vmFolder.value);
-
-  if (!cwd.value?.parent) return;
-  onNavigate(cwd.value.parent);
+function save() {
+  emit('save');
 }
 
 

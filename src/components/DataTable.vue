@@ -68,11 +68,6 @@ let props = defineProps({
 let initialLoad = ref(true);
 
 let columns = computed(() => props.columns.map(col => {
-  let format = (x: any) => "asd+ " + x;
-  if (col.type === "datetime") {
-    format = (x: any) => "asd+ " + x.toISOString();
-  }
-  console.log("COlumn: ", col)
   return {
     key: col.key,
     title: col.label,
@@ -96,12 +91,7 @@ function clamp(text: string) {
   return text;
 }
 
-function getHeaderSlotName(slot: any) {
-  return `header.${slot.key}`;
-}
-
 function onRequest(params: any) {
-  console.log("Request: ", params, initialLoad.value);
 
   if (initialLoad.value) {
     initialLoad.value = false;
@@ -118,7 +108,6 @@ function onRequest(params: any) {
     search: search
   });
 
-  console.log("Rows: ", rows.value, props.rows);
 }
 
 </script>

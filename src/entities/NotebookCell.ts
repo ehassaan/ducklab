@@ -1,0 +1,50 @@
+import { TabularDataset } from "@/core/entities/tabular/TabularDataset";
+import { ITabularResultSet } from "@/core/entities/tabular/ITabularResultSet";
+import { DuckdbDataSource } from "@/core/data/duckdb_wasm/DuckdbDataSource";
+
+export enum CellType {
+    SQL_VIEW = 'SQL_VIEW',
+    SQL_RAW = 'SQL_RAW'
+}
+
+export class NotebookCell {
+    // notebook: Notebook;
+    dataset: TabularDataset;
+    type: CellType = CellType.SQL_VIEW;
+    input = "";
+    readonly id: string;
+    dataSource: DuckdbDataSource;
+
+    constructor(id: string, dataSource: DuckdbDataSource, dataset: TabularDataset) {
+        this.id = id;
+        this.dataset = dataset;
+        this.dataSource = dataSource;
+        this.input = dataset.getSourceQuery();
+    }
+
+    setInput(input: string) {
+        console.log(this, input);
+        this.input = input;
+        if (this.type === CellType.SQL_VIEW) {
+            this.dataset.setSourceQuery(input);
+        }
+    }
+
+    setType(type: CellType) {
+        this.type = type;
+    }
+
+    async execute() {
+        let items: ITabularResultSet = { columns: [], values: [] };
+        if (this.type === CellType.SQL_RAW) {
+            items = await this.dataset.dataSource.query({
+                rawQuery: this.input
+            }, this.dataSource.opts.batchSize, 0);
+        }
+        else {
+            items = await this.dataset.fetchPage(this.dataSource.opts.batchSize, 0);
+        }
+        console.log("Execution result: ", items);
+        return items;
+    }
+}

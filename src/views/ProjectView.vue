@@ -3,7 +3,7 @@
   <div class="project-container">
     <Splitpanes class="splitpanes">
       <pane min-size="1" size="22" class="split-pane">
-        <FileExplorer :files="allFiles" class="file-explorer" @import="onImport" @remove="onRemove"></FileExplorer>
+        <FileExplorer :files="allFiles" class="file-explorer" @import="onImport" @remove="onRemove" @save="onSave" @open-code="openCode"></FileExplorer>
       </pane>
       <Pane class="split-pane" min-size="40">
         <NotebookView :dataSource="duck" class="notebook"></NotebookView>
@@ -21,11 +21,13 @@ import { onBeforeMount } from 'vue';
 import { FileSystemReference } from '@/entities/FileSystemReference';
 import { useStorageStore } from '@/store/storage';
 import { Splitpanes, Pane } from 'splitpanes';
+import { useNotebookStore } from '@/store/notebook';
 import 'splitpanes/dist/splitpanes.css';
 
 let allFiles = ref<FileSystemReference[]>([]);
 let duck: DuckdbDataSource;
 let storageStore = useStorageStore();
+let notebookStore = useNotebookStore();
 
 onBeforeMount(async () => {
   duck = new DuckdbDataSource("default", {
@@ -40,11 +42,20 @@ async function onRemove(files: FileSystemReference[]) {
   await storageStore.detachAll();
 }
 
+async function openCode(file: FileSystemReference) {
+  await notebookStore.load(file);
+}
+
 async function onImport(file: FileSystemReference) {
   console.log("Imported: ", file);
 
   await duck.reset();
   await duck.importFile(file);
+}
+
+async function onSave() {
+  await notebookStore.save();
+  await storageStore.refresh();
 }
 
 </script>

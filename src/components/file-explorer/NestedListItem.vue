@@ -6,8 +6,8 @@
                 :model-value="selected[props.file.path]"
                 @update:model-value="$ev => selectionChanged(file, $ev)"></v-checkbox-btn>
 
-            <div class="clickable" @click="leafClicked">
-                <v-icon color="primary" icon="$file" />
+            <div class="clickable" @click="leafClicked" @dblclick="leafDblClicked">
+                <v-icon color="primary" :icon="['sql', 'html'].includes(file.type) ? '$code' : '$file'" />
                 <p class="filename">{{ props.file.name }}</p>
                 <v-tooltip activator="parent" location="end">{{ props.file.path }}</v-tooltip>
             </div>
@@ -35,7 +35,8 @@
                         <div v-for="child of props.file.children" :key="child.path">
                             <NestedListItem :file="child" :key="child.name"
                                 @prompt-permission="emit('prompt-permission', child)" @select="sel => emit('select', sel)"
-                                @clicked="fil => emit('clicked', fil)"></NestedListItem>
+                                @clicked="fil => emit('clicked', fil)" @open-code="f => emit('open-code', f)">
+                            </NestedListItem>
                         </div>
                     </template>
                 </div>
@@ -54,7 +55,7 @@ import { PropType } from 'vue';
 import constants from "@/constants/constants";
 
 
-let emit = defineEmits(['prompt-permission', 'clicked', 'select']);
+let emit = defineEmits(['prompt-permission', 'clicked', 'select', 'open-code']);
 let selected = ref<{ [key: string]: boolean }>({});
 
 const props = defineProps({
@@ -76,9 +77,18 @@ function selectionChanged(file: FileSystemReference, isSelected: boolean) {
 }
 
 async function leafClicked() {
+    if (props.file.isCode) return;
     await navigator.clipboard.writeText(props.file.path);
     showMessage.value = true;
     message.value = constants.TOAST_PATH_COPIED_TO_CLIPBOARD;
+    emit('clicked', props.file);
+}
+
+function leafDblClicked(ev: MouseEvent) {
+    if (props.file.isCode) {
+        emit("open-code", props.file);
+        ev.preventDefault();
+    }
 }
 
 </script>
@@ -116,6 +126,7 @@ async function leafClicked() {
         .prompt {
             color: rgb(var(--theme-color-error));
         }
+
         .prompt:hover {
             border-bottom: 1px solid rgb(var(--theme-color-accent, green));
         }

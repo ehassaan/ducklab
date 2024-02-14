@@ -2,11 +2,13 @@
   <div class="container" @keydown="onKeyChange" @keyup="onKeyChange" @focusout="onFocusOut">
     <div class="cell-sidebar">
       <div class="inputs">
-        <div v-if="cellType != 'Raw'" class="text-field" color="primary">
+        <div v-if="props.cell.type !== CellType.SQL_RAW" class="text-field" color="primary">
           <label>Name</label>
-          <input @input="onNameInput" :value="props.dataset.name" :class="{ error: !isNameValid }" ref="nameInput" />
+          <input @input="onNameInput" :value="props.cell.dataset.name" :class="{ error: !isNameValid }" ref="nameInput" />
         </div>
-        <v-select class="dropdown" v-model="cellType" :items="['View', 'Raw']" density="compact" :hide-details="true">
+        <v-select class="dropdown" :model-value="cellType"
+          @update:model-value="onTypeChange"
+          :items="['View', 'Raw']" density="compact" :hide-details="true">
           <template #label>
             <label class="dropdown-label">Cell Type</label>
           </template>
@@ -29,7 +31,8 @@
       </div>
       <CellToolbar class="toolbar" @execute="execute" @delete="emit('delete-cell')" @new="emit('new-cell')"></CellToolbar>
     </div>
-    <QueryEditor class="console" v-model="vmQuery"></QueryEditor>
+    <QueryEditor class="console" :model-value="input" @update:model-value="onInput">
+    </QueryEditor>
     <TableLayout :columns="columns" :rows="rows" :class="{ table: true, hidden: rows.length == 0 }"
       @on-request="onRequest" :loading="loading" :pagination="pagination" :max-rows="batchSize"></TableLayout>
     <v-snackbar v-model="showError" :timeout="4000">{{ error }}</v-snackbar>
@@ -41,18 +44,18 @@ import TableLayout from '@/components/DataTable.vue';
 import type { TableColumn } from '@/entities/TableColumn';
 import { ref } from 'vue';
 import { PropType } from 'vue';
-import { TabularDataset } from '@/core/entities/tabular/TabularDataset';
 import CellToolbar from './CellToolbar.vue';
 import QueryEditor from "./QueryEditor.vue";
-import { onBeforeMount } from 'vue';
-import { ITabularResultSet } from '@/core/entities/tabular/ITabularResultSet';
 import { useNotebookStore } from '@/store/notebook';
 import constants from '@/constants/constants';
+import { CellType, NotebookCell } from '@/entities/NotebookCell';
+import { onMounted } from 'vue';
+import { computed } from 'vue';
 
 
 let props = defineProps({
-  dataset: {
-    type: Object as PropType<TabularDataset>,
+  cell: {
+    type: Object as PropType<NotebookCell>,
     required: true
   }
 });
@@ -66,24 +69,31 @@ let pagination = ref({
 });
 let showError = ref(false);
 let error = ref(null);
-let cellType = ref('View');
-let vmQuery = ref("");
+// let cellType = ref('View');
+// let vmQuery = ref("");
 let notebookStore = useNotebookStore();
 let nameInput = ref<HTMLInputElement | null>(null);
 let isNameValid = ref(true);
 let batchSize = ref(10);
 let keyMap: { [key: string]: boolean } = {};
 
+let cellType = computed(() => props.cell.type === CellType.SQL_RAW ? "Raw" : "View");
+let input = computed(() => props.cell.input);
 
-onBeforeMount(() => {
-  vmQuery.value = props.dataset.getSourceQuery();
-  console.log("Mounted: ", vmQuery.value);
+onMounted(() => {
+  // vmQuery.value = props.cell.dataset.getSourceQuery();
+  console.log("Mounted: ", props.cell.input);
 });
 
+function onTypeChange(type: string) {
+  props.cell.setType(type === 'Raw' ? CellType.SQL_RAW : CellType.SQL_VIEW);
+  notebookStore.unsavedChanges = true;
+}
+
 function onNameInput(event: any) {
-  let idx = notebookStore.datasets.findIndex(ds => ds.name === event.target.value);
+  let idx = notebookStore.cells.findIndex(cell => cell.dataset.name === event.target.value);
   isNameValid.value = idx < 0;
-  console.log("Renamed: ", event.target.value, isNameValid.value);
+  notebookStore.unsavedChanges = true;
   if (isNameValid.value) {
     emit('cell-renamed', event.target.value);
   }
@@ -97,14 +107,17 @@ async function onKeyChange(event: KeyboardEvent) {
   }
 }
 
+function onInput(input: string) {
+  props.cell.setInput(input);
+  notebookStore.unsavedChanges = true;
+}
+
 async function onFocusOut() {
   keyMap = {}
 }
 
 async function execute() {
-  console.log("Running: ", vmQuery.value);
-  props.dataset.setSourceQuery(vmQuery.value);
-  batchSize.value = notebookStore.dataSource?.batchSize ?? 10;
+  console.log("Running: ", props.cell.input);
   await fetchResults();
 }
 
@@ -119,16 +132,7 @@ async function fetchResults() {
 
   try {
     loading.value = true;
-    let items: ITabularResultSet = { columns: [], values: [] };
-    if (cellType.value === 'Raw') {
-      items = await props.dataset.dataSource.query({
-        rawQuery: vmQuery.value
-      }, batchSize.value, 0);
-    }
-    else {
-      items = await props.dataset.fetchPage(batchSize.value, 0);
-    }
-    console.log(items, pagination.value);
+    let items = await props.cell.execute();
     columns.value = items.columns.map(item => ({ key: item.name, label: item.name, type: item.type }))
     rows.value = items.values;
     // pagination.value.rowsNumber = rows.value.length;
@@ -147,7 +151,7 @@ async function onRequest(params: any) {
   loading.value = true;
 
   if (params.sortBy) {
-    props.dataset.setSort(params.sortBy);
+    props.cell.dataset.setSort(params.sortBy);
   }
   await fetchResults();
   pagination.value.sortBy = params.sortBy;

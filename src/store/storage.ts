@@ -1,10 +1,9 @@
 import { FileSystemReference } from "@/entities/FileSystemReference";
-import { FileWithDirectoryAndFileHandle } from "browser-fs-access";
 import { get, set } from "idb-keyval";
 import { defineStore } from "pinia";
-import { onBeforeMount, onMounted, ref } from "vue";
+import { ref } from "vue";
 
-const supportedTypes = ['csv', 'parquet', 'sqlnb', '.g.html'];
+const supportedTypes = ['csv', 'parquet', 'g.html', 'sql'];
 
 export const useStorageStore = defineStore('storage', () => {
     const root = ref<FileSystemReference>();
@@ -20,7 +19,7 @@ export const useStorageStore = defineStore('storage', () => {
         }
     }
 
-    async function attachFiles(files: FileSystemHandle[]) {
+    async function attachFiles(files: (FileSystemFileHandle | FileSystemDirectoryHandle)[]) {
         const dirRef: FileSystemReference = {
             name: 'root',
             children: [],
@@ -29,7 +28,12 @@ export const useStorageStore = defineStore('storage', () => {
             type: 'folder'
         };
         for (const fil of files) {
-            dirRef.children.push(await createReference(fil, dirRef))
+            try {
+                dirRef.children.push(await createReference(fil, dirRef))
+            }
+            catch (e) {
+                console.log(`Skipping: ${fil.name}\t${e}`);
+            }
         }
         root.value = dirRef;
         await set('imported', files);
@@ -64,7 +68,9 @@ export const useStorageStore = defineStore('storage', () => {
     }
 });
 
-async function createReference(file: FileSystemHandle, parent?: FileSystemReference): Promise<FileSystemReference> {
+export async function createReference(file: FileSystemFileHandle | FileSystemDirectoryHandle,
+    parent?: FileSystemReference): Promise<FileSystemReference> {
+
     const path = parent ? parent.path + file.name : file.name;
 
     if (file.kind == 'directory') {
@@ -82,15 +88,15 @@ async function createReference(file: FileSystemHandle, parent?: FileSystemRefere
     for (const typ of supportedTypes) {
         if (file.name.toLowerCase().endsWith(typ)) type = typ;
     }
-    if (!type) throw Error("File type not accepted");
+    if (!type) throw Error("File type not supported");
     return {
         name: file.name,
         path: path,
         children: [],
         type: type as any,
-        isCode: (type === 'sqlnb') || (type === 'g.html'),
+        isCode: (type === 'sql') || (type === 'html'),
         handle: file,
-        permission: await file.queryPermission()
+        permission: await file.queryPermission(),
     }
 }
 
@@ -100,15 +106,21 @@ async function openRecursive(directory: FileSystemReference) {
 
     for await (const fil of (directory.handle as any).values()) {
         console.log("Recursive: ", fil);
-        const fileRef = await createReference(fil, directory);
-        fileRef.parent = directory;
-        console.log("file ref: ", fileRef);
-        if (fileRef.type === 'folder') {
-            directory.children.push(await openRecursive(fileRef));
-            continue;
+        try {
+            const fileRef = await createReference(fil, directory);
+            fileRef.parent = directory;
+            console.log("file ref: ", fileRef);
+            if (fileRef.type === 'folder') {
+                directory.children.push(await openRecursive(fileRef));
+                continue;
+            }
+            fileRef.parent = directory;
+            directory.children.push(fileRef);
         }
-        fileRef.parent = directory;
-        directory.children.push(fileRef);
+        catch (e) {
+            console.log(`Skipping: ${fil.name}\t${e}`);
+        }
+
     }
     return directory;
 }

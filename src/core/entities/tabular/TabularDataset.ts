@@ -9,10 +9,8 @@ export class TabularDataset {
   protected _columns: IFieldInfo[];
   protected _datasource: TabularDataSource;
   protected _name: string;
-  public readonly id: number;
 
-  constructor(id: number, name: string, query: IFetchQuery, datasource: TabularDataSource, columns: IFieldInfo[]) {
-    this.id = id;
+  constructor(name: string, query: IFetchQuery, datasource: TabularDataSource, columns: IFieldInfo[]) {
     this._query = query;
     this._columns = columns;
     this._datasource = datasource;

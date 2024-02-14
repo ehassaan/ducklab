@@ -62,15 +62,14 @@ onMounted(() => {
 
   myEditor.onDidContentSizeChange(() => {
     updateHeight(myEditor);
-  })
+  });
+
+  // watchEffect(() => {
+  //   myEditor.setValue(props.modelValue);
+  // })
 
   myEditor.layout();
-  // watch(props, (e) => {
-  //   myEditor.setValue(e.modelValue);
-  // }, {
-  //   deep: true,
-  //   immediate: false,
-  // })
+
 });
 
 </script>

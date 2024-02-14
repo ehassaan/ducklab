@@ -10,20 +10,22 @@ import type { ICalculatedColumn } from '@/core/language/IExpression';
 import type { ITabularResultSet } from '@/core/entities/tabular/ITabularResultSet';
 import { IFetchQuery } from '@/core/language/IFetchQuery';
 
-
 export class DuckdbDataSource extends TabularDataSource {
   private _tr: SqlTranslator;
-  private _opts: DuckOptions;
-  public batchSize: number;
+  public readonly opts: Required<DuckOptions>;
   private _conn: AsyncDuckDBConnection | null = null;
-  private defaultLimit = 1000;
   private db: AsyncDuckDB | null = null;
 
   constructor(name: string, duckOpts: DuckOptions) {
     super(name);
     this._tr = new SqlTranslator();
-    this._opts = duckOpts;
-    this.batchSize = duckOpts.batchSize ?? 10000;
+    this.opts = {
+      supportedTypes: [".csv", ".parquet"],
+      batchSize: 10000,
+      defaultLimit: 1000,
+      extensions: [],
+      ...duckOpts,
+    };
   }
 
   public async init() {
@@ -48,7 +50,7 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   private async loadExtensions(): Promise<void> {
-    for (const ext of this._opts.extensions) {
+    for (const ext of this.opts.extensions ?? []) {
       // const res = await this.queryNative(`INSTALL ${ext}\nLOAD ${ext}`);
       // console.log(`Loaded: ${ext}`, res);
     }
@@ -61,9 +63,9 @@ export class DuckdbDataSource extends TabularDataSource {
     let count = 0;
     for await (const batch of res.batches) {
       const res = this.transformBatch(batch);
-      if (count + res.values.length > this.batchSize) {
-        console.log("Slicing: ", count, this.batchSize, batch, res);
-        res.values = res.values.slice(0, this.batchSize - count);
+      if (count + res.values.length > this.opts.batchSize) {
+        console.log("Slicing: ", count, this.opts.batchSize, batch, res);
+        res.values = res.values.slice(0, this.opts.batchSize - count);
       }
       count = count + res.values.length;
       yield res;
@@ -80,6 +82,11 @@ export class DuckdbDataSource extends TabularDataSource {
       return;
     }
     else if (!file.handle) return;
+
+    // return if file type is not supported
+    else if (this.opts.supportedTypes.filter(t => file.name.toLowerCase().endsWith(t)).length === 0) {
+      console.log(`Skipping file: ${file.path}`);
+    }
     else {
       console.log("Registering: ", file.path, file);
       await this.db.registerFileHandle(file.path, await file.handle.getFile(), DuckDBDataProtocol.BROWSER_FILEREADER, true);
@@ -162,7 +169,7 @@ export class DuckdbDataSource extends TabularDataSource {
 
   public async query(params: ITabularExecuteOpts, limit?: number, offset?: number) {
     if (!offset) offset = 0;
-    if (!limit) limit = this.defaultLimit;
+    if (!limit) limit = this.opts.defaultLimit;
     if (params.rawQuery != null && limit != null && offset != null) {
       // const raw = this.addLimit(params.rawQuery, limit, offset);
       return await this.queryNative(params.rawQuery);
@@ -224,9 +231,9 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 }
 
-
 export interface DuckOptions {
   batchSize?: number;
-  tempFile?: string;
-  extensions: string[];
+  extensions?: string[];
+  supportedTypes?: string[];
+  defaultLimit?: number;
 }
