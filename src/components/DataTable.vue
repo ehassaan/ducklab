@@ -29,7 +29,7 @@
       <template v-slot:bottom>
       </template>
     </v-data-table-server>
-    <p class="note" v-if="rows.length >= props.maxRows">Showing first {{ props.maxRows }} rows only</p>
+    <p class="note" v-if="props.rowsClipped">Showing first {{ props.rows.length }} rows only</p>
   </div>
 </template>
 
@@ -48,10 +48,6 @@ let props = defineProps({
     type: Object as PropType<any[]>,
     default: () => []
   },
-  maxRows: {
-    type: Number,
-    required: true
-  },
   loading: Boolean,
   pagination: Object as PropType<{
     page?: number,
@@ -64,6 +60,10 @@ let props = defineProps({
     type: Number,
     default: 80
   },
+  rowsClipped: {
+    type: Boolean,
+    default: false
+  }
 });
 let initialLoad = ref(true);
 

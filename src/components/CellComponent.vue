@@ -6,9 +6,8 @@
           <label>Name</label>
           <input @input="onNameInput" :value="props.cell.dataset.name" :class="{ error: !isNameValid }" ref="nameInput" />
         </div>
-        <v-select class="dropdown" :model-value="cellType"
-          @update:model-value="onTypeChange"
-          :items="['View', 'Raw']" density="compact" :hide-details="true">
+        <v-select class="dropdown" :model-value="cellType" @update:model-value="onTypeChange" :items="['View', 'Raw']"
+          density="compact" :hide-details="true">
           <template #label>
             <label class="dropdown-label">Cell Type</label>
           </template>
@@ -34,7 +33,8 @@
     <QueryEditor class="console" :model-value="input" @update:model-value="onInput">
     </QueryEditor>
     <TableLayout :columns="columns" :rows="rows" :class="{ table: true, hidden: rows.length == 0 }"
-      @on-request="onRequest" :loading="loading" :pagination="pagination" :max-rows="batchSize"></TableLayout>
+      @on-request="onRequest" :loading="loading" :pagination="pagination" :rows-clipped="rows.length === limit">
+    </TableLayout>
     <v-snackbar v-model="showError" :timeout="4000">{{ error }}</v-snackbar>
   </div>
 </template>
@@ -69,19 +69,16 @@ let pagination = ref({
 });
 let showError = ref(false);
 let error = ref(null);
-// let cellType = ref('View');
-// let vmQuery = ref("");
 let notebookStore = useNotebookStore();
 let nameInput = ref<HTMLInputElement | null>(null);
 let isNameValid = ref(true);
-let batchSize = ref(10);
 let keyMap: { [key: string]: boolean } = {};
 
 let cellType = computed(() => props.cell.type === CellType.SQL_RAW ? "Raw" : "View");
 let input = computed(() => props.cell.input);
+let limit = computed(() => props.cell.limit);
 
 onMounted(() => {
-  // vmQuery.value = props.cell.dataset.getSourceQuery();
   console.log("Mounted: ", props.cell.input);
 });
 

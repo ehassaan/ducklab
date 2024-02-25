@@ -7,7 +7,7 @@ export abstract class TabularDataSource {
 
   // abstract preview(params: ITabularExecuteOpts, limit: number, offset: number): Promise<ITabularResultSet>;
   // abstract fetch(): Promise<ITabularResultSet>;
-  abstract query(params: ITabularExecuteOpts, limit: number, offset: number): Promise<ITabularResultSet>;
+  abstract query(params: ITabularExecuteOpts, limit?: number, offset?: number): Promise<ITabularResultSet>;
   abstract queryNative(query: string): Promise<ITabularResultSet>;
   abstract createView(name: string, query: IFetchQuery): Promise<void>;
   abstract getDatasets(): Promise<ITableInfo[]>;

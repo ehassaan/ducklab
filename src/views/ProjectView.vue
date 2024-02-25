@@ -31,7 +31,9 @@ let notebookStore = useNotebookStore();
 
 onBeforeMount(async () => {
   duck = new DuckdbDataSource("default", {
-    batchSize: 200,
+    batchSize: 50000,
+    previewLimit: 200,
+    rawLimit: 1000,
     extensions: ['autocomplete', 'tpch', 'json']
   })
   await duck.connect();

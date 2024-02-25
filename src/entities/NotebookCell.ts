@@ -14,12 +14,14 @@ export class NotebookCell {
     input = "";
     readonly id: string;
     dataSource: DuckdbDataSource;
+    limit?: number;
 
     constructor(id: string, dataSource: DuckdbDataSource, dataset: TabularDataset) {
         this.id = id;
         this.dataset = dataset;
         this.dataSource = dataSource;
         this.input = dataset.getSourceQuery();
+        this.limit = dataSource.opts.previewLimit;
     }
 
     setInput(input: string) {
@@ -32,6 +34,7 @@ export class NotebookCell {
 
     setType(type: CellType) {
         this.type = type;
+        this.limit = type === CellType.SQL_VIEW ? this.dataSource.opts.previewLimit : this.dataSource.opts.rawLimit;
     }
 
     async execute() {
@@ -39,10 +42,10 @@ export class NotebookCell {
         if (this.type === CellType.SQL_RAW) {
             items = await this.dataset.dataSource.query({
                 rawQuery: this.input
-            }, this.dataSource.opts.batchSize, 0);
+            }, this.limit, 0);
         }
         else {
-            items = await this.dataset.fetchPage(this.dataSource.opts.batchSize, 0);
+            items = await this.dataset.fetchPage(this.limit, 0);
         }
         console.log("Execution result: ", items);
         return items;

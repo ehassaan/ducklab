@@ -66,7 +66,7 @@ export class TabularDataset {
   //   return results;
   // }
 
-  async fetchPage(limit: number, offset: number) {
+  async fetchPage(limit?: number, offset?: number) {
     await this.dataSource.createView(this.name, this.query);
     const results = await this.dataSource.query(
       {

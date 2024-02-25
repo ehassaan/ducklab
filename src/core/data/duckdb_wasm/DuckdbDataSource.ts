@@ -22,7 +22,8 @@ export class DuckdbDataSource extends TabularDataSource {
     this.opts = {
       supportedTypes: [".csv", ".parquet"],
       batchSize: 10000,
-      defaultLimit: 1000,
+      previewLimit: 1000,
+      rawLimit: -1,
       extensions: [],
       ...duckOpts,
     };
@@ -51,8 +52,8 @@ export class DuckdbDataSource extends TabularDataSource {
 
   private async loadExtensions(): Promise<void> {
     for (const ext of this.opts.extensions ?? []) {
-      // const res = await this.queryNative(`INSTALL ${ext}\nLOAD ${ext}`);
-      // console.log(`Loaded: ${ext}`, res);
+      const res = await this.queryNative(`INSTALL ${ext}\nLOAD ${ext}`);
+      console.log(`Loaded: ${ext}`, res);
     }
   }
 
@@ -60,14 +61,14 @@ export class DuckdbDataSource extends TabularDataSource {
     if (!this._conn) await this.connect();
     if (!this._conn) return;
     const res = await this._conn.query(query);
-    let count = 0;
+    // let count = 0;
     for await (const batch of res.batches) {
       const res = this.transformBatch(batch);
-      if (count + res.values.length > this.opts.batchSize) {
-        console.log("Slicing: ", count, this.opts.batchSize, batch, res);
-        res.values = res.values.slice(0, this.opts.batchSize - count);
-      }
-      count = count + res.values.length;
+      // if (count + res.values.length > this.opts.batchSize) {
+      //   console.log("Slicing: ", count, this.opts.batchSize, batch, res);
+      //   res.values = res.values.slice(0, this.opts.batchSize - count);
+      // }
+      // count = count + res.values.length;
       yield res;
     }
   }
@@ -154,12 +155,16 @@ export class DuckdbDataSource extends TabularDataSource {
     await this.queryNative(`CREATE OR REPLACE VIEW '${name}' AS (${sql})`);
   }
 
-  public async queryNative(query: string) {
+  public async queryNative(query: string, limit?: number) {
     let values: any[] = [];
     let columns: IFieldInfo[] = [];
     for await (const batch of this.executeNativeBatch(query)) {
       values = values.concat(batch.values);
       columns = batch.columns;
+      if (limit != null && limit >= 0 && values.length >= limit) {
+        values = values.slice(0, limit);
+        break;
+      }
     }
     return {
       columns,
@@ -169,26 +174,14 @@ export class DuckdbDataSource extends TabularDataSource {
 
   public async query(params: ITabularExecuteOpts, limit?: number, offset?: number) {
     if (!offset) offset = 0;
-    if (!limit) limit = this.opts.defaultLimit;
-    if (params.rawQuery != null && limit != null && offset != null) {
-      // const raw = this.addLimit(params.rawQuery, limit, offset);
-      return await this.queryNative(params.rawQuery);
+    if (params.rawQuery != null) {
+      return await this.queryNative(params.rawQuery, limit ?? this.opts.rawLimit);
     }
     if (!params.query) throw Error("Query must be provided");
-    const sql = this._tr.translate(params.query, limit, offset);
+    const sql = this._tr.translate(params.query, limit ?? this.opts.previewLimit, offset);
     console.log(sql);
     return await this.queryNative(sql);
   }
-
-  // public async execute(params: ITabularExecuteOpts): Promise<ITabularResultSet> {
-  //   // const sql = this._tr.translate(params.query);
-  //   throw Error('Not implemented');
-  //   // let results = await this.query(sql);
-  //   // return results;
-  //   // await this.queryAsync(sql);
-  //   // return mapNativeToResultSet(results.recordset, results.recordset.columns);
-  // }
-
 
   public async getDatasets(): Promise<ITableInfo[]> {
     const results = await this.queryNative(`
@@ -235,5 +228,6 @@ export interface DuckOptions {
   batchSize?: number;
   extensions?: string[];
   supportedTypes?: string[];
-  defaultLimit?: number;
+  previewLimit?: number;
+  rawLimit?: number;
 }

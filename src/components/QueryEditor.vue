@@ -8,6 +8,7 @@ import { ref } from 'vue';
 import * as monaco from "monaco-editor";
 import { useDark } from '@vueuse/core';
 import { watchEffect } from 'vue';
+import { useNotebookStore } from '@/store/notebook';
 
 let props = defineProps({
   modelValue: {
@@ -19,6 +20,7 @@ let props = defineProps({
 let editorDiv = ref<HTMLDivElement>();
 let emit = defineEmits(['update:model-value']);
 let isDark = useDark();
+let notebook = useNotebookStore();
 
 let lastHeight = 0;
 
@@ -44,6 +46,7 @@ watchEffect(() => {
 })
 
 onMounted(() => {
+
   if (!editorDiv.value) throw Error("Editor Div not found");
   let myEditor = monaco.editor.create(editorDiv.value, {
     value: props.modelValue,
@@ -84,6 +87,7 @@ onMounted(() => {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
 .query-input:focus-within {
   border: solid 1px rgb(var(--theme-color-border, blue));
 }
