@@ -99,6 +99,7 @@ function deleteCell(cell: NotebookCell) {
         overflow-y: auto;
         scrollbar-width: 20px;
         width: 100%;
+        flex: 1;
         margin: 5px;
         padding: 5px 25px 5px 25px;
 
