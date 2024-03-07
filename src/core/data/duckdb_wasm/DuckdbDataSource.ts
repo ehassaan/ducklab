@@ -76,7 +76,6 @@ export class DuckdbDataSource extends TabularDataSource {
   public async importFile(file: FileSystemReference) {
     if (!this.db) throw Error("db is not initialized correctly");
     if (file.type === "folder") {
-      console.log("dirhandle: ", file.handle);
       for (const fil of file.children) {
         await this.importFile(fil);
       }
@@ -89,7 +88,6 @@ export class DuckdbDataSource extends TabularDataSource {
       console.log(`Skipping file: ${file.path}`);
     }
     else {
-      console.log("Registering: ", file.path, file);
       await this.db.registerFileHandle(file.path, await file.handle.getFile(), DuckDBDataProtocol.BROWSER_FILEREADER, true);
     }
   }

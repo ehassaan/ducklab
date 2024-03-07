@@ -9,14 +9,15 @@ export const useStorageStore = defineStore('storage', () => {
     const root = ref<FileSystemReference>();
 
     async function refresh() {
-        const file = await get("imported") as any;
-        if (!file) return;
-        if (file.kind === "directory") {
-            await attachDirectory(file);
+        const imported = await get("imported") as any;
+        if (!imported) return;
+        if (imported instanceof Array) {
+            await attachFiles(imported);
         }
-        else {
-            await attachFiles([file]);
+        if (imported.kind === "directory") {
+            await attachDirectory(imported);
         }
+        console.log("Refreshed");
     }
 
     async function attachFiles(files: (FileSystemFileHandle | FileSystemDirectoryHandle)[]) {
@@ -37,6 +38,7 @@ export const useStorageStore = defineStore('storage', () => {
         }
         root.value = dirRef;
         await set('imported', files);
+        console.log("Import files: ", files)
         return dirRef;
     }
 
@@ -55,6 +57,7 @@ export const useStorageStore = defineStore('storage', () => {
         root.value = await openRecursive(dirRef);
 
         await set('imported', directory);
+        console.log("Import directory: ", directory);
         return root.value;
     }
 
@@ -105,11 +108,9 @@ async function openRecursive(directory: FileSystemReference) {
     if (!directory.handle) return directory;
 
     for await (const fil of (directory.handle as any).values()) {
-        console.log("Recursive: ", fil);
         try {
             const fileRef = await createReference(fil, directory);
             fileRef.parent = directory;
-            console.log("file ref: ", fileRef);
             if (fileRef.type === 'folder') {
                 directory.children.push(await openRecursive(fileRef));
                 continue;

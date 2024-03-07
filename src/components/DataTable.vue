@@ -29,7 +29,6 @@
       <template v-slot:bottom>
       </template>
     </v-data-table-server>
-    <p class="note" v-if="props.rowsClipped">Showing first {{ props.rows.length }} rows only</p>
   </div>
 </template>
 
@@ -85,6 +84,7 @@ let rows = computed(() => props.rows.map((row, index) => {
 const itemsPerPage = ref(100);
 
 function clamp(text: string) {
+  if (!text) return text;
   if (text.length > props.maxTextLength) {
     return text.slice(0, props.maxTextLength) + '...';
   }
@@ -120,13 +120,6 @@ function onRequest(params: any) {
   margin: 0;
   padding: 0;
   font-size: 12px !important;
-
-  .note {
-    font-size: 12px;
-    padding: 5px 0 1px 8px;
-    color: rgb(var(--theme-color-background));
-    background-color: rgb(var(--theme-color-header));
-  }
 }
 
 .result {

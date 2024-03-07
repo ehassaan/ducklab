@@ -96,11 +96,15 @@ let { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 let selectedAny = computed(() => Object.values(selected.value).reduce((x, y) => x || y, false));
 
 onMounted(async () => {
-  await storageStore.refresh();
   cwd.value = storageStore.root;
   console.log("CWD: ", cwd.value);
   showError.value = !window.showDirectoryPicker;
   error.value = constants.ERROR_FS_API_NOT_SUPPORTED;
+
+  setInterval(async () => {
+    await storageStore.refresh();
+    emit("import", storageStore.root);
+  }, 10000);
 });
 
 watchEffect(() => {

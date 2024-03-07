@@ -3,9 +3,13 @@
   <div class="project-container">
     <Splitpanes class="splitpanes">
       <pane min-size="1" size="22" class="split-pane">
-        <FileExplorer :files="allFiles" class="file-explorer" @import="onImport" @remove="onRemove" @save="onSave" @open-code="openCode"></FileExplorer>
+        <FileExplorer :files="allFiles" class="file-explorer" @import="onImport" @remove="onRemove" @save="onSave"
+          @open-code="openCode"></FileExplorer>
       </pane>
       <Pane class="split-pane" min-size="40">
+        <div class="tabs">
+          <div class="tab">{{ notebookStore.currFile?.name }} {{ notebookStore.unsavedChanges ? '*' : '' }}</div>
+        </div>
         <NotebookView :dataSource="duck" class="notebook"></NotebookView>
       </Pane>
     </Splitpanes>
@@ -34,7 +38,7 @@ onBeforeMount(async () => {
     batchSize: 50000,
     previewLimit: 200,
     rawLimit: 1000,
-    extensions: ['autocomplete', 'tpch', 'json']
+    extensions: []
   })
   await duck.connect();
 });
@@ -85,5 +89,21 @@ async function onSave() {
   // background: black;
   // background-color: black;
   background: rgb(var(--theme-color-primary));
+}
+
+.tabs {
+  padding: 2px;
+  background-color: rgb(var(--theme-color-tabs-bg));
+
+  .tab {
+    padding: 0 5px 0 5px;
+    font-size: 14px;
+    color: rgb(var(--theme-color-tabs-text));
+    border-right: 1px solid rgb(var(--theme-color-tabs-text));
+    max-width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 }
 </style>

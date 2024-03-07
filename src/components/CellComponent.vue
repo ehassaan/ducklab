@@ -4,37 +4,47 @@
       <div class="inputs">
         <div v-if="props.cell.type !== CellType.SQL_RAW" class="text-field" color="primary">
           <label>Name</label>
-          <input @input="onNameInput" :value="props.cell.dataset.name" :class="{ error: !isNameValid }" ref="nameInput" />
+          <input @input="onNameInput" :value="props.cell.dataset.name" :class="{ error: !isNameValid }"
+            ref="nameInput" />
         </div>
         <v-select class="dropdown" :model-value="cellType" @update:model-value="onTypeChange" :items="['View', 'Raw']"
           density="compact" :hide-details="true">
           <template #label>
             <label class="dropdown-label">Cell Type</label>
           </template>
+
           <template #selection="{ item }">
 
             <span style="font-size: 12px; padding-left: 5px;">{{ item.title }}</span>
           </template>
+
           <template #item="{ props, item }">
             <v-list-item v-bind="props" density="compact">
               <template #title>
                 <v-tooltip activator="parent" top>{{ item.value === 'View' ? constants.TOOLTIP_CELLTYPE_VIEW :
-                  constants.TOOLTIP_CELLTYPE_RAW }}</v-tooltip>
+    constants.TOOLTIP_CELLTYPE_RAW }}</v-tooltip>
 
                 <span style="font-size: 12px"> {{
-                  item.title }}</span>
+    item.title }}</span>
               </template>
             </v-list-item>
           </template>
         </v-select>
       </div>
-      <CellToolbar class="toolbar" @execute="execute" @delete="emit('delete-cell')" @new="emit('new-cell')"></CellToolbar>
+      <CellToolbar class="toolbar" @execute="execute" @delete="emit('delete-cell')" @new="emit('new-cell')">
+      </CellToolbar>
     </div>
     <QueryEditor class="console" :model-value="input" @update:model-value="onInput">
     </QueryEditor>
-    <TableLayout :columns="columns" :rows="rows" :class="{ table: true, hidden: rows.length == 0 }"
-      @on-request="onRequest" :loading="loading" :pagination="pagination" :rows-clipped="rows.length === limit">
+    <TableLayout :columns="columns" :rows="rows" :class="{ table: true }" @on-request="onRequest" :loading="loading"
+      :pagination="pagination" :rows-clipped="rows.length === limit">
     </TableLayout>
+
+    <div class="note">
+      <p v-if="rows.length === limit">Showing first {{ rows.length }} rows only</p>
+      <p v-if="executionTime">Executed in {{ executionTime }}s</p>
+    </div>
+
     <v-snackbar v-model="showError" :timeout="4000">{{ error }}</v-snackbar>
   </div>
 </template>
@@ -77,6 +87,7 @@ let keyMap: { [key: string]: boolean } = {};
 let cellType = computed(() => props.cell.type === CellType.SQL_RAW ? "Raw" : "View");
 let input = computed(() => props.cell.input);
 let limit = computed(() => props.cell.limit);
+let executionTime = ref(null);
 
 onMounted(() => {
   console.log("Mounted: ", props.cell.input);
@@ -172,12 +183,13 @@ async function onRequest(params: any) {
   box-shadow: 1px 2px 3px 2px var(--theme-color-shadow);
   display: grid;
   grid-template-columns: minmax(auto, 1fr) minmax(0, 10fr);
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   height: auto;
   position: relative;
   grid-template-areas:
     'sidebar console'
-    'table table';
+    'table table'
+    'note note';
 
   .cell-sidebar {
     grid-area: sidebar;
@@ -257,6 +269,15 @@ async function onRequest(params: any) {
 
   .hidden {
     display: none;
+  }
+
+  .note {
+    font-size: 12px;
+    padding: 5px 0 1px 8px;
+    color: rgb(var(--theme-color-background));
+    background-color: rgb(var(--theme-color-header));
+    width: 100%;
+    grid-area: note;
   }
 
 }

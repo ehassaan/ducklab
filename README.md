@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> In-browser data analysis using SQL | Powered by duckdb-wasm
+<p align="center"> In-browser interactive SQL Notebooks | Powered by duckdb-wasm
     <br> 
 </p>
 

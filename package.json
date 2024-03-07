@@ -17,7 +17,7 @@
     "wasm"
   ],
   "dependencies": {
-    "@duckdb/duckdb-wasm": "1.28.1-dev99.0",
+    "@duckdb/duckdb-wasm": "1.28.1-dev106.0",
     "@mdi/font": "7.0.96",
     "@mdi/js": "^7.3.67",
     "@vueuse/core": "^10.2.1",

@@ -1,8 +1,5 @@
 <template>
     <div class="page-container">
-        <div class="tabs">
-            <div class="tab">{{ notebookStore.currFile?.name }} {{ notebookStore.unsavedChanges ? '*' : '' }}</div>
-        </div>
         <div class="cells">
             <v-btn class="toolbar-btn" @click="newCell()" color="primary" size="sm" outline rounded>
                 <v-tooltip activator="parent" top>New cell</v-tooltip>
@@ -76,22 +73,6 @@ function deleteCell(cell: NotebookCell) {
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
-
-    .tabs {
-        padding: 2px;
-        background-color: rgb(var(--theme-color-tabs-bg));
-
-        .tab {
-            padding: 0 5px 0 5px;
-            font-size: 14px;
-            color: rgb(var(--theme-color-tabs-text));
-            border-right: 1px solid rgb(var(--theme-color-tabs-text));
-            max-width: 120px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-    }
 
     .cells {
         display: flex;
