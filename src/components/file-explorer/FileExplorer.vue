@@ -17,6 +17,10 @@
           <v-icon icon="$folder"></v-icon>
           <v-tooltip activator="parent" top>Open Folder</v-tooltip>
         </v-btn>
+        <v-btn class="toolbar-btn" @click="refresh" color="primary" size="sm" outline dense>
+          <v-icon icon="$refresh"></v-icon>
+          <v-tooltip activator="parent" top>Refresh</v-tooltip>
+        </v-btn>
         <!-- <v-btn @click="() => onEvent('download')" color="primary" :disable="!selectedAny" size="sm" outline dense>
         <v-icon name="mdi-download"></v-icon>
         <v-tooltip activator="parent" top>Download</v-tooltip>
@@ -33,28 +37,37 @@
         <v-icon name="mdi-content-paste"></v-icon>
         <v-tooltip activator="parent" top>Paste</v-tooltip>
       </v-btn> -->
-        <v-btn class="toolbar-btn" @click="() => onToolbarAction('remove')" color="black" :disabled="!selectedAny"
-          size="sm" outline dense>
+        <v-spacer class="hspacer"></v-spacer>
+        <v-btn class="toolbar-btn delete-btn" @click="() => onToolbarAction('remove')" color="black"
+          :disabled="!selectedAny" size="sm" outline dense>
           <v-icon icon="$delete"></v-icon>
           <v-tooltip activator="parent" top>Detach</v-tooltip>
         </v-btn>
       </div>
 
-      <v-spacer class="spacer"></v-spacer>
+      <v-spacer class="vspacer"></v-spacer>
 
       <div class="drop-section">
+        <v-progress-circular indeterminate class="loading" v-if="loading"></v-progress-circular>
+
         <div ref="dropZoneRef" class="dropzone">
           <div v-if="isOverDropZone" class="drop-overlay"></div>
 
-          <div class="filelist">
+          <div class="filelist" v-if="!loading">
             <NestedListItem @select="onSelect" :selectable="true" v-if="storageStore.root" :file="storageStore.root"
               @prompt-permission="requestPermission" @open-code="f => emit('open-code', f)"></NestedListItem>
           </div>
         </div>
       </div>
-      <v-spacer class="spacer"></v-spacer>
+      <v-spacer class="vspacer"></v-spacer>
     </div>
-    <v-snackbar v-model="showError" :timeout="6000">{{ error }}</v-snackbar>
+    <v-snackbar v-model="showError" :timeout="-1" color="primary">{{ error }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="showError = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -78,12 +91,10 @@ let emit = defineEmits([
   'open-code'
 ]);
 
-let props = defineProps({
-  files: {
-    type: Object as PropType<FileSystemReference[]>,
-    required: true
-  }
-});
+// let props = defineProps({
+//   loading: Boolean
+// })
+
 let storageStore = useStorageStore();
 
 let selected = ref<{ [key: string]: boolean }>({});
@@ -94,6 +105,7 @@ let dropZoneRef = ref();
 let cwd = ref<FileSystemReference>();
 let { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 let selectedAny = computed(() => Object.values(selected.value).reduce((x, y) => x || y, false));
+let loading = ref(false);
 
 onMounted(async () => {
   cwd.value = storageStore.root;
@@ -101,18 +113,23 @@ onMounted(async () => {
   showError.value = !window.showDirectoryPicker;
   error.value = constants.ERROR_FS_API_NOT_SUPPORTED;
 
-  setInterval(async () => {
-    await storageStore.refresh();
-    emit("import", storageStore.root);
-  }, 10000);
+  await refresh();
+
 });
 
-watchEffect(() => {
-  console.log("watching")
-  for (let fileRef of props.files) {
-    selected.value[fileRef.path] = false;
+async function refresh() {
+  loading.value = true;
+  try {
+    await storageStore.refresh();
+    emit("import", storageStore.root);
   }
-});
+  catch (err) {
+    console.log("Failed to refresh: ", err);
+  }
+  finally {
+    loading.value = false;
+  }
+}
 
 
 async function openFile() {
@@ -203,17 +220,32 @@ async function requestPermission(file: FileSystemReference) {
   flex-direction: column;
   height: 100%;
   padding: 8px;
-  overflow: auto;
+  overflow: hidden;
 
-  .spacer {
-    border-bottom: solid rbg(var(--theme-color-border)) 1px;
+  .loading {
     margin: 8px 0 8px 0;
+    align-self: center;
+  }
+
+  .vspacer {
+    border-bottom: solid rgb(var(--theme-color-border)) 2px;
+    margin: 8px 0 0px 0;
     width: 100%;
+    flex: 0;
+  }
+
+  .hspacer {
+    border-left: solid rgb(var(--theme-color-border)) 2px;
+    margin: 0 8px 8px 8px;
+    height: 100%;
     flex: 0;
   }
 
   .drop-section {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
 
     .dropzone {
       height: 100%;
@@ -252,8 +284,16 @@ async function requestPermission(file: FileSystemReference) {
   }
 
   .toolbar {
+    display: flex;
+    flex-direction: row;
+    margin: 8px 2px 0 2px;
+
     .toolbar-btn {
-      margin: 8px 2px 2px 2px;
+      margin: 0 2px 2px 0;
+    }
+
+    .delete-btn {
+      // margin-left: auto;
     }
   }
 

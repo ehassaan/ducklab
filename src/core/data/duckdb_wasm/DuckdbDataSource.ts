@@ -29,8 +29,11 @@ export class DuckdbDataSource extends TabularDataSource {
     };
   }
 
-  public async init() {
-    this.db = await initDuckdb()
+  public async _init() {
+    console.log("Init duckdb");
+    const db = await initDuckdb();
+    console.log("Init duckdb: ", db);
+    return db;
   }
 
   public async test(): Promise<void> {
@@ -42,8 +45,7 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   public async connect(): Promise<void> {
-    if (!this.db) await this.init();
-    if (!this.db) throw Error("db could not be initialized");
+    if (!this.db) this.db = await this._init();
     this._conn = await this.db.connect();
     if (!this._conn) throw Error("duckdb: Failed to connect");
     await this.test();
@@ -98,7 +100,7 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   public async reset() {
-    if (!this.db) throw Error("db is not initialized correctly");
+    if (!this.db) return;
     await this.db.dropFiles();
   }
 

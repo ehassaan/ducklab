@@ -42,10 +42,17 @@
 
     <div class="note">
       <p v-if="rows.length === limit">Showing first {{ rows.length }} rows only</p>
-      <p v-if="executionTime">Executed in {{ executionTime }}s</p>
+      <p v-if="executionTime" class="execution-time">Executed in {{ executionTime }}s</p>
     </div>
 
-    <v-snackbar v-model="showError" :timeout="4000">{{ error }}</v-snackbar>
+    <v-snackbar v-model="showError" :timeout="-1" color="primary">{{ error }}
+
+      <template v-slot:actions>
+        <v-btn variant="text" @click="showError = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -87,7 +94,7 @@ let keyMap: { [key: string]: boolean } = {};
 let cellType = computed(() => props.cell.type === CellType.SQL_RAW ? "Raw" : "View");
 let input = computed(() => props.cell.input);
 let limit = computed(() => props.cell.limit);
-let executionTime = ref(null);
+let executionTime = ref<number | null>(null);
 
 onMounted(() => {
   console.log("Mounted: ", props.cell.input);
@@ -126,7 +133,10 @@ async function onFocusOut() {
 
 async function execute() {
   console.log("Running: ", props.cell.input);
+  executionTime.value = null;
+  let startDt = Date.now();
   await fetchResults();
+  executionTime.value = (Date.now() - startDt) / 1000;
 }
 
 async function fetchResults() {
@@ -273,11 +283,17 @@ async function onRequest(params: any) {
 
   .note {
     font-size: 12px;
-    padding: 5px 0 1px 8px;
+    padding: 5px 8px 1px 8px;
     color: rgb(var(--theme-color-background));
     background-color: rgb(var(--theme-color-header));
     width: 100%;
     grid-area: note;
+    display: flex;
+    flex-direction: row;
+
+    .execution-time {
+      margin-left: auto;
+    }
   }
 
 }

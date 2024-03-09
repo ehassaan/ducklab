@@ -18,10 +18,14 @@ const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
 export async function initDuckdb() {
   // Select a bundle based on browser checks
   const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
+  console.log("Bundle selected");
   // Instantiate the asynchronus version of DuckDB-wasm
   const worker = new Worker(bundle.mainWorker!);
   const logger = new duckdb.ConsoleLogger();
   const db = new duckdb.AsyncDuckDB(logger, worker);
+  console.log("instantiating");
+
   await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  console.log("Instance")
   return db;
 }

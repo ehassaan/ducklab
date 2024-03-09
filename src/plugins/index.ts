@@ -15,7 +15,8 @@ import { registerMonaco } from './monaco'
 import type { App } from 'vue'
 
 export function registerPlugins(app: App) {
-  loadFonts()
+  loadFonts();
+
   app
     .use(vuetify)
     .use(router)

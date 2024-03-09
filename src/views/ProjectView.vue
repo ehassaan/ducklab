@@ -1,9 +1,10 @@
-
 <template>
   <div class="project-container">
     <Splitpanes class="splitpanes">
       <pane min-size="1" size="22" class="split-pane">
-        <FileExplorer :files="allFiles" class="file-explorer" @import="onImport" @remove="onRemove" @save="onSave"
+        <v-progress-circular indeterminate class="loading" v-if="loading"></v-progress-circular>
+
+        <FileExplorer v-if="!loading" class="file-explorer" @import="onImport" @remove="onRemove" @save="onSave"
           @open-code="openCode"></FileExplorer>
       </pane>
       <Pane class="split-pane" min-size="40">
@@ -16,6 +17,7 @@
     <div class="scrollbar"></div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import FileExplorer from '@/components/file-explorer/FileExplorer.vue';
 import { ref } from 'vue';
@@ -28,10 +30,10 @@ import { Splitpanes, Pane } from 'splitpanes';
 import { useNotebookStore } from '@/store/notebook';
 import 'splitpanes/dist/splitpanes.css';
 
-let allFiles = ref<FileSystemReference[]>([]);
 let duck: DuckdbDataSource;
 let storageStore = useStorageStore();
 let notebookStore = useNotebookStore();
+let loading = ref(false);
 
 onBeforeMount(async () => {
   duck = new DuckdbDataSource("default", {
@@ -40,7 +42,22 @@ onBeforeMount(async () => {
     rawLimit: 1000,
     extensions: []
   })
-  await duck.connect();
+  loading.value = true;
+  try {
+    await duck.connect();
+  }
+  catch (err) {
+    console.log(err);
+  }
+  console.log("Db initialized: ", duck.db);
+  loading.value = false;
+
+  window.addEventListener('beforeunload', (event) => {
+    if (notebookStore.unsavedChanges) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  });
 });
 
 async function onRemove(files: FileSystemReference[]) {
@@ -65,6 +82,7 @@ async function onSave() {
 }
 
 </script>
+
 <style lang="less" scoped>
 .project-container {
   display: flex;
@@ -82,6 +100,10 @@ async function onSave() {
   flex: 3.5;
   // border-left: 2px solid black;
   // border-left: 1px solid var(--theme-color-border);
+}
+
+.loading {
+  margin: 8px auto 8px auto;
 }
 
 .splitpanes :deep(.splitpanes__splitter) {
