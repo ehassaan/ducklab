@@ -25,7 +25,6 @@ export class NotebookCell {
     }
 
     setInput(input: string) {
-        console.log(this, input);
         this.input = input;
         if (this.type === CellType.SQL_VIEW) {
             this.dataset.setSourceQuery(input);

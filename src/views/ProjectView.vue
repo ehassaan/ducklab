@@ -49,7 +49,6 @@ onBeforeMount(async () => {
   catch (err) {
     console.log(err);
   }
-  console.log("Db initialized: ", duck.db);
   loading.value = false;
 
   window.addEventListener('beforeunload', (event) => {

@@ -178,13 +178,13 @@ async function openDir() {
 }
 
 function onToolbarAction(event: 'remove' | 'copy' | 'cut' | 'download') {
-  let files = [];
-  for (let fil in selected.value) {
-    if (selected.value[fil]) {
-      let matches = props.files.filter(f => f.path === fil);
-      if (matches && matches.length > 0) files.push(matches[0]);
-    }
-  }
+  const files: any[] = [];
+  // for (let fil in selected.value) {
+  //   if (selected.value[fil]) {
+  //     let matches = files.filter(f => f.path === fil);
+  //     if (matches && matches.length > 0) files.push(matches[0]);
+  //   }
+  // }
   emit(event, files);
 }
 
