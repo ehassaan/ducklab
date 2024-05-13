@@ -1,8 +1,8 @@
 <template>
   <div class="table-container">
     <v-data-table-server :fixed-header="true" :items-per-page="itemsPerPage" :headers="columns" :items="props.rows"
-      :items-length="1000" hide-actions :loading="loading" fixed-footer class="result" item-value="name" density="compact"
-      :hide-no-data="true" @update:options="onRequest">
+      :items-length="1000" hide-actions :loading="loading" fixed-footer class="result" item-value="name"
+      density="compact" :hide-no-data="true" @update:options="onRequest">
 
       <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
         <tr class="header-row">
@@ -23,7 +23,7 @@
 
       <template v-slot:item="{ item }">
         <tr>
-          <td v-for="col in columns" :key="col.key" class="table-cell">{{ clamp(item[col.key]) }}</td>
+          <td v-for="col in columns" :key="col.key" class="table-cell">{{ format(item[col.key], col) }}</td>
         </tr>
       </template>
       <template v-slot:bottom>
@@ -68,27 +68,25 @@ let initialLoad = ref(true);
 
 let columns = computed(() => props.columns.map(col => {
   return {
+    ...col,
     key: col.key,
     title: col.label,
   };
 }));
 
-let rows = computed(() => props.rows.map((row, index) => {
-  return {
-    key: index,
-    index: index,
-    columns: row
-  }
-}));
-
 const itemsPerPage = ref(100);
 
-function clamp(text: string) {
-  if (!text) return text;
-  if (text.length > props.maxTextLength) {
-    return text.slice(0, props.maxTextLength) + '...';
+function format(value: any, col: TableColumn) {
+  console.log("DAtetime", col, value);
+  if (col.type === "datetime") {
+    return value.toLocaleString();
   }
-  return text;
+  value = new String(value);
+  if (!value) return value;
+  if (value.length > props.maxTextLength) {
+    return value.slice(0, props.maxTextLength) + '...';
+  }
+  return value;
 }
 
 function onRequest(params: any) {
@@ -140,6 +138,7 @@ function onRequest(params: any) {
   .header-row {
     background-color: rgb(var(--theme-color-header));
   }
+
   .header {
     font-weight: bold;
     cursor: pointer;

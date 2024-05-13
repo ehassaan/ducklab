@@ -282,7 +282,7 @@ async function onRequest(params: any) {
   }
 
   .note {
-    font-size: 12px;
+    font-size: 10px;
     padding: 5px 8px 1px 8px;
     color: rgb(var(--theme-color-background));
     background-color: rgb(var(--theme-color-header));
