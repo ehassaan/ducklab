@@ -14,7 +14,7 @@ export const useNotebookStore = defineStore('notebook', () => {
   const cells = ref<NotebookCell[]>([]);
   const dsIndex = ref(1);
   const dataSource = ref<DuckdbDataSource>();
-  const unsavedChanges = ref(true);
+  const unsavedChanges = ref(false);
   const currFile = ref<FileSystemReference>({
     name: 'untitled.sql',
     children: [],
