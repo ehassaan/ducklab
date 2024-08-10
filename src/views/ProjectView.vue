@@ -102,7 +102,8 @@ async function onSave() {
 }
 
 .loading {
-  margin: 8px auto 8px auto;
+  display: block;
+  margin: 12px auto 8px auto;
 }
 
 .splitpanes :deep(.splitpanes__splitter) {
