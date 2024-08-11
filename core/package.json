@@ -1,0 +1,16 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "build:iife": "rollup src/main.ts --file dist/iife/index.ts --format iife",
+    "build:cjs": "rollup src/main.ts --file dist/cjs/index.ts --format cjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "rollup": "^4.20.0",
+    "typescript": "^5.5.4"
+  }
+}
