@@ -12,5 +12,9 @@
   "devDependencies": {
     "rollup": "^4.20.0",
     "typescript": "^5.5.4"
+  },
+  "optionalDependencies": {
+    "@duckdb/duckdb-wasm": "1.28.1-dev106.0",
+    "duckdb-async": "^1.0.0",
   }
 }
