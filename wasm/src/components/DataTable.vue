@@ -77,7 +77,6 @@ let columns = computed(() => props.columns.map(col => {
 const itemsPerPage = ref(100);
 
 function format(value: any, col: TableColumn) {
-  console.log("DAtetime", col, value);
   if (col.type === "datetime") {
     return value.toLocaleString();
   }

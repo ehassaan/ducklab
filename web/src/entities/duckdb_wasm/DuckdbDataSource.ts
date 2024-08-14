@@ -1,18 +1,20 @@
-import { TabularDataSource, type ITabularExecuteOpts } from '../../entities/tabular/TabularDataSource';
-import { SqlTranslator } from '../../translator/sql/SqlTranslator';
-import type { ITableInfo } from '../../entities/tabular/ITableInfo';
+import { TabularDataSource, type ITabularExecuteOpts } from '@/core/entities/tabular/TabularDataSource';
+import { SqlTranslator } from '@ducklab/core/translator/sql/SqlTranslator';
+import type { ITableInfo } from '@/core/entities/tabular/ITableInfo';
+import { initDuckdb } from "./init";
+import { DuckDBDataProtocol, AsyncDuckDBConnection, AsyncDuckDB } from '@duckdb/duckdb-wasm';
 import * as arrow from 'apache-arrow';
-import type { IFieldInfo } from '../../entities/tabular/IFieldInfo';
-import type { ICalculatedColumn } from '../../language/IExpression';
-import type { ITabularResultSet } from '../../entities/tabular/ITabularResultSet';
-import { IFetchQuery } from '../../language/IFetchQuery';
-import { Database } from "duckdb-async";
-
+import type { FileSystemReference } from '@/entities/FileSystemReference';
+import type { IFieldInfo } from '@/core/entities/tabular/IFieldInfo';
+import type { ICalculatedColumn } from '@/core/language/IExpression';
+import type { ITabularResultSet } from '@/core/entities/tabular/ITabularResultSet';
+import { IFetchQuery } from '@/core/language/IFetchQuery';
 
 export class DuckdbDataSource extends TabularDataSource {
   private _tr: SqlTranslator;
   public readonly opts: Required<DuckOptions>;
-  private _db: Database | null = null;
+  private _conn: AsyncDuckDBConnection | null = null;
+  private db: AsyncDuckDB | null = null;
 
   constructor(name: string, duckOpts: DuckOptions) {
     super(name);
@@ -23,20 +25,19 @@ export class DuckdbDataSource extends TabularDataSource {
       previewLimit: 1000,
       rawLimit: -1,
       extensions: [],
-      dbPath: "./temp_duckdb.db",
       ...duckOpts,
     };
   }
 
   public async _init() {
     console.log("Init duckdb");
-    const db = await Database.create(":memory:");
+    const db = await initDuckdb();
     console.log("Init duckdb: ", db);
     return db;
   }
 
   public async test(): Promise<void> {
-    if (!this._db) {
+    if (!this._conn) {
       await this.connect();
       return;
     }
@@ -44,7 +45,9 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   public async connect(): Promise<void> {
-    if (!this._db) this._db = await this._init();
+    if (!this.db) this.db = await this._init();
+    this._conn = await this.db.connect();
+    if (!this._conn) throw Error("duckdb: Failed to connect");
     await this.test();
     await this.loadExtensions();
   }
@@ -56,16 +59,59 @@ export class DuckdbDataSource extends TabularDataSource {
     }
   }
 
-  private async executeNative(query: string): Promise<ITabularResultSet> {
-    if (!this._db) await this.connect();
-    if (!this._db) throw Error("Database could not be initialized");
-    const res = await this._db.all(query);
-    const transformed = this.transformResultset(res);
-    return transformed;
+  private async *executeNativeBatch(query: string): AsyncGenerator<ITabularResultSet> {
+    if (!this._conn) await this.connect();
+    if (!this._conn) return;
+    const res = await this._conn.query(query);
+    // let count = 0;
+    for await (const batch of res.batches) {
+      const res = this.transformBatch(batch);
+      // if (count + res.values.length > this.opts.batchSize) {
+      //   console.log("Slicing: ", count, this.opts.batchSize, batch, res);
+      //   res.values = res.values.slice(0, this.opts.batchSize - count);
+      // }
+      // count = count + res.values.length;
+      yield res;
+    }
+  }
+
+  public async importFile(file: FileSystemReference) {
+    if (!this.db) throw Error("db is not initialized correctly");
+    if (file.type === "folder") {
+      for (const fil of file.children) {
+        await this.importFile(fil);
+      }
+      return;
+    }
+    else if (!file.handle) return;
+
+    // return if file type is not supported
+    else if (this.opts.supportedTypes.filter(t => file.name.toLowerCase().endsWith(t)).length === 0) {
+      console.log(`Skipping file: ${file.path}`);
+    }
+    else {
+      await this.db.registerFileHandle(file.path, await file.handle.getFile(), DuckDBDataProtocol.BROWSER_FILEREADER, true);
+    }
+  }
+
+  public async dropFile(file: FileSystemReference) {
+    if (!this.db) throw Error("db is not initialized correctly");
+    await this.db.dropFile(file.path);
   }
 
   public async reset() {
-    if (!this._db) return;
+    if (!this.db) return;
+    await this.db.dropFiles();
+  }
+
+  public async listFiles() {
+    if (!this.db) throw Error("db is not initialized correctly");
+    return await this.db.globFiles('*');
+  }
+
+  public async importRemoteFile(url: string) {
+    if (!this.db) throw Error("db is not initialized correctly");
+    await this.db.registerFileURL(url, url, DuckDBDataProtocol.HTTP, false);
   }
 
 
@@ -78,22 +124,22 @@ export class DuckdbDataSource extends TabularDataSource {
     return "string";
   }
 
-  private transformResultset(resultset: any): ITabularResultSet {
+  private transformBatch(batch: any) {
     const items: any[] = [];
     const columns: IFieldInfo[] = [];
-    for (const col of resultset.schema.fields) {
+    for (const col of batch.schema.fields) {
       columns.push({
         name: col.name,
         type: this.getJsonType(col.type),
       });
     }
-    for (let i = 0; i < resultset.numRows; i++) {
-      items.push({ _index: i, ...resultset.get(i).toJSON() });
+    for (let i = 0; i < batch.numRows; i++) {
+      items.push({ _index: i, ...batch.get(i).toJSON() });
     }
     return {
       columns: columns,
       values: items,
-    }
+    };
   }
 
   private addLimit(rawQuery: string, limit: number, offset: number) {
@@ -110,15 +156,20 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   public async queryNative(query: string, limit?: number) {
-    const result = await this.executeNative(query)
-
-    if (limit != null && limit >= 0 && result.values.length >= limit) {
-      result.values = result.values.slice(0, limit);
+    let values: any[] = [];
+    let columns: IFieldInfo[] = [];
+    for await (const batch of this.executeNativeBatch(query)) {
+      values = values.concat(batch.values);
+      columns = batch.columns;
+      if (limit != null && limit >= 0 && values.length >= limit) {
+        values = values.slice(0, limit);
+        break;
+      }
     }
     return {
-      columns: result.columns,
-      values: result.values
-    }
+      columns,
+      values
+    };
   }
 
   public async query(params: ITabularExecuteOpts, limit?: number, offset?: number) {
@@ -148,7 +199,7 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   protected createDatasets(data: ITabularResultSet): ITableInfo[] {
-    const infos: { [key: string]: ITableInfo } = {};
+    const infos: { [key: string]: ITableInfo; } = {};
     for (const col of data.values) {
       if (!(col.table in infos)) {
         infos[col.table] = {
@@ -171,10 +222,6 @@ export class DuckdbDataSource extends TabularDataSource {
     }
     return Object.values(infos);
   }
-
-  dispose() {
-    this._db?.close();
-  }
 }
 
 export interface DuckOptions {
@@ -183,5 +230,4 @@ export interface DuckOptions {
   supportedTypes?: string[];
   previewLimit?: number;
   rawLimit?: number;
-  dbPath?: string;
 }

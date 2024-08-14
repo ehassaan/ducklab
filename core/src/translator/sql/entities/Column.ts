@@ -1,5 +1,5 @@
 
-import type { ICalculatedColumn, IExpression, IPlainField } from '@/core/language/IExpression';
+import type { ICalculatedColumn, IExpression, IPlainField } from '@/language/IExpression';
 import type { ISqlConfig } from '../ISqlConfig';
 import { CalculatedColumn } from './CalculatedColumn';
 import { PlainColumn } from './PlainColumn';

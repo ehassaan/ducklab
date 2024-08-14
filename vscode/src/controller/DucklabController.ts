@@ -1,6 +1,6 @@
 
 import * as vscode from "vscode";
-import { DuckdbDataSource } from "@/core/data/duckdb/DuckdbDataSource";
+import { DuckdbDataSource } from "@/data/duckdb/DuckdbDataSource";
 
 
 export class DucklabController implements vscode.NotebookController {
@@ -64,7 +64,7 @@ export class DucklabController implements vscode.NotebookController {
         const results = await this.ds.queryNative(cell.document.getText());
 
         // let text = `<table><thead>${results.columns.map(c => '<th>' + c + '</th>').join("\n")}</thead>
-        
+
         // </table>`;
 
         // for (const row of results.values) {

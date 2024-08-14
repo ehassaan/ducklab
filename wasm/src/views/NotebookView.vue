@@ -20,8 +20,8 @@
 </template>
 <script lang="ts" setup>
 
-import { TabularDataset } from "@/core/entities/tabular/TabularDataset";
-import { DuckdbDataSource } from "@/core/data/duckdb_wasm/DuckdbDataSource";
+import { TabularDataset } from "@ducklab/core";
+import { DuckdbDataSource } from "@/entities/duckdb_wasm/DuckdbDataSource";
 import { useNotebookStore } from "@/store/notebook";
 import { onMounted } from "vue";
 import CellComponent from "@/components/CellComponent.vue";

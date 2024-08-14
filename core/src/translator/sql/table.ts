@@ -1,4 +1,4 @@
-import type { IEntity } from '@/core/language/IEntity';
+import type { IEntity } from '@/language/IEntity';
 import type { ISqlConfig } from './ISqlConfig';
 
 

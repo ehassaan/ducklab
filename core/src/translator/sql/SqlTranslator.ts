@@ -2,18 +2,18 @@
 import { prepareTable } from './table';
 import { encloseParenthesis, quoteDouble } from './helpers/enclose_fields';
 import { dotCombine } from './helpers/combine';
-import { PlainColumn } from './entities/PlainColumn';
-import { CalculatedColumn } from './entities/CalculatedColumn';
-import { FilterGroup } from './entities/FilterGroup';
-import { Pagination } from './entities/Pagination';
+import { PlainColumn } from '@/translator/sql/entities/PlainColumn';
+import { CalculatedColumn } from '@/translator/sql/entities/CalculatedColumn';
+import { FilterGroup } from '@/translator/sql/entities/FilterGroup';
+import { Pagination } from '@/translator/sql/entities/Pagination';
 import type { ISqlConfig } from './ISqlConfig';
-import type { IQueryTranslator } from '@/core/entities/IQueryTranslator';
-import type { IFilterGroup } from '@/core/language/IFilter';
-import type { ICalculatedColumn, IExpression, IPlainField } from '@/core/language/IExpression';
-import type { IFetchQuery } from '@/core/language/IFetchQuery';
-import type { IEntity } from '@/core/language/IEntity';
-import { IRawQuery } from '@/core/language/IRawQuery';
-import { IOrderBy } from '@/core/language/IOrderBy';
+import type { IQueryTranslator } from '@/entities/IQueryTranslator';
+import type { IFilterGroup } from '@/language/IFilter';
+import type { ICalculatedColumn, IExpression, IPlainField } from '@/language/IExpression';
+import type { IFetchQuery } from '@/language/IFetchQuery';
+import type { IEntity } from '@/language/IEntity';
+import { IRawQuery } from '@/language/IRawQuery';
+import { IOrderBy } from '@/language/IOrderBy';
 
 export class SqlTranslator implements IQueryTranslator {
   cfg: ISqlConfig;
@@ -95,16 +95,16 @@ export class SqlTranslator implements IQueryTranslator {
 
   prepareRawQuery(query: IRawQuery) {
     let q = `(${query.rawQuery})`;
-    if (query.alias) q += ` ${this.cfg.AS} ${this.cfg.quote(query.alias)}`
-    return q
+    if (query.alias) q += ` ${this.cfg.AS} ${this.cfg.quote(query.alias)}`;
+    return q;
   }
 
   prepareOrderBy(orderby: IOrderBy[] | undefined): string | null {
     if (!orderby || orderby.length === 0) return null;
     let q = '';
-    console.log(orderby)
+    console.log(orderby);
     for (const ord of orderby) {
-      q += ` ${this.prepareColumn(ord.column)} ${ord.direction}`
+      q += ` ${this.prepareColumn(ord.column)} ${ord.direction}`;
     }
     return q.trim();
   }

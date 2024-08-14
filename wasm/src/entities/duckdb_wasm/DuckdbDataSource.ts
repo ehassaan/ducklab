@@ -1,14 +1,17 @@
-import { TabularDataSource, type ITabularExecuteOpts } from '@/core/entities/tabular/TabularDataSource';
-import { SqlTranslator } from '@/core/translator/sql/SqlTranslator';
-import type { ITableInfo } from '@/core/entities/tabular/ITableInfo';
+import {
+  TabularDataSource,
+  ITabularExecuteOpts,
+  SqlTranslator,
+  ITableInfo,
+  IFieldInfo,
+  ICalculatedColumn,
+  ITabularResultSet,
+  IFetchQuery
+} from '@ducklab/core';
 import { initDuckdb } from "./init";
 import { DuckDBDataProtocol, AsyncDuckDBConnection, AsyncDuckDB } from '@duckdb/duckdb-wasm';
 import * as arrow from 'apache-arrow';
 import type { FileSystemReference } from '@/entities/FileSystemReference';
-import type { IFieldInfo } from '@/core/entities/tabular/IFieldInfo';
-import type { ICalculatedColumn } from '@/core/language/IExpression';
-import type { ITabularResultSet } from '@/core/entities/tabular/ITabularResultSet';
-import { IFetchQuery } from '@/core/language/IFetchQuery';
 
 export class DuckdbDataSource extends TabularDataSource {
   private _tr: SqlTranslator;
@@ -18,6 +21,7 @@ export class DuckdbDataSource extends TabularDataSource {
 
   constructor(name: string, duckOpts: DuckOptions) {
     super(name);
+    console.log("Translator: ", SqlTranslator, this);
     this._tr = new SqlTranslator();
     this.opts = {
       supportedTypes: [".csv", ".parquet"],
@@ -62,7 +66,9 @@ export class DuckdbDataSource extends TabularDataSource {
   private async *executeNativeBatch(query: string): AsyncGenerator<ITabularResultSet> {
     if (!this._conn) await this.connect();
     if (!this._conn) return;
+    console.log("Raw query: ", query);
     const res = await this._conn.query(query);
+    console.log("Raw result: ", res);
     // let count = 0;
     for await (const batch of res.batches) {
       const res = this.transformBatch(batch);
@@ -139,7 +145,7 @@ export class DuckdbDataSource extends TabularDataSource {
     return {
       columns: columns,
       values: items,
-    }
+    };
   }
 
   private addLimit(rawQuery: string, limit: number, offset: number) {
@@ -169,7 +175,7 @@ export class DuckdbDataSource extends TabularDataSource {
     return {
       columns,
       values
-    }
+    };
   }
 
   public async query(params: ITabularExecuteOpts, limit?: number, offset?: number) {
@@ -199,7 +205,7 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   protected createDatasets(data: ITabularResultSet): ITableInfo[] {
-    const infos: { [key: string]: ITableInfo } = {};
+    const infos: { [key: string]: ITableInfo; } = {};
     for (const col of data.values) {
       if (!(col.table in infos)) {
         infos[col.table] = {

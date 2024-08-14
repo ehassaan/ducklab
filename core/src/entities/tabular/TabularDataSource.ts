@@ -1,4 +1,4 @@
-import type { IFetchQuery } from '@/core/language/IFetchQuery';
+import type { IFetchQuery } from '@/language/IFetchQuery';
 import type { ITableInfo } from './ITableInfo';
 import type { ITabularResultSet } from './ITabularResultSet';
 

@@ -1,5 +1,5 @@
-import type { IExpression } from '../../../language/IExpression';
-import { ComparisonOp, LogicalOp, type IFilterGroup } from '../../../language/IFilter';
+import type { IExpression } from '@/language/IExpression';
+import { ComparisonOp, LogicalOp, type IFilterGroup } from '@/language/IFilter';
 import type { ISerializable } from '../ISerializable';
 import type { ISqlConfig } from '../ISqlConfig';
 import { parseColumn } from './Column';

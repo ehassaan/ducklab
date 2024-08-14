@@ -1,20 +1,28 @@
 {
-  "name": "core",
-  "version": "1.0.0",
-  "main": "index.ts",
+  "name": "@ducklab/core",
+  "version": "0.3.4",
   "scripts": {
-    "build:iife": "rollup src/main.ts --file dist/iife/index.ts --format iife",
-    "build:cjs": "rollup src/main.ts --file dist/cjs/index.ts --format cjs",
+    "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "index.js",
+  "types": "dist/index.d.ts",
   "author": "",
   "description": "",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
     "rollup": "^4.20.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-esbuild": "^6.1.1",
     "typescript": "^5.5.4"
   },
-  "optionalDependencies": {
-    "@duckdb/duckdb-wasm": "1.28.1-dev106.0",
-    "duckdb-async": "^1.0.0",
-  }
+  "dependencies": {}
 }

@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import FileExplorer from '@/components/file-explorer/FileExplorer.vue';
 import { ref } from 'vue';
-import { DuckdbDataSource } from '@/core/data/duckdb_wasm/DuckdbDataSource';
+import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 import NotebookView from './NotebookView.vue';
 import { onBeforeMount } from 'vue';
 import { FileSystemReference } from '@/entities/FileSystemReference';
@@ -69,7 +69,7 @@ async function openCode(file: FileSystemReference) {
 }
 
 async function onImport(file: FileSystemReference) {
-  console.log("Imported: ", file);
+  console.log("Importing: ", file);
 
   await duck.reset();
   await duck.importFile(file);

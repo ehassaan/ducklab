@@ -1,4 +1,4 @@
-import type { IPlainField } from '@/core/language/IExpression';
+import type { IPlainField } from '@/language/IExpression';
 import type { ISerializable } from '../ISerializable';
 import type { ISqlConfig } from '../ISqlConfig';
 

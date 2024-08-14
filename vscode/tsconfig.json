@@ -12,8 +12,8 @@
     "sourceMap": true,
     "strict": true /* enable all strict type-checking options */,
     "paths": {
-      "@/core/*": [
-        "../core/*"
+      "@/*": [
+        "./src/*"
       ]
     }
   }

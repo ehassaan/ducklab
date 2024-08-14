@@ -1,4 +1,4 @@
-import { ComparisonOp, type IFilter } from '../../language/IFilter';
+import { ComparisonOp, type IFilter } from '@/language/IFilter';
 import type { ISqlConfig } from './ISqlConfig';
 
 export function prepareFilters(filters: IFilter[], cfg: ISqlConfig, prepareCol: any) {

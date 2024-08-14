@@ -1,12 +1,11 @@
 // Utilities
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { DuckdbDataSource } from '@/core/data/duckdb_wasm/DuckdbDataSource';
-import { TabularDataset } from '@/core/entities/tabular/TabularDataset';
-import { IFetchQuery } from '@/core/language/IFetchQuery';
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { TabularDataset, IFetchQuery } from '@ducklab/core';
 import { CellType, NotebookCell } from '@/entities/NotebookCell';
 import { FileSystemReference } from '@/entities/FileSystemReference';
 import { createReference } from './storage';
+import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 
 
 export const useNotebookStore = defineStore('notebook', () => {
@@ -135,7 +134,7 @@ export const useNotebookStore = defineStore('notebook', () => {
     setDataSource, createCell, renameDataset, deleteCell,
     getCell, load, exportToSql, save,
     cells, dataSource, unsavedChanges, currFile
-  }
+  };
 
 });
 
@@ -174,5 +173,5 @@ function parseCell(cellText: string) {
     query: query.slice(0, query.length - 1),
     name: parts[1].trim(),
     type: cellType
-  }
+  };
 }

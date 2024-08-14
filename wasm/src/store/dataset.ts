@@ -1,5 +1,4 @@
-import { ITabularResultSet } from "@/core/entities/tabular/ITabularResultSet";
-import { TabularDataset } from "@/core/entities/tabular/TabularDataset";
+import { ITabularResultSet, TabularDataset } from "@ducklab/core";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
@@ -16,6 +15,6 @@ export const useProjectStore = defineStore('dataset', () => {
 
     return {
         inputQuery, dataset, results, fetchData
-    }
+    };
 
 });

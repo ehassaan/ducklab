@@ -121,6 +121,7 @@ async function refresh() {
   loading.value = true;
   try {
     await storageStore.refresh();
+    if (!storageStore.root) return;
     emit("import", storageStore.root);
   }
   catch (err) {
