@@ -1,6 +1,6 @@
 
 import * as vscode from "vscode";
-import { DuckdbDataSource } from "@/data/duckdb/DuckdbDataSource";
+import { DuckdbDataSource } from '../data/duckdb/DuckdbDataSource';
 
 
 export class DucklabController implements vscode.NotebookController {

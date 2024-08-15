@@ -1,6 +1,6 @@
 {
   "name": "@ducklab/core",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,11 +18,10 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
     "rollup": "^4.20.0",
-    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.1",
-    "rollup-plugin-esbuild": "^6.1.1",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "@rollup/plugin-alias": "^5.1.0"
   },
   "dependencies": {}
 }

@@ -1,4 +1,4 @@
-import type { ICalculatedColumn } from '@/core/language/IExpression';
+import type { ICalculatedColumn } from '@/language/IExpression';
 import type { ISerializable } from '../ISerializable';
 import type { ISqlConfig } from '../ISqlConfig';
 

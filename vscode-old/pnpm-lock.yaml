@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ducklab/core':
-        specifier: ../core/ducklab-core-0.3.4.tgz
-        version: file:../core/ducklab-core-0.3.4.tgz
+        specifier: ../core/ducklab-core-0.3.5.tgz
+        version: file:../core/ducklab-core-0.3.5.tgz
       apache-arrow:
         specifier: ^12.0.0
         version: 12.0.1
@@ -64,9 +64,9 @@ packages:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
 
-  '@ducklab/core@file:../core/ducklab-core-0.3.4.tgz':
-    resolution: {integrity: sha512-qCIkE6SzAAAK6ixS1vcvzmXdiIy3u/JIUy2LpgKfxTsyagBvFdxoBcnPan35IrYUmHRUxKs3BdNFExLoj7YQug==, tarball: file:../core/ducklab-core-0.3.4.tgz}
-    version: 0.3.4
+  '@ducklab/core@file:../core/ducklab-core-0.3.5.tgz':
+    resolution: {integrity: sha512-q40nGDTUnL12VGL32I7vs4EJLGXmNKx8a9xdrOesAjVenmd52+gnUOgSsbxz/jUEqOk4iESl5z6/ZtgyJIhmxg==, tarball: file:../core/ducklab-core-0.3.5.tgz}
+    version: 0.3.5
 
   '@eslint-community/eslint-utils@4.4.0':
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -147,6 +147,15 @@ packages:
     resolution: {integrity: sha512-mJd2Z5TjYWq/ttPLLGqArdtnC74J6bOzg4rMDnN+p1xTacZ2yPRCk2y0oSWQtygLR9YVQXgOcONrwtnk3JupxQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     deprecated: This functionality has been moved to @npmcli/fs
+
+  '@rollup/plugin-alias@5.1.0':
+    resolution: {integrity: sha512-lpA3RZ9PdIG7qqhEfv79tBffNaoDuukFDrmhLqg9ifv99u/ehn+lOg30x2zmhf8AQqQUZaMk/B9fZraQ6/acDQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -1295,6 +1304,10 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
 
+  slash@4.0.0:
+    resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
+    engines: {node: '>=12'}
+
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
@@ -1552,7 +1565,11 @@ snapshots:
 
   '@discoveryjs/json-ext@0.5.7': {}
 
-  '@ducklab/core@file:../core/ducklab-core-0.3.4.tgz': {}
+  '@ducklab/core@file:../core/ducklab-core-0.3.5.tgz':
+    dependencies:
+      '@rollup/plugin-alias': 5.1.0
+    transitivePeerDependencies:
+      - rollup
 
   '@eslint-community/eslint-utils@4.4.0(eslint@8.57.0)':
     dependencies:
@@ -1649,6 +1666,10 @@ snapshots:
     dependencies:
       mkdirp: 1.0.4
       rimraf: 3.0.2
+
+  '@rollup/plugin-alias@5.1.0':
+    dependencies:
+      slash: 4.0.0
 
   '@tootallnate/once@2.0.0': {}
 
@@ -2857,6 +2878,8 @@ snapshots:
   signal-exit@3.0.7: {}
 
   slash@3.0.0: {}
+
+  slash@4.0.0: {}
 
   smart-buffer@4.2.0: {}
 
