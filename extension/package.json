@@ -1,6 +1,6 @@
 {
-  "name": "notebook-renderer-sample",
-  "displayName": "notebook-renderer-sample",
+  "name": "@ducklab/vscode",
+  "displayName": "Ducklab for VS Code",
   "description": "Example of a Notebook renderer (visualizer) for GitHub Issues Notebook that doesn't use any frontend frameworks.",
   "version": "0.0.1",
   "private": true,
@@ -21,10 +21,15 @@
     "vscode.sql",
     "vscode.python"
   ],
+  "main": "./dist/index.js",
+  "activationEvents": [
+    "onNotebook:ipynb-ducklab",
+    "onNotebook:isql"
+  ],
   "contributes": {
-    "languages": [
+    "languagesAsdf": [
       {
-        "id": "ducklab",
+        "id": "ducklab-lang",
         "aliases": [
           "Ducklab"
         ],
@@ -37,23 +42,32 @@
     ],
     "notebooks": [
       {
-        "type": "ducklab",
-        "displayName": "Ducklab",
+        "type": "isql",
+        "displayName": "Ducklab 1",
         "selector": [
           {
             "filenamePattern": "*.isql"
+          }
+        ]
+      },
+      {
+        "type": "ipynb-ducklab",
+        "displayName": "Ducklab",
+        "selector": [
+          {
+            "filenamePattern": "*.ipynb"
           }
         ]
       }
     ],
     "commands": [
       {
-        "title": "Toggle Debugging",
+        "title": "Toggle Debugging Ducklab",
         "command": "ducklab.toggleDebugging",
         "icon": "$(bug)"
       },
       {
-        "title": "Restart Kernel",
+        "title": "Restart Kernel Ducklab",
         "command": "ducklab.restartKernel",
         "icon": "$(refresh)"
       }
@@ -84,7 +98,7 @@
     ]
   },
   "devDependencies": {
-    "@ducklab/core": "../core/ducklab-core-0.3.5.tgz",
+    "@ducklab/core": "../core/ducklab-core-0.3.9.tgz",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-json": "^6.1.0",

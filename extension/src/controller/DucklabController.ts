@@ -6,12 +6,13 @@ import { DuckdbDataSource } from '../data/duckdb/DuckdbDataSource';
 export class DucklabController implements vscode.NotebookController {
 
     readonly id = 'ducklab-controller';
-    readonly notebookType = 'ducklab';
-    readonly supportedLanguages = ['sql'];
+    readonly notebookType = 'isql';
+    readonly supportedLanguages = ['sql', 'sql-view', 'python'];
     readonly label = 'My Notebook';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
     readonly supportsExecutionOrder?: boolean | undefined;
+
     onDidChangeSelectedNotebooks: vscode.Event<{ readonly notebook: vscode.NotebookDocument; readonly selected: boolean; }>;
 
     private readonly _controller: vscode.NotebookController;
@@ -25,6 +26,7 @@ export class DucklabController implements vscode.NotebookController {
             this.notebookType,
             this.label
         );
+        console.log("Initialized: ", this);
         this.ds = new DuckdbDataSource(this.id, {});
 
         this._controller.supportedLanguages = this.supportedLanguages;
@@ -35,6 +37,7 @@ export class DucklabController implements vscode.NotebookController {
 
     createNotebookCellExecution(cell: vscode.NotebookCell): vscode.NotebookCellExecution {
         return this._controller.createNotebookCellExecution(cell);
+        
     }
 
     executeHandler(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) {
@@ -62,7 +65,7 @@ export class DucklabController implements vscode.NotebookController {
         execution.start(Date.now()); // Keep track of elapsed time to execute cell.
 
         const results = await this.ds.queryNative(cell.document.getText());
-
+        console.log("results: ", results);
         // let text = `<table><thead>${results.columns.map(c => '<th>' + c + '</th>').join("\n")}</thead>
 
         // </table>`;
@@ -75,7 +78,7 @@ export class DucklabController implements vscode.NotebookController {
 
         execution.replaceOutput([
             new vscode.NotebookCellOutput([
-                vscode.NotebookCellOutputItem.json(results, "application/x-table")
+                vscode.NotebookCellOutputItem.json(results, "application/json")
             ],)
         ]);
         execution.end(true, Date.now());

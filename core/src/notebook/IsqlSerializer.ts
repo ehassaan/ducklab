@@ -51,18 +51,27 @@ export class IsqlSerializer implements INotebookSerializer {
     private parseCell(cellText: string) {
         let cellType = CellType.SQL_VIEW;
         const firstLine = cellText.split("\n")[0];
-        const parts = firstLine.slice(5).split("|");
-        console.log("Header: " + firstLine);
+        const parts = firstLine.split("|");
+        console.log("Header: " + firstLine, parts);
 
         if (parts.length < 2) throw Error("Cell identifiers are malformed");
+        switch (parts[0].trim().toUpperCase()) {
+            case CellType.SQL_RAW:
+                cellType = CellType.SQL_RAW;
+                break;
+            case CellType.MD:
+                cellType = CellType.MD;
+                break;
+            case CellType.TEXT:
+                cellType = CellType.TEXT;
+                break;
+            case CellType.SQL_VIEW:
+                cellType = CellType.SQL_VIEW;
+                break;
+            default:
+                throw Error("Cell identifiers are malformed");
+        }
 
-        if (parts[0].trim() == CellType.SQL_RAW) {
-            cellType = CellType.SQL_RAW;
-        }
-        else if (parts[0].trim() == CellType.SQL_VIEW) {
-            cellType = CellType.SQL_VIEW;
-        }
-        else throw Error("Cell identifiers are malformed");
 
         const content = cellText.slice(firstLine.length + 1);
         return {

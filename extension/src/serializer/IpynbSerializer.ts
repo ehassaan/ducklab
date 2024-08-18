@@ -11,6 +11,7 @@ interface RawNotebookCell {
 }
 
 export class IsqlSerializer implements vscode.NotebookSerializer {
+
   async deserializeNotebook(
     content: Uint8Array,
     _token: vscode.CancellationToken

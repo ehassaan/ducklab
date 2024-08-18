@@ -35,7 +35,6 @@ export class NotebookCell {
 
     setType(type: CellType) {
         this.type = type;
-        // this.limit = type === CellType.SQL_VIEW ? this.dataSource.opts.previewLimit : this.dataSource.opts.rawLimit;
     }
 
     async execute() {

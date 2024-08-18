@@ -1,0 +1,4 @@
+-- %% SQL_RAW | mytable
+
+select * from myfile;
+
