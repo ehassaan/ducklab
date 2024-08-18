@@ -1,6 +1,6 @@
 {
   "name": "@ducklab/core",
-  "version": "0.3.5",
+  "version": "0.3.8",
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "echo \"Error: no test specified\" && exit 1"

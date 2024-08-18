@@ -16,3 +16,8 @@ export type { IRawQuery } from '@/language/IRawQuery';
 export type { ISerializable } from '@/translator/sql/ISerializable';
 export type { ISqlConfig } from '@/translator/sql/ISqlConfig';
 export { SqlTranslator } from '@/translator/sql/SqlTranslator';
+export type { INotebookSerializer } from '@/notebook/INotebookSerializer';
+export { IsqlSerializer } from '@/notebook/IsqlSerializer';
+export { Notebook, type INotebookConfig, type IUserConfig } from '@/notebook/Notebook';
+export { CellType, NotebookCell } from '@/notebook/NotebookCell';
+export { DataSourceUndefined } from '@/entities/exceptions';
