@@ -21,12 +21,13 @@ export class NotebookCell {
     private dataset?: TabularDataset;
     private dataSource?: TabularDataSource;
 
-    constructor(id: string, name: string, notebook: Notebook, input = "") {
+    constructor(id: string, name: string, notebook: Notebook, input = "", type = CellType.SQL_VIEW) {
         this.id = id;
         this.name = name;
         this.notebook = notebook;
         this.input = input;
         this.dataSource = notebook.dataSource;
+        this.type = type;
     }
 
     setInput(input: string) {

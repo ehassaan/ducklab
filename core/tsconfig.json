@@ -10,6 +10,7 @@
     ],
     "rootDir": "./",
     "skipLibCheck": true,
+    "esModuleInterop": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
     "declaration": true,
@@ -32,7 +33,8 @@
   },
   "include": [
     "src",
-    "rollup.config.ts"
+    "rollup.config.ts",
+    "src/tests"
   ],
   "exclude": [
     "node_modules",

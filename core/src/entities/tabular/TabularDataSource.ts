@@ -3,7 +3,12 @@ import type { ITableInfo } from './ITableInfo';
 import type { ITabularResultSet } from './ITabularResultSet';
 
 export abstract class TabularDataSource {
-  constructor(name: string) { }
+
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
 
   // abstract preview(params: ITabularExecuteOpts, limit: number, offset: number): Promise<ITabularResultSet>;
   // abstract fetch(): Promise<ITabularResultSet>;

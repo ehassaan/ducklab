@@ -1,10 +1,10 @@
 // import { MssqlDataSource } from './data/mssql/MssqlDataSource';
-import { ICalculatedColumn, IPlainField } from './language/IExpression';
-import { IFetchQuery } from './language/IFetchQuery';
-import { ComparisonOp, LogicalOp } from './language/IFilter';
-import { IEntity } from './language/IEntity';
-import { ISqlConfig } from './translator/sql/ISqlConfig';
-import { SqlTranslator } from './translator/sql/SqlTranslator';
+import { ICalculatedColumn, IPlainField } from '../language/IExpression';
+import { IFetchQuery } from '../language/IFetchQuery';
+import { ComparisonOp, LogicalOp } from '../language/IFilter';
+import { IEntity } from '../language/IEntity';
+import { ISqlConfig } from '../translator/sql/ISqlConfig';
+import { SqlTranslator } from '../translator/sql/SqlTranslator';
 // const tr = new SqlTranslator({ IS_LMT_SKP: false } as ISqlConfig);
 
 const query: IFetchQuery = {

@@ -6,7 +6,7 @@ import { CellType, NotebookCell } from '@/notebook/NotebookCell';
 export class IsqlSerializer implements INotebookSerializer {
 
     private serializeCell(cell: NotebookCell) {
-        let content = `-- %% ${cell.type} | ${cell.id}\n${cell.input}\n`;
+        let content = `-- %% ${cell.type} | ${cell.name}\n${cell.input}`;
         return content;
     }
 
