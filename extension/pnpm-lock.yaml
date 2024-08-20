@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@ducklab/core':
-        specifier: ../core/ducklab-core-0.3.9.tgz
-        version: file:../core/ducklab-core-0.3.9.tgz
+        specifier: ../core/ducklab-core-0.3.10.tgz
+        version: file:../core/ducklab-core-0.3.10.tgz
       '@rollup/plugin-alias':
         specifier: ^5.1.0
         version: 5.1.0(rollup@4.20.0)
@@ -72,9 +72,9 @@ packages:
     resolution: {integrity: sha512-EStJpq4OuY8xYfhGVXngigBJRWxftKX9ksiGDnmlY3o7B/V7KIAc9X4oiK87uPJSc/vs5L869bem5fhZa8caZw==}
     engines: {node: '>=6.9.0'}
 
-  '@ducklab/core@file:../core/ducklab-core-0.3.9.tgz':
-    resolution: {integrity: sha512-eMIUfKM2tNVk69/juqZDRGtvx60B2uoQjOkD0+vwCzAXgFY+/m9AlRidajhr2UxAC1EIXvE2YkjAXQONYjtVRQ==, tarball: file:../core/ducklab-core-0.3.9.tgz}
-    version: 0.3.9
+  '@ducklab/core@file:../core/ducklab-core-0.3.10.tgz':
+    resolution: {integrity: sha512-Vl+Y4i7X258AtaNeBUMlxL/ziwWiFWhFMVx9gVpYMxumaYq8a4ZVPTlidSR5NtL44aDjvBHy97OXaW9Q/xL0zA==, tarball: file:../core/ducklab-core-0.3.10.tgz}
+    version: 0.3.10
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -1126,7 +1126,7 @@ snapshots:
       picocolors: 1.0.1
     optional: true
 
-  '@ducklab/core@file:../core/ducklab-core-0.3.9.tgz': {}
+  '@ducklab/core@file:../core/ducklab-core-0.3.10.tgz': {}
 
   '@gar/promisify@1.1.3': {}
 

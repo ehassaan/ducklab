@@ -1,4 +1,8 @@
 -- %% SQL_RAW | mytable
 
-select * from myfile;
+select * from mytable1232
 
+-- %% SQL_RAW | unnamed
+select *
+
+from 'mytable2'

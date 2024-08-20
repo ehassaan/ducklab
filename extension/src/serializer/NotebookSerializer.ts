@@ -3,10 +3,23 @@ import * as vscode from "vscode";
 import { INotebookSerializer, Notebook } from '@ducklab/core';
 import { CellType, NotebookCell } from '@ducklab/core';
 
-
 export class NotebookSerializer implements vscode.NotebookSerializer {
 
   serializer: INotebookSerializer;
+
+  languageMap = {
+    sql: CellType.SQL_RAW,
+    "sql-view": CellType.SQL_VIEW,
+    plaintext: CellType.TEXT,
+    markdown: CellType.MD
+  };
+
+  cellTypeMap = {
+    SQL_RAW: "sql",
+    SQL_VIEW: "sql-view",
+    TEXT: "plaintext",
+    MD: "markdown"
+  };
 
   constructor(serializer: INotebookSerializer) {
     this.serializer = serializer;
@@ -15,20 +28,13 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
   private createCellData(cell: NotebookCell): vscode.NotebookCellData {
     let cellKind = cell.type === CellType.MD ? vscode.NotebookCellKind.Markup : vscode.NotebookCellKind.Code;
 
-    let languageId = 'plaintext';
 
-    switch (cell.type) {
-      case CellType.MD:
-        languageId = 'markdown';
-        break;
-      case CellType.SQL_VIEW:
-        languageId = 'sql-view';
-        break;
-      case CellType.SQL_RAW:
-        languageId = 'sql';
-        break;
-      default:
-        languageId = 'plaintext';
+    let languageId;
+    if (!(cell.type in this.cellTypeMap)) {
+      languageId = CellType.TEXT;
+    }
+    else {
+      languageId = this.cellTypeMap[cell.type];
     }
     let cellData = new vscode.NotebookCellData(cellKind, cell.input, languageId);
     cellData.metadata = {
@@ -53,6 +59,7 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
     nbData.metadata = {
       notebook: notebook.id
     };
+    console.log("Loaded: ", nbData);
     return nbData;
   }
 
@@ -62,15 +69,30 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
   ): Promise<Uint8Array> {
 
     let notebook = new Notebook();
-    for (let i = 0; i < notebook.cells.length; i++) {
+    for (let i = 0; i < data.cells.length; i++) {
       let name = data.cells[i].metadata?.name ?? 'unnamed';
-      let cell = new NotebookCell(i.toString(), name, notebook, data.cells[i].value);
+      let cellType;
+      if (!(data.cells[i].languageId in this.languageMap)) {
+        cellType = CellType.TEXT;
+      }
+      else {
+        cellType = this.languageMap[data.cells[i].languageId];
+      }
+      let cell = new NotebookCell(i.toString(), name, notebook, data.cells[i].value, cellType);
       notebook.cells.push(cell);
     }
 
-    let content = this.serializer.serialize(notebook);
+    try {
+      let content = this.serializer.serialize(notebook);
+      console.log("Saving:\n", notebook, content);
 
-    return new TextEncoder().encode(content);
+      return new TextEncoder().encode(content);
+    }
+    catch (e) {
+      console.error("Error: ", e);
+    }
+    return new TextEncoder().encode("");
+
   }
 }
 

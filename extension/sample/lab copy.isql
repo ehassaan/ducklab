@@ -1,0 +1,3 @@
+-- %% SQL_RAW | mytable
+
+select * from mytable
