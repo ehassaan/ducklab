@@ -7,7 +7,7 @@ export class DucklabController implements vscode.NotebookController {
 
     readonly id = 'ducklab-controller';
     readonly notebookType = 'isql';
-    readonly supportedLanguages = ['sql', 'sql-view', 'python'];
+    readonly supportedLanguages = ['sql', 'sql-view', 'markdown', 'plaintext'];
     readonly label = 'My Notebook';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
@@ -37,7 +37,7 @@ export class DucklabController implements vscode.NotebookController {
 
     createNotebookCellExecution(cell: vscode.NotebookCell): vscode.NotebookCellExecution {
         return this._controller.createNotebookCellExecution(cell);
-        
+
     }
 
     executeHandler(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) {

@@ -72,13 +72,14 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
     for (let i = 0; i < data.cells.length; i++) {
       let name = data.cells[i].metadata?.name ?? 'unnamed';
       let cellType;
-      if (!(data.cells[i].languageId in this.languageMap)) {
+      let langId = data.cells[i].languageId as keyof (typeof this.languageMap);
+      if (!(langId in this.languageMap)) {
         cellType = CellType.TEXT;
       }
       else {
-        cellType = this.languageMap[data.cells[i].languageId];
+        cellType = this.languageMap[langId];
       }
-      let cell = new NotebookCell(i.toString(), name, notebook, data.cells[i].value, cellType);
+      let cell = new NotebookCell(crypto.randomUUID(), name, notebook, data.cells[i].value, cellType);
       notebook.cells.push(cell);
     }
 
