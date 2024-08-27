@@ -15,6 +15,7 @@
   "types": "dist/index.d.ts",
   "author": "",
   "description": "",
+  "dependencies": {},
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-alias": "^5.1.0",

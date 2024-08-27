@@ -13,8 +13,8 @@ const config = [
             del({ targets: 'dist/*' }),
             typescript(),
             json(),
-            commonjs(),
-            nodeResolve(),
+            // commonjs(),
+            // nodeResolve(),
         ],
         input: 'src/index.ts',
         output: {

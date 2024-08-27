@@ -69,7 +69,8 @@ export class DuckdbDataSource extends TabularDataSource {
       throw Error("Database could not be initialized");
     }
     const res = await this._db.all(query);
-    const transformed = this.transformResultset(res);
+    const arrowRes = arrow.tableFromJSON(res);
+    const transformed = this.transformResultset(arrowRes);
     return transformed;
   }
 
@@ -87,8 +88,12 @@ export class DuckdbDataSource extends TabularDataSource {
   }
 
   private transformResultset(resultset: any): ITabularResultSet {
+    console.log("Transforming: ", resultset);
     const items: any[] = [];
     const columns: IFieldInfo[] = [];
+    if (!resultset.schema.fields) {
+      resultset.schema.fields = {};
+    }
     for (const col of resultset.schema.fields) {
       columns.push({
         name: col.name,

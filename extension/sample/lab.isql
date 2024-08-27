@@ -5,4 +5,6 @@ select * from mytable1232
 -- %% SQL_RAW | unnamed
 select *
 
-from 'mytable2'
+from read_csv_auto("C:\Users\Hassan.Akbar\Documents\VsCode\ducklab\extension\sample\data\MOCK_DATA.csv");
+-- %% SQL_RAW | unnamed
+
