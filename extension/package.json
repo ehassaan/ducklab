@@ -1,5 +1,5 @@
 {
-  "name": "@ducklab/vscode",
+  "name": "ducklab",
   "displayName": "Ducklab for VS Code",
   "description": "Example of a Notebook renderer (visualizer) for GitHub Issues Notebook that doesn't use any frontend frameworks.",
   "version": "0.0.1",
@@ -29,72 +29,14 @@
     "onNotebook:isql"
   ],
   "contributes": {
-    "languagesAsdf": [
-      {
-        "id": "ducklab-lang",
-        "aliases": [
-          "Ducklab"
-        ],
-        "extensions": [
-          ".isql",
-          ".sql"
-        ],
-        "firstLine": "# Ducklab"
-      }
-    ],
     "notebooks": [
       {
         "type": "isql",
-        "displayName": "Ducklab 1",
+        "displayName": "Ducklab",
         "selector": [
           {
             "filenamePattern": "*.isql"
           }
-        ]
-      },
-      {
-        "type": "ipynb-ducklab",
-        "displayName": "Ducklab",
-        "selector": [
-          {
-            "filenamePattern": "*.ipynb"
-          }
-        ]
-      }
-    ],
-    "commands": [
-      {
-        "title": "Toggle Debugging Ducklab",
-        "command": "ducklab.toggleDebugging",
-        "icon": "$(bug)"
-      },
-      {
-        "title": "Restart Kernel Ducklab",
-        "command": "ducklab.restartKernel",
-        "icon": "$(refresh)"
-      }
-    ],
-    "menus": {
-      "editor/title": [
-        {
-          "command": "ducklab.toggleDebugging",
-          "when": "notebookEditorFocused",
-          "group": "navigation@1"
-        },
-        {
-          "command": "ducklab.restartKernel",
-          "when": "notebookEditorFocused",
-          "group": "navigation@2"
-        }
-      ]
-    },
-    "notebookRenderer": [
-      {
-        "id": "notebook-renderer-table",
-        "entrypoint": "./out/renderer/table.js",
-        "displayName": "Table",
-        "mimeTypes": [
-          "x-application/table"
         ]
       }
     ]
@@ -110,6 +52,7 @@
     "@types/node": "^22.5.0",
     "@types/vscode": "^1.92.0",
     "@types/vscode-notebook-renderer": "^1.72.3",
+    "@vscode/vsce": "^3.0.0",
     "apache-arrow": "^14.0.0",
     "duckdb-async": "^1.0.0",
     "jest": "^29.7.0",

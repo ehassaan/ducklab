@@ -69,9 +69,19 @@ export class DuckdbDataSource extends TabularDataSource {
       throw Error("Database could not be initialized");
     }
     const res = await this._db.all(query);
-    const arrowRes = arrow.tableFromJSON(res);
-    const transformed = this.transformResultset(arrowRes);
-    return transformed;
+    console.log("Response: ", res);
+    if (res.length === 0) {
+      return {
+        columns: [],
+        values: []
+      };
+    }
+    else {
+      const arrowRes = arrow.tableFromJSON(res);
+      const transformed = this.transformResultset(arrowRes);
+      return transformed;
+    }
+
   }
 
   public async reset() {
@@ -124,7 +134,7 @@ export class DuckdbDataSource extends TabularDataSource {
 
   public async queryNative(query: string, limit?: number) {
     const result = await this.executeNative(query);
-
+    console.log("executed: ", result);
     if (limit != null && limit >= 0 && result.values.length >= limit) {
       result.values = result.values.slice(0, limit);
     }

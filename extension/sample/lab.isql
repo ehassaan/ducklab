@@ -3,8 +3,18 @@
 select * from mytable1232
 
 -- %% SQL_RAW | unnamed
-select *
+create or replace view myview as (select *
 
-from read_csv_auto("C:\Users\Hassan.Akbar\Documents\VsCode\ducklab\extension\sample\data\MOCK_DATA.csv");
+from read_csv_auto("C:\Users\Hassan.Akbar\Documents\VsCode\ducklab\extension\sample\data\MOCK_DATA.csv")
+limit 10
+)
+-- %% SQL_RAW | unnamed
+select * from myview
+-- %% SQL_RAW | unnamed
+SET memory_limit = '16GB';
+SET memory_limit = '12GB';
+SET enable_progress_bar = true;
+SET threads = 4;
+select * from myview;
 -- %% SQL_RAW | unnamed
 

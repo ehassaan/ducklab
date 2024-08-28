@@ -45,9 +45,3 @@ export const activate: ActivationFunction = context => {
 	};
 };
 
-export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(
-		vscode.workspace.registerNotebookSerializer('my-notebook', new SampleSerializer())
-	);
-}
-

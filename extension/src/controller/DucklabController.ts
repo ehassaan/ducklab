@@ -1,7 +1,7 @@
 
 import * as vscode from "vscode";
 import { DuckdbDataSource } from '../data/duckdb/DuckdbDataSource';
-import { IFieldInfo } from '@ducklab/core';
+import { IFieldInfo, ITabularResultSet } from '@ducklab/core';
 
 // polyfill
 (BigInt.prototype as any).toJSON = function () {
@@ -60,6 +60,38 @@ export class DucklabController {
         return `<tr>${row}</tr>`;
     }
 
+    private getEllipsesRow(results: ITabularResultSet) {
+        let row = {};
+        for (let col of results.columns) {
+            row[col.name] = "...";
+        }
+        return row;
+    }
+
+    private renderTable(results: ITabularResultSet): string {
+        let values = results.values;
+        if (results.values.length > 50) {
+            values = results.values.slice(0, 5);
+            values.push(this.getEllipsesRow(results));
+            values = values.concat(results.values.slice(results.values.length - 5));
+        }
+        let text = `<table class="ducklab-table">
+        <thead><tr>${results.columns.map(c => '<th>' + c.name + '</th>').join("\n")}</tr></thead>
+        <tbody>${values.map(row => this.getRow(results.columns, row)).join("\n")}</tbody>
+        </table>
+        <style>
+        // .ducklab-table thead, .ducklab-table tbody {
+        //     display: block;
+        // }
+        // .ducklab-table tbody {
+        //     height: 100px;
+        //     overflow: auto;
+        // }
+        </style>
+        `;
+        return text;
+    }
+
     private async _doExecution(cell: vscode.NotebookCell): Promise<void> {
         const execution = this._controller.createNotebookCellExecution(cell);
         execution.executionOrder = ++this._executionOrder;
@@ -67,12 +99,9 @@ export class DucklabController {
 
         try {
             const results = await this.ds.queryNative(cell.document.getText());
-            console.log("results: ", results.values.slice(0, 10));
+            console.log("results: ", results);
 
-            let text = `<table>
-            <thead>${results.columns.map(c => '<th>' + c.name + '</th>').join("\n")}</thead>
-            <tbody>${results.values.map(row => this.getRow(results.columns, row)).join("\n")}</tbody>
-            </table>`;
+            let text = this.renderTable(results);
 
             execution.replaceOutput([
                 new vscode.NotebookCellOutput([
