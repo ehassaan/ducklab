@@ -14,7 +14,8 @@
   "main": "index.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
-  "description": "",
+  "description": "Ducklab core",
+  "private": false,
   "dependencies": {},
   "devDependencies": {
     "@jest/globals": "^29.7.0",
