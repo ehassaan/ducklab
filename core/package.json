@@ -1,6 +1,6 @@
 {
   "name": "@ducklab/core",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "ts-node tests/test_serializer.ts"

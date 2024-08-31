@@ -1,6 +1,5 @@
 import { Notebook } from '@/notebook/Notebook';
 import { TabularDataset } from "@/entities/tabular/TabularDataset";
-import { TabularDataSource } from "@/entities/tabular/TabularDataSource";
 import { ITabularResultSet } from "@/entities/tabular/ITabularResultSet";
 import { DataSourceUndefined } from '@/entities/exceptions';
 
@@ -18,15 +17,13 @@ export class NotebookCell {
     notebook: Notebook;
     input = "";
     type: CellType = CellType.SQL_VIEW;
-    private dataset?: TabularDataset;
-    private dataSource?: TabularDataSource;
+    public dataset?: TabularDataset;
 
     constructor(id: string, name: string, notebook: Notebook, input = "", type = CellType.SQL_VIEW) {
         this.id = id;
         this.name = name;
         this.notebook = notebook;
         this.input = input;
-        this.dataSource = notebook.dataSource;
         this.type = type;
     }
 
@@ -40,9 +37,9 @@ export class NotebookCell {
 
     async execute() {
         let items: ITabularResultSet = { columns: [], values: [] };
-        if (!this.dataSource) throw new DataSourceUndefined("Please select DataSource");
+        if (!this.notebook.dataSource) throw new DataSourceUndefined("Please select DataSource");
         if (this.type === CellType.SQL_RAW) {
-            items = await this.dataSource.query({
+            items = await this.notebook.dataSource.query({
                 rawQuery: this.input
             }, this.notebook.config.previewLimit, 0);
         }
@@ -55,7 +52,7 @@ export class NotebookCell {
                     from: {
                         rawQuery: this.input
                     }
-                }, this.dataSource, []);
+                }, this.notebook.dataSource, []);
             }
             items = await this.dataset.fetchPage(this.notebook.config.previewLimit, 0);
         }
