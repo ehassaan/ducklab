@@ -27,13 +27,15 @@ export class DuckdbDataSource extends TabularDataSource {
       rawLimit: -1,
       extensions: [],
       dbPath: "./temp_duckdb.db",
+      dataPath: "./data/",
       ...duckOpts,
     };
   }
 
   public async _init() {
     console.log("Init duckdb");
-    const db = await Database.create(":memory:");
+    const db = await Database.create(this.opts.dbPath);
+    await db.exec(`set file_search_path='${this.opts.dataPath}';`);
     console.log("Init duckdb: ", db);
     return db;
   }
@@ -209,4 +211,5 @@ export interface DuckOptions {
   previewLimit?: number;
   rawLimit?: number;
   dbPath?: string;
+  dataPath: string;
 }

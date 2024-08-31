@@ -26,14 +26,14 @@ export class DucklabController {
 
     ds: DuckdbDataSource;
 
-    constructor() {
+    constructor({ base_path, db_path }) {
         this._controller = vscode.notebooks.createNotebookController(
             this.id,
             this.notebookType,
-            this.label
+            db_path
         );
-        console.log("Initialized: ", this);
-        this.ds = new DuckdbDataSource(this.id, {});
+        this.label = db_path;
+        this.ds = new DuckdbDataSource(this.id, { dataPath: base_path, dbPath: db_path });
 
         this._controller.supportedLanguages = this.supportedLanguages;
         this._controller.supportsExecutionOrder = true;

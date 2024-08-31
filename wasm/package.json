@@ -17,8 +17,8 @@
     "wasm"
   ],
   "dependencies": {
-    "@ducklab/core": "../core/ducklab-core-0.3.5.tgz",
     "@duckdb/duckdb-wasm": "1.28.1-dev106.0",
+    "@ducklab/core": "0.3.14",
     "@mdi/font": "7.0.96",
     "@mdi/js": "^7.3.67",
     "@vueuse/core": "^10.2.1",

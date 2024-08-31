@@ -1,8 +1,8 @@
 // Utilities
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { TabularDataset, IFetchQuery } from '@ducklab/core';
-import { CellType, NotebookCell } from '@/entities/NotebookCell';
+import { computed, ref } from 'vue';
+import { TabularDataset, IFetchQuery, IsqlSerializer, Notebook, NotebookCell, CellType, TabularDataSource } from '@ducklab/core';
+// import { CellType, NotebookCell } from '@/entities/NotebookCell';
 import { FileSystemReference } from '@/entities/FileSystemReference';
 import { createReference } from './storage';
 import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
@@ -10,52 +10,55 @@ import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 
 export const useNotebookStore = defineStore('notebook', () => {
   // const datasets = ref<TabularDataset[]>([]);
-  const cells = ref<NotebookCell[]>([]);
+  // const cells = ref<NotebookCell[]>([]);
+  const notebook = ref<Notebook>(new Notebook());
   const dsIndex = ref(1);
-  const dataSource = ref<DuckdbDataSource>();
+  let dataSource: TabularDataSource | undefined;
   const unsavedChanges = ref(false);
   const currFile = ref<FileSystemReference>({
-    name: 'untitled.sql',
+    name: 'untitled.isql',
     children: [],
     path: '',
     permission: 'denied',
-    type: 'sql',
+    type: 'isql',
     isCode: true
   });
 
   function setDataSource(ds: DuckdbDataSource) {
-    dataSource.value = ds;
+    notebook.value.dataSource = ds;
+    dataSource = ds;
   }
 
   function createCell(afterCell: NotebookCell | null = null) {
-    if (!dataSource.value) throw Error("Datasource is undefined");
+    if (!notebook.value.dataSource) throw Error("Datasource is undefined");
 
     // let inputQuery = "select * from '<csv|parquet|cellname>'";
     let inputQuery = "select * from '*.csv'";
     let index = -1;
     if (afterCell) {
-      index = cells.value.findIndex(ds => ds.id === afterCell.id);
+      index = notebook.value.cells.findIndex(ds => ds.id === afterCell.id);
     }
 
     if (index >= 0) {
-      inputQuery = `select * from '${cells.value[index].dataset.name}'`;
+      inputQuery = `select * from '${notebook.value.cells[index].name}'`;
     }
     const query: IFetchQuery = {
       fields: [{ expression: "*" }],
       from: { rawQuery: inputQuery }
     };
-    const dataset = new TabularDataset(`dataset_${dsIndex.value}`, query, dataSource.value, []);
-    const cell = new NotebookCell(Math.random().toString(), dataSource.value, dataset);
-    cells.value.splice(index + 1, 0, cell);
+    const dataset = new TabularDataset(`dataset_${dsIndex.value}`, query, notebook.value.dataSource, []);
+    const cell = new NotebookCell(Math.random().toString(), dataset.name, notebook.value as Notebook, inputQuery, CellType.SQL_VIEW);
+    cell.dataset = dataset;
+    notebook.value.cells.splice(index + 1, 0, cell);
     dsIndex.value++;
     unsavedChanges.value = true;
     return cell;
   }
 
   function deleteCell(cell: NotebookCell) {
-    for (let i = 0; i < cells.value.length; i++) {
-      if (cells.value[i].id === cell.id) {
-        cells.value.splice(i, 1);
+    for (let i = 0; i < notebook.value.cells.length; i++) {
+      if (notebook.value.cells[i].id === cell.id) {
+        notebook.value.cells.splice(i, 1);
         unsavedChanges.value = true;
         return;
       }
@@ -63,27 +66,25 @@ export const useNotebookStore = defineStore('notebook', () => {
   }
 
   function getCell(cellId: string) {
-    for (let i = 0; i < cells.value.length; i++) {
-      if (cells.value[i].id === cellId) {
-        return cells.value[i];
+    for (let i = 0; i < notebook.value.cells.length; i++) {
+      if (notebook.value.cells[i].id === cellId) {
+        return notebook.value.cells[i];
       }
     }
     return null;
   }
 
   function renameDataset(ds: TabularDataset, name: string) {
-    for (const cell of cells.value) {
-      if (cell.dataset.name === name) throw Error("Cannot have duplicate names");
+    for (const cell of notebook.value.cells) {
+      if (cell.name === name) throw Error("Cannot have duplicate names");
     }
     ds.name = name;
   }
 
   function exportToSql() {
-    let content = "";
-    for (const cell of cells.value) {
-      content += `-- %% ${cell.type} - ${cell.dataset.name}\n${cell.input}\n`;
-    }
-    return content;
+    const serializer = new IsqlSerializer();
+    const result = serializer.serialize(notebook.value as Notebook);
+    return result;
   }
 
   async function load(fileRef: FileSystemReference) {
@@ -93,27 +94,14 @@ export const useNotebookStore = defineStore('notebook', () => {
     const text = await file.text();
     console.log(text);
 
-    if (!dataSource.value) throw Error("Datasource is null");
-
-    const _cells: NotebookCell[] = [];
-    cells.value = [];
-
-    for (const qry of text.split("-- %%")) {
-      if (qry === "") continue;
-      const result = parseCell("-- %%" + qry);
-      const query = {
-        fields: [{ expression: "*" }],
-        from: { rawQuery: result.query }
-      };
-      const dataset = new TabularDataset(result.name, query, dataSource.value, []);
-      const cell = new NotebookCell(Math.random().toString(), dataSource.value, dataset);
-      cell.setType(result.type);
-      _cells.push(cell as NotebookCell);
-    }
-    cells.value = _cells;
+    const serializer = new IsqlSerializer();
+    const nb = serializer.parse(text, fileRef.name);
+    nb.dataSource = dataSource;
+    notebook.value = nb;
     currFile.value = fileRef;
+    dsIndex.value = notebook.value.cells.length + 1;
     unsavedChanges.value = false;
-    console.log("Loaded: ", fileRef);
+
   }
 
   async function save() {
@@ -133,7 +121,7 @@ export const useNotebookStore = defineStore('notebook', () => {
   return {
     setDataSource, createCell, renameDataset, deleteCell,
     getCell, load, exportToSql, save,
-    cells, dataSource, unsavedChanges, currFile
+    cells: computed(() => notebook.value.cells), dataSource: notebook.value.dataSource, unsavedChanges, currFile
   };
 
 });
@@ -144,34 +132,11 @@ async function getNewFileHandle(): Promise<FileSystemFileHandle> {
       {
         description: 'SQL file',
         accept: {
-          'text/sql': ['.sql'],
+          'text/sql': ['.isql'],
         },
       },
     ],
   };
   const handle = await window.showSaveFilePicker(options);
   return handle;
-}
-
-function parseCell(cellText: string) {
-  let cellType = CellType.SQL_VIEW;
-  const firstLine = cellText.split("\n")[0];
-  const parts = firstLine.slice(5).split("-");
-  console.log("Header: " + firstLine);
-  if (parts.length < 2) throw Error("Cell identifiers are malformed");
-
-  if (parts[0].trim() == CellType.SQL_RAW) {
-    cellType = CellType.SQL_RAW;
-  }
-  else if (parts[0].trim() == CellType.SQL_VIEW) {
-    cellType = CellType.SQL_VIEW;
-  }
-  else throw Error("Cell identifiers are malformed");
-
-  const query = cellText.slice(firstLine.length + 1);
-  return {
-    query: query.slice(0, query.length - 1),
-    name: parts[1].trim(),
-    type: cellType
-  };
 }

@@ -54,6 +54,7 @@ export class NotebookCell {
                     }
                 }, this.notebook.dataSource, []);
             }
+            this.dataset.name = this.name;
             items = await this.dataset.fetchPage(this.notebook.config.previewLimit, 0);
         }
         console.log("Execution result: ", items);

@@ -53,7 +53,7 @@ let props = defineProps({
     rowsPerPage?: number,
     sortBy?: string,
     descending?: boolean,
-    rowsNumber?: number
+    rowsNumber?: number;
   }>,
   maxTextLength: {
     type: Number,

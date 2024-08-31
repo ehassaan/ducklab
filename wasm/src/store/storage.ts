@@ -3,7 +3,7 @@ import { get, set } from "idb-keyval";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-const supportedTypes = ['csv', 'parquet', 'g.html', 'sql'];
+const supportedTypes = ['csv', 'parquet', 'g.html', 'isql'];
 
 export const useStorageStore = defineStore('storage', () => {
     const root = ref<FileSystemReference>();
@@ -30,7 +30,7 @@ export const useStorageStore = defineStore('storage', () => {
         };
         for (const fil of files) {
             try {
-                dirRef.children.push(await createReference(fil, dirRef))
+                dirRef.children.push(await createReference(fil, dirRef));
             }
             catch (e) {
                 console.log(`Skipping: ${fil.name}\t${e}`);
@@ -38,7 +38,7 @@ export const useStorageStore = defineStore('storage', () => {
         }
         root.value = dirRef;
         await set('imported', files);
-        console.log("Import files: ", files)
+        console.log("Import files: ", files);
         return dirRef;
     }
 
@@ -68,7 +68,7 @@ export const useStorageStore = defineStore('storage', () => {
 
     return {
         root, attachDirectory, attachFiles, refresh, detachAll
-    }
+    };
 });
 
 export async function createReference(file: FileSystemFileHandle | FileSystemDirectoryHandle,
@@ -97,10 +97,10 @@ export async function createReference(file: FileSystemFileHandle | FileSystemDir
         path: path,
         children: [],
         type: type as any,
-        isCode: (type === 'sql') || (type === 'html'),
+        isCode: (type === 'isql') || (type === 'html'),
         handle: file,
         permission: await file.queryPermission(),
-    }
+    };
 }
 
 async function openRecursive(directory: FileSystemReference) {

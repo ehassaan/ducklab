@@ -4,8 +4,7 @@
       <div class="inputs">
         <div v-if="props.cell.type !== CellType.SQL_RAW" class="text-field" color="primary">
           <label>Name</label>
-          <input @input="onNameInput" :value="props.cell.dataset.name" :class="{ error: !isNameValid }"
-            ref="nameInput" />
+          <input @input="onNameInput" :value="props.cell.name" :class="{ error: !isNameValid }" ref="nameInput" />
         </div>
         <v-select class="dropdown" :model-value="cellType" @update:model-value="onTypeChange" :items="['View', 'Raw']"
           density="compact" :hide-details="true">
@@ -22,10 +21,10 @@
             <v-list-item v-bind="props" density="compact">
               <template #title>
                 <v-tooltip activator="parent" top>{{ item.value === 'View' ? constants.TOOLTIP_CELLTYPE_VIEW :
-    constants.TOOLTIP_CELLTYPE_RAW }}</v-tooltip>
+                  constants.TOOLTIP_CELLTYPE_RAW }}</v-tooltip>
 
                 <span style="font-size: 12px"> {{
-    item.title }}</span>
+                  item.title }}</span>
               </template>
             </v-list-item>
           </template>
@@ -65,9 +64,9 @@ import CellToolbar from './CellToolbar.vue';
 import QueryEditor from "./QueryEditor.vue";
 import { useNotebookStore } from '@/store/notebook';
 import constants from '@/constants/constants';
-import { CellType, NotebookCell } from '@/entities/NotebookCell';
 import { onMounted } from 'vue';
 import { computed } from 'vue';
+import { CellType, NotebookCell } from '@ducklab/core';
 
 
 let props = defineProps({
@@ -89,11 +88,11 @@ let error = ref(null);
 let notebookStore = useNotebookStore();
 let nameInput = ref<HTMLInputElement | null>(null);
 let isNameValid = ref(true);
-let keyMap: { [key: string]: boolean } = {};
+let keyMap: { [key: string]: boolean; } = {};
 
 let cellType = computed(() => props.cell.type === CellType.SQL_RAW ? "Raw" : "View");
 let input = computed(() => props.cell.input);
-let limit = computed(() => props.cell.limit);
+let limit = computed(() => props.cell.notebook.config.previewLimit);
 let executionTime = ref<number | null>(null);
 
 onMounted(() => {
@@ -106,7 +105,7 @@ function onTypeChange(type: string) {
 }
 
 function onNameInput(event: any) {
-  let idx = notebookStore.cells.findIndex(cell => cell.dataset.name === event.target.value);
+  let idx = notebookStore.cells.findIndex(cell => cell.name === event.target.value);
   isNameValid.value = idx < 0;
   notebookStore.unsavedChanges = true;
   if (isNameValid.value) {
@@ -128,7 +127,7 @@ function onInput(input: string) {
 }
 
 async function onFocusOut() {
-  keyMap = {}
+  keyMap = {};
 }
 
 async function execute() {
@@ -151,7 +150,7 @@ async function fetchResults() {
   try {
     loading.value = true;
     let items = await props.cell.execute();
-    columns.value = items.columns.map(item => ({ key: item.name, label: item.name, type: item.type }))
+    columns.value = items.columns.map(item => ({ key: item.name, label: item.name, type: item.type }));
     rows.value = items.values;
     // pagination.value.rowsNumber = rows.value.length;
     loading.value = false;
@@ -169,7 +168,7 @@ async function onRequest(params: any) {
   loading.value = true;
 
   if (params.sortBy) {
-    props.cell.dataset.setSort(params.sortBy);
+    props.cell.dataset?.setSort(params.sortBy);
   }
   await fetchResults();
   pagination.value.sortBy = params.sortBy;

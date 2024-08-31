@@ -1,6 +1,6 @@
 import { TabularDataSource } from '@/entities/tabular/TabularDataSource';
 import { NotebookCell } from "@/notebook/NotebookCell";
-import { randomUUID } from "crypto";
+import crypto from "crypto";
 
 
 export interface IUserConfig {
@@ -18,7 +18,12 @@ export class Notebook {
     config: INotebookConfig;
 
     constructor(id?: string, config?: INotebookConfig, dataSource?: TabularDataSource) {
-        this.id = id ?? randomUUID();
+        if (window && window.crypto) {
+            this.id = id ?? window.crypto.randomUUID();
+        }
+        else {
+            this.id = id ?? crypto.randomUUID();
+        }
         this.dataSource = dataSource;
         this.config = config ?? {};
     }

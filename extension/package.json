@@ -1,16 +1,18 @@
 {
   "name": "ducklab",
-  "displayName": "Ducklab for VS Code",
+  "displayName": "Ducklab (preview)",
   "description": "Interactive SQL Notebooks. Powered by DuckDB",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "Apache-2.0",
   "publisher": "ducklake",
+  "icon": "./logo.png",
   "repository": "https://github.com/HassaanAkbar/ducklab",
   "scripts": {
-    "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "pack": "vsce package --no-dependencies",
+    "build": "npm run build-rollup && npm run post-build",
+    "build-rollup": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "post-build": "cd dist && npm i duckdb-async && npm run package",
+    "package": "vsce package",
     "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "vscode:prepublish": "npm run build",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest"
   },
@@ -71,7 +73,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@ducklab/core": "../core/ducklab-core-0.3.10.tgz",
+    "@ducklab/core": "0.3.11",
     "apache-arrow": "^17.0.0",
     "aws-sdk": "^2.1685.0",
     "duckdb-async": "^1.0.0",

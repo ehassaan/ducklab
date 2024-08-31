@@ -8,13 +8,18 @@ import { IsqlSerializer } from "@ducklab/core";
 export function activate(context: vscode.ExtensionContext) {
 
     // writeFile('context0.json');
+    const base_path = vscode.workspace.workspaceFolders[0].uri.toString().replace("file:///", "").replace("%3A", ":");
+    console.log("Base Path: ", base_path);
 
     let serializer = new IsqlSerializer();
     context.subscriptions.push(
         vscode.workspace.registerNotebookSerializer('isql', new NotebookSerializer(serializer))
     );
     // writeFile('context1.json');
-    context.subscriptions.push(new DucklabController());
+    context.subscriptions.push(new DucklabController({
+        base_path: base_path,
+        db_path: `${base_path}/duck.db`,
+    }));
     // writeFile('context2.json');
 
 }

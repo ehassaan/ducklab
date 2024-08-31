@@ -20,7 +20,7 @@ const config = [
         external: [
             ...builtinModules,
             "vscode",
-            /node_modules/
+            "duckdb-async"
         ],
         input: 'src/index.ts',
         output: {
@@ -33,7 +33,24 @@ const config = [
             targets: [{
                 src: "package.json",
                 dest: "dist/"
-            }]
+            },
+            {
+                src: ".vscodeignore",
+                dest: "dist/"
+            },
+            {
+                src: 'LICENSE',
+                dest: 'dist/'
+            },
+            {
+                src: 'README.md',
+                dest: 'dist/'
+            },
+            {
+                src: 'logo.png',
+                dest: 'dist/'
+            },
+            ]
         })],
         input: 'dist/build/index.cjs',
         output: {
