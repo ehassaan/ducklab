@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> In-browser interactive SQL Notebooks | Powered by duckdb-wasm
+<p align="center"> Interactive SQL Notebooks | Powered by DuckDB
     <br> 
 </p>
 
@@ -37,7 +37,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-DuckLab provides in-browser, SQL notebook experience for adhoc data analysis. It uses duckdb-wasm to process your data within browser. No data leaves your machine.
+DuckLab provides local SQL notebook experience for adhoc data analysis. It uses DuckDB to process your data within browser and VS Code. No data leaves your machine.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 

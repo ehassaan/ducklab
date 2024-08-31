@@ -5,7 +5,8 @@ import del from 'rollup-plugin-delete';
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from '@rollup/plugin-commonjs';
 import json from "@rollup/plugin-json";
-
+import copy from "rollup-plugin-copy";
+import { builtinModules } from 'module';
 
 const config = [
     {
@@ -13,14 +14,32 @@ const config = [
             del({ targets: 'dist/*' }),
             typescript(),
             json(),
-            // commonjs(),
-            // nodeResolve(),
+            nodeResolve({ preferBuiltins: false }),
+            commonjs(),
+        ],
+        external: [
+            ...builtinModules,
+            "vscode",
+            /node_modules/
         ],
         input: 'src/index.ts',
         output: {
-            file: 'dist/index.cjs',
+            file: 'dist/build/index.cjs',
             format: 'cjs',
         },
     },
+    {
+        plugins: [copy({
+            targets: [{
+                src: "package.json",
+                dest: "dist/"
+            }]
+        })],
+        input: 'dist/build/index.cjs',
+        output: {
+            file: 'dist/build/index.cjs',
+            format: 'cjs',
+        },
+    }
 ] as RollupOptions;
 export default config;
