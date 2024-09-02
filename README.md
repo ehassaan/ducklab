@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://ducklab.netlify.app" rel="noopener">
- <img height=50px src="https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/public/logo.png" alt="Project logo"></a>
+ <img width=200px src="https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/wasm/public/logo.png" alt="Project logo"></a>
 </p>
 
 <!-- <h3 align="center">ducklab</h3> -->
@@ -8,9 +8,9 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![License](https://img.shields.io/badge/dynamic/json?label=version&query=version&url=https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/package.json)](https://ducklab.netlify.app)
+[![License](https://img.shields.io/badge/dynamic/json?label=version&query=version&url=https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/core/package.json)](https://ducklab.netlify.app)
 [![GitHub Issues](https://img.shields.io/github/issues/HassaanAkbar/ducklab.svg)](https://github.com/HassaanAkbar/ducklab/issues)
-[![License](https://img.shields.io/badge/dynamic/json?label=license&query=license&url=https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/package.json)](/LICENSE)
+[![License](https://img.shields.io/badge/dynamic/json?label=license&query=license&url=https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/core/package.json)](/LICENSE)
 
 </div>
 
