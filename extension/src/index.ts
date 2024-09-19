@@ -2,14 +2,15 @@ import * as vscode from 'vscode';
 import { DucklabController } from "./controller/DucklabController";
 import { NotebookSerializer } from './serializer/NotebookSerializer';
 import { IsqlSerializer } from "@ducklab/core";
-// import path from 'path';
+// import { activateKernel } from "./kernel";
 
 
 export function activate(context: vscode.ExtensionContext) {
 
     // writeFile('context0.json');
-    const base_path = vscode.workspace.workspaceFolders[0].uri.toString().replace("file:///", "").replace("%3A", ":");
-    console.log("Base Path: ", base_path);
+    const base_path = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    console.log("Base Path: ", base_path, vscode.workspace.workspaceFolders[0].uri);
+    console.log("asd", Object.keys(vscode.notebooks));
 
     let serializer = new IsqlSerializer();
     context.subscriptions.push(
@@ -20,6 +21,13 @@ export function activate(context: vscode.ExtensionContext) {
         base_path: base_path,
         db_path: `${base_path}/duck.db`,
     }));
+    // context.subscriptions.push({
+    //     dispose: () => { },
+    //     label: 'asd'
+    // });
+
+    // activateKernel(context);
+
     // writeFile('context2.json');
 
 }

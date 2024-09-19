@@ -29,7 +29,7 @@ export class DucklabController {
     constructor({ base_path, db_path }) {
         this._controller = vscode.notebooks.createNotebookController(
             this.id,
-            this.notebookType,
+            'isql',
             db_path
         );
         this.label = db_path;
@@ -40,9 +40,27 @@ export class DucklabController {
 
         this.onDidChangeSelectedNotebooks = this._controller.onDidChangeSelectedNotebooks;
         this._controller.executeHandler = this.executeHandler.bind(this);
+        // vscode.commands.getCommands(false).then(res => {
+        //     console.log("Commands: ", res);
+        //     vscode.workspace.fs.writeFile(vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, "./commands.json"),
+        //         new TextEncoder().encode(JSON.stringify(res))
+        //     );
+        // });
+        vscode.commands.registerCommand("ducklab.listKernels", this.selectKernel);
     }
 
-    executeHandler(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) {
+    public getInnerController() {
+        return this._controller.id;
+    }
+
+    async executeHandler(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) {
+        // await vscode.commands.executeCommand('notebook.selectKernel', {
+        //     notebookEditor,
+        //     id,
+        //     extension: JVSC_EXTENSION_ID
+        // });
+        console.log("Controller: ", controller, Object.keys(controller));
+        console.log("Inner Controller: ", (controller as any).getInnerController());
         for (const cell of cells) {
             this._doExecution(cell);
         }
@@ -50,6 +68,27 @@ export class DucklabController {
 
     dispose(): void {
         this.ds.dispose();
+    }
+
+    async selectKernel() {
+        let activeTab: any = vscode.window.tabGroups.activeTabGroup.activeTab.input;
+        if (!activeTab) {
+            console.log("No active tab");
+            return;
+        };
+        console.log("window: ", activeTab.uri);
+        const uri = activeTab.uri;
+        const notebookEditor =
+            vscode.window.activeNotebookEditor?.notebook?.uri?.toString() === uri.toString()
+                ? vscode.window.activeNotebookEditor
+                : await vscode.window.showNotebookDocument(await vscode.workspace.openNotebookDocument(uri));
+        vscode.commands.executeCommand("jupyter.kernel.selectLocalPythonEnvironment", {
+            notebookEditor,
+            id: "python",
+            extension: "ms-toolsai.jupyter"
+        }).then(res => {
+            console.log("Select kernel res: ", typeof (res), res);
+        });
     }
 
     private getRow(cols: IFieldInfo[], obj: any) {

@@ -23,7 +23,8 @@
     "sql",
     "notebooks",
     "duckdb",
-    "ducklab"
+    "ducklab",
+    "notebookKernelIsql"
   ],
   "categories": [
     "Data Science",
@@ -31,10 +32,11 @@
   ],
   "extensionDependencies": [
     "vscode.sql",
-    "vscode.python"
+    "vscode.python",
+    "ms-toolsai.jupyter"
   ],
   "type": "module",
-  "main": "./build/index.cjs",
+  "main": "./dist/build/index.cjs",
   "activationEvents": [
     "onNotebook:ipynb-ducklab",
     "onNotebook:isql"
@@ -50,7 +52,22 @@
           }
         ]
       }
-    ]
+    ],
+    "commands": [
+      {
+        "command": "ducklab.listKernels",
+        "title": "Select a kernel",
+        "category": "DuckLab"
+      }
+    ],
+    "menus": {
+      "notebook/toolbar": [
+        {
+          "command": "ducklab.listKernels",
+          "title": "MenuItem - Execute code against a Python Kernel"
+        }
+      ]
+    }
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
@@ -62,6 +79,7 @@
     "@types/node": "^22.5.0",
     "@types/vscode": "^1.58.0",
     "@types/vscode-notebook-renderer": "^1.72.3",
+    "@vscode/jupyter-extension": "^1.1.1",
     "@vscode/vsce": "^3.0.0",
     "jest": "^29.7.0",
     "rollup": "^4.20.0",
@@ -74,11 +92,15 @@
   },
   "dependencies": {
     "@ducklab/core": "0.3.11",
+    "@nteract/messaging": "^7.0.20",
     "apache-arrow": "^17.0.0",
     "aws-sdk": "^2.1685.0",
     "duckdb-async": "^1.0.0",
+    "get-port": "^7.1.0",
     "mock-aws-s3": "^4.0.2",
     "nock": "^13.5.5",
+    "rxjs": "^7.8.1",
+    "split2": "^4.2.0",
     "vscode-notebook-error-overlay": "^1.0.1"
   }
 }
