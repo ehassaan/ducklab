@@ -1,6 +1,6 @@
 {
   "name": "@ducklab/core",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "jest tests/"
