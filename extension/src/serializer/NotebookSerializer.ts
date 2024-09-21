@@ -11,14 +11,16 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
     sql: CellType.SQL_RAW,
     "sql-view": CellType.SQL_VIEW,
     plaintext: CellType.TEXT,
-    markdown: CellType.MD
+    markdown: CellType.MD,
+    python: CellType.PYTHON
   };
 
   cellTypeMap = {
-    SQL_RAW: "sql",
-    SQL_VIEW: "sql-view",
-    TEXT: "plaintext",
-    MD: "markdown"
+    [CellType.SQL_RAW]: "sql",
+    [CellType.SQL_VIEW]: "sql-view",
+    [CellType.TEXT]: "plaintext",
+    [CellType.MD]: "markdown",
+    [CellType.PYTHON]: "python"
   };
 
   constructor(serializer: INotebookSerializer) {
@@ -50,8 +52,9 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
     _token: vscode.CancellationToken
   ): Promise<vscode.NotebookData> {
     var textContent = new TextDecoder().decode(content);
-
+    console.log(textContent);
     let notebook = this.serializer.parse(textContent);
+    console.log("Desierialized: ", notebook.cells);
 
     let cells = notebook.cells.map(cell => this.createCellData(cell));
 

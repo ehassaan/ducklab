@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { DucklabController } from "./controller/DucklabController";
 import { NotebookSerializer } from './serializer/NotebookSerializer';
-import { IsqlSerializer } from "@ducklab/core";
+import { IsqlSerializer, DatabricksSerializer } from "@ducklab/core";
 // import { activateKernel } from "./kernel";
 
 
@@ -12,15 +12,36 @@ export function activate(context: vscode.ExtensionContext) {
     console.log("Base Path: ", base_path, vscode.workspace.workspaceFolders[0].uri);
     console.log("asd", Object.keys(vscode.notebooks));
 
-    let serializer = new IsqlSerializer();
+    let serializerSql = new IsqlSerializer();
     context.subscriptions.push(
-        vscode.workspace.registerNotebookSerializer('isql', new NotebookSerializer(serializer))
+        vscode.workspace.registerNotebookSerializer('isql', new NotebookSerializer(serializerSql))
     );
-    // writeFile('context1.json');
-    context.subscriptions.push(new DucklabController({
-        base_path: base_path,
-        db_path: `${base_path}/duck.db`,
-    }));
+
+    vscode.commands.registerCommand("ducklab.importDatabricksPy", async (file: vscode.Uri) => {
+        console.log("Import: ", file);
+
+        let document = await vscode.workspace.openTextDocument(file);
+        let text = document.getText();
+
+        let serializerDb = new DatabricksSerializer();
+        let array = new TextEncoder().encode(text);
+        let serializer = new NotebookSerializer(serializerDb);
+        let notebook = await serializer.deserializeNotebook(array, null);
+        vscode.workspace.openNotebookDocument("isql", notebook);
+
+    });
+
+    // let serializerDb = new DatabricksSerializer();
+
+    // context.subscriptions.push(
+    // vscode.workspace.registerNotebookSerializer('ducklab-db', new NotebookSerializer(serializerDb))
+    // );
+
+    // // writeFile('context1.json');
+    // context.subscriptions.push(new DucklabController({
+    //     base_path: base_path,
+    //     db_path: `${base_path}/duck.db`,
+    // }));
     // context.subscriptions.push({
     //     dispose: () => { },
     //     label: 'asd'

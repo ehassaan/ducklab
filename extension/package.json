@@ -58,6 +58,11 @@
         "command": "ducklab.listKernels",
         "title": "Select a kernel",
         "category": "DuckLab"
+      },
+      {
+        "command": "ducklab.importDatabricksPy",
+        "title": "Import databricks noteboook",
+        "category": "DuckLab"
       }
     ],
     "menus": {
@@ -65,6 +70,13 @@
         {
           "command": "ducklab.listKernels",
           "title": "MenuItem - Execute code against a Python Kernel"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceExtname == '.py'",
+          "command": "ducklab.importDatabricksPy",
+          "group": "ducklab"
         }
       ]
     }
@@ -91,7 +103,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@ducklab/core": "0.3.11",
+    "@ducklab/core": "0.3.16",
     "@nteract/messaging": "^7.0.20",
     "apache-arrow": "^17.0.0",
     "aws-sdk": "^2.1685.0",

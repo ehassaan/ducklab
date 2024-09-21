@@ -29,5 +29,8 @@
   "include": [
     "src",
     "rollup.config.ts"
+  ],
+  "exclude": [
+    "src/kernel"
   ]
 }
