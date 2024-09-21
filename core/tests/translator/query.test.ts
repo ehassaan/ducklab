@@ -1,10 +1,15 @@
 // import { MssqlDataSource } from './data/mssql/MssqlDataSource';
-import { ICalculatedColumn, IPlainField } from '../language/IExpression';
-import { IFetchQuery } from '../language/IFetchQuery';
-import { ComparisonOp, LogicalOp } from '../language/IFilter';
-import { IEntity } from '../language/IEntity';
-import { ISqlConfig } from '../translator/sql/ISqlConfig';
-import { SqlTranslator } from '../translator/sql/SqlTranslator';
+import { describe, expect, test } from '@jest/globals';
+import {
+  ComparisonOp,
+  ICalculatedColumn,
+  IEntity,
+  IFetchQuery,
+  IPlainField,
+  LogicalOp,
+  SqlTranslator
+} from '@/main';
+
 // const tr = new SqlTranslator({ IS_LMT_SKP: false } as ISqlConfig);
 
 const query: IFetchQuery = {
@@ -49,21 +54,24 @@ const query: IFetchQuery = {
   } as IEntity,
 };
 
+
+function translateQuery(query: IFetchQuery) {
+  let translator = new SqlTranslator();
+
+  let sql = translator.translate(query);
+  console.log(sql);
+
+  return sql;
+}
+
+describe("Translator", () => {
+
+  test("TranslateQuery1", () => {
+
+    expect(translateQuery(query)).toEqual(`SELECT "MyCol","Col2"\nFROM "MyTable"\nWHERE ("MyCol2" >= 10) OR ("MyCol5" = 'Hello')`);
+  });
+
+});
 // const sql = tr.translate(query, 10, 2);
 
 // console.log(sql);
-
-// const source = new MssqlDataSource('MyDs', {
-//   server: process.env.MSSQL_HOST,
-//   database: 'MachineId',
-//   user: 'hassaan',
-//   password: process.env.MSSQL_PWD,
-// });
-
-// (async () => {
-//   console.log('Working: ', await source.test());
-//   const datasets = await source.getDatasets();
-//   console.log(datasets);
-//   console.log('Name: ', datasets[6].name);
-//   // console.log(await datasets[6].preview(10, 0));
-// })();

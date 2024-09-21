@@ -8,7 +8,8 @@ export enum CellType {
     SQL_VIEW = 'SQL_VIEW',
     SQL_RAW = 'SQL_RAW',
     MD = 'MD',
-    TEXT = 'TEXT'
+    TEXT = 'TEXT',
+    PYTHON = 'PYTHON'
 }
 
 export class NotebookCell {

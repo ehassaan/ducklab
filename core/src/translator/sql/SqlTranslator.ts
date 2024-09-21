@@ -114,9 +114,7 @@ export class SqlTranslator implements IQueryTranslator {
     if ('name' in qry.from) from = this.prepareTableName(qry.from);
     else if ('rawQuery' in qry.from) from = this.prepareRawQuery(qry.from);
     else from = this.prepareQuery(qry.from);
-    let query = `
-        ${this.cfg.SELECT} ${this.prepareSelectCols(qry.fields)}
-        ${this.cfg.FROM} ${from}`;
+    let query = `${this.cfg.SELECT} ${this.prepareSelectCols(qry.fields)}\n${this.cfg.FROM} ${from}`;
     const where = this.prepareWhereCond(qry.filters);
     if (where) {
       query += `\n${this.cfg.WHERE} ${where}`;
