@@ -13,7 +13,7 @@ export class DucklabController {
 
     readonly id = 'ducklab-controller';
     readonly notebookType = 'isql';
-    readonly supportedLanguages = ['sql', 'markdown', 'plaintext'];
+    readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
     readonly label = 'In-Memory';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;

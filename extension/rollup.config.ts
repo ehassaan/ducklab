@@ -16,6 +16,30 @@ const config = [
             json(),
             nodeResolve({ preferBuiltins: false }),
             commonjs(),
+            copy({
+                hook: "buildEnd",
+                targets: [{
+                    src: "package.json",
+                    dest: "dist/"
+                },
+                {
+                    src: ".vscodeignore",
+                    dest: "dist/"
+                },
+                {
+                    src: 'LICENSE',
+                    dest: 'dist/'
+                },
+                {
+                    src: 'README.md',
+                    dest: 'dist/'
+                },
+                {
+                    src: 'logo.png',
+                    dest: 'dist/'
+                },
+                ]
+            })
         ],
         external: [
             ...builtinModules,
@@ -28,35 +52,5 @@ const config = [
             format: 'cjs',
         },
     },
-    {
-        plugins: [copy({
-            targets: [{
-                src: "package.json",
-                dest: "dist/"
-            },
-            {
-                src: ".vscodeignore",
-                dest: "dist/"
-            },
-            {
-                src: 'LICENSE',
-                dest: 'dist/'
-            },
-            {
-                src: 'README.md',
-                dest: 'dist/'
-            },
-            {
-                src: 'logo.png',
-                dest: 'dist/'
-            },
-            ]
-        })],
-        input: 'dist/build/index.cjs',
-        output: {
-            file: 'dist/build/index.cjs',
-            format: 'cjs',
-        },
-    }
 ] as RollupOptions;
 export default config;

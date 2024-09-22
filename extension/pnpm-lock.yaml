@@ -41,6 +41,9 @@ importers:
       vscode-notebook-error-overlay:
         specifier: ^1.0.1
         version: 1.0.1
+      vscode-uri:
+        specifier: ^3.0.8
+        version: 3.0.8
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -2723,6 +2726,9 @@ packages:
 
   vscode-notebook-error-overlay@1.0.1:
     resolution: {integrity: sha512-kXuvfWallwd5Fs1zBFtJOuzL3spU4qS6tq84Oc4cgtNtD+ORfu9LCN1VJDZn7pT8MUtoQjWNDoSIo/WAJhMIAw==}
+
+  vscode-uri@3.0.8:
+    resolution: {integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==}
 
   vscode-webview-tools@0.1.1:
     resolution: {integrity: sha512-gKCVz/hIV19XwudhTHiWvcmSEC1PtptHm+pmT6M0Epwu6oRQo+aEdpiUuefTYaR25+A76vQHzff8RAuxkkrGfQ==}
@@ -5903,6 +5909,8 @@ snapshots:
     dependencies:
       preact: 10.23.2
       vscode-webview-tools: 0.1.1
+
+  vscode-uri@3.0.8: {}
 
   vscode-webview-tools@0.1.1: {}
 

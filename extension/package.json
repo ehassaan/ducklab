@@ -61,7 +61,7 @@
       },
       {
         "command": "ducklab.importDatabricksPy",
-        "title": "Import databricks noteboook",
+        "title": "Import Databricks Noteboook",
         "category": "DuckLab"
       }
     ],
@@ -113,6 +113,7 @@
     "nock": "^13.5.5",
     "rxjs": "^7.8.1",
     "split2": "^4.2.0",
-    "vscode-notebook-error-overlay": "^1.0.1"
+    "vscode-notebook-error-overlay": "^1.0.1",
+    "vscode-uri": "^3.0.8"
   }
 }
