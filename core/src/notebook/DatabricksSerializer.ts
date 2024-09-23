@@ -47,7 +47,7 @@ export class DatabricksSerializer implements INotebookSerializer {
         if (!content.startsWith(this.nbHeader)) {
             throw Error("Not a valid databricks notebook file");
         }
-        content = content.replace("\r\n", "\n");
+        content = content.replaceAll("\r\n", "\n");
         content = content.substring(content.indexOf("\n"));
 
         let notebook = new Notebook(id);
