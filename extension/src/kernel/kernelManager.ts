@@ -1,7 +1,7 @@
 
 import { IKernelSpec, KernelProvider, IRunningKernel } from './kernelProvider';
 import * as vscode from 'vscode';
-import { IDisposable } from './disposable';
+import { IDisposable } from '../disposable';
 import { NotebookKernel } from './notebookKernel';
 
 export class KernelManager implements IDisposable, vscode.NotebookKernelProvider {

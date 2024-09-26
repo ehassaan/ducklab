@@ -49,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // context.subscriptions.push(
     // vscode.workspace.registerNotebookSerializer('ducklab-db', new NotebookSerializer(serializerDb))
-    // );
+    // );\
 
     // // writeFile('context1.json');
     context.subscriptions.push(new DucklabController({

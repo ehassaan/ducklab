@@ -11,6 +11,10 @@ import {
 import * as arrow from 'apache-arrow';
 import { Database } from "duckdb-async";
 
+// polyfill
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 export class DuckdbDataSource extends TabularDataSource {
   private _tr: SqlTranslator;

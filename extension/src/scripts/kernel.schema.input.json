@@ -1,0 +1,25 @@
+{
+    "namespace": "ducklab.kernel",
+    "type": "record",
+    "name": "message",
+    "fields": [
+        {
+            "name": "code",
+            "type": "string"
+        },
+        {
+            "name": "favorite_number",
+            "type": [
+                "int",
+                "null"
+            ]
+        },
+        {
+            "name": "favorite_color",
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    ]
+}

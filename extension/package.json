@@ -92,6 +92,7 @@
     "@types/vscode": "^1.58.0",
     "@types/vscode-notebook-renderer": "^1.72.3",
     "@vscode/jupyter-extension": "^1.1.1",
+    "@vscode/python-extension": "^1.0.5",
     "@vscode/vsce": "^3.0.0",
     "jest": "^29.7.0",
     "rollup": "^4.20.0",
@@ -103,7 +104,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@ducklab/core": "0.3.16",
+    "@ducklab/core": "0.3.17",
     "@nteract/messaging": "^7.0.20",
     "apache-arrow": "^17.0.0",
     "aws-sdk": "^2.1685.0",
@@ -114,6 +115,7 @@
     "rxjs": "^7.8.1",
     "split2": "^4.2.0",
     "vscode-notebook-error-overlay": "^1.0.1",
-    "vscode-uri": "^3.0.8"
+    "vscode-uri": "^3.0.8",
+    "zeromq": "^6.0.4"
   }
 }

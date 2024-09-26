@@ -14,7 +14,7 @@ const config = [
             del({ targets: 'dist/*' }),
             typescript(),
             json(),
-            nodeResolve({ preferBuiltins: false }),
+            nodeResolve({ preferBuiltins: true }),
             commonjs(),
             copy({
                 hook: "buildEnd",
@@ -42,9 +42,9 @@ const config = [
             })
         ],
         external: [
-            ...builtinModules,
             "vscode",
-            "duckdb-async"
+            "duckdb-async",
+            "zeromq"
         ],
         input: 'src/index.ts',
         output: {

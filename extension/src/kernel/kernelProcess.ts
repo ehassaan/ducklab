@@ -1,7 +1,7 @@
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { ReplaySubject, Subject } from 'rxjs';
 import * as split from 'split2';
-import { IDisposable, DisposableList, toDisposable } from './disposable';
+import { IDisposable, DisposableList, toDisposable } from '../disposable';
 
 export class KernelProcess implements IDisposable {
     /**

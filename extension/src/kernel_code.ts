@@ -12,6 +12,7 @@ import {
 } from 'vscode';
 import { Jupyter, Kernel } from '@vscode/jupyter-extension';
 import path from 'path';
+import { PythonExtension } from "@vscode/python-extension";
 import { TextDecoder } from 'util';
 
 export function activateKernel(context: ExtensionContext) {
@@ -106,6 +107,7 @@ async function selectCodeToRunAgainstKernel() {
     }
     return codeSnippets.get(selection);
 }
+
 
 async function selectKernel(): Promise<Kernel | undefined> {
     const extension = extensions.getExtension<Jupyter>('ms-toolsai.jupyter');

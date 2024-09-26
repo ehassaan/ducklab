@@ -6,7 +6,7 @@ import { exists, uniqueBy } from './util';
 import { Connection } from './connection';
 import { spawn } from 'child_process';
 import { KernelProcess } from './kernelProcess';
-import { IDisposable } from './disposable';
+import { IDisposable } from '../disposable';
 
 export interface IKernelSpec {
     id: string;

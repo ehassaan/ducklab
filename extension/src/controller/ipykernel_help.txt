@@ -1,0 +1,251 @@
+>python -m ipykernel --help 
+IPython: an enhanced interactive Python shell.
+
+Subcommands
+===========
+Subcommands are launched as `ipython-kernel cmd [args]`. For information on
+using subcommand 'cmd', do: `ipython-kernel cmd -h`.
+
+install
+    Install the IPython kernel
+
+Options
+=======
+The options below are convenience aliases to configurable class-options,
+as listed in the "Equivalent to" description-line of the aliases.
+To see all configurable class-options for some <cmd>, use:
+    <cmd> --help-all
+
+--debug
+    set log level to logging.DEBUG (maximize logging output)
+    Equivalent to: [--Application.log_level=10]
+--show-config
+    Show the application's configuration (human-readable format)
+    Equivalent to: [--Application.show_config=True]
+--show-config-json
+    Show the application's configuration (json format)
+    Equivalent to: [--Application.show_config_json=True]
+--quiet
+    set log level to logging.CRITICAL (minimize logging output)
+    Equivalent to: [--Application.log_level=50]
+--init
+    Initialize profile with default config files.  This is equivalent
+                to running `ipython profile create <profile>` prior to startup.
+    Equivalent to: [--BaseIPythonApplication.copy_config_files=True --BaseIPythonApplication.auto_create=True]
+--no-stdout
+    redirect stdout to the null device
+    Equivalent to: [--IPKernelApp.no_stdout=True]
+--no-stderr
+    redirect stderr to the null device
+    Equivalent to: [--IPKernelApp.no_stderr=True]
+--pylab
+    Pre-load matplotlib and numpy for interactive use with
+        the default matplotlib backend. The exact options available
+        depend on what Matplotlib provides at runtime.
+    Equivalent to: [--InteractiveShellApp.pylab=auto]
+--trio-loop
+    Enable Trio as main event loop.
+    Equivalent to: [--InteractiveShell.trio_loop=False]
+--autoindent
+    Turn on autoindenting.
+    Equivalent to: [--InteractiveShell.autoindent=True]
+--no-autoindent
+    Turn off autoindenting.
+    Equivalent to: [--InteractiveShell.autoindent=False]
+--automagic
+    Turn on the auto calling of magic commands. Type %%magic at the
+            IPython  prompt  for  more information.
+    Equivalent to: [--InteractiveShell.automagic=True]
+--no-automagic
+    Turn off the auto calling of magic commands.
+    Equivalent to: [--InteractiveShell.automagic=False]
+--pdb
+    Enable auto calling the pdb debugger after every exception.
+    Equivalent to: [--InteractiveShell.pdb=True]
+--no-pdb
+    Disable auto calling the pdb debugger after every exception.
+    Equivalent to: [--InteractiveShell.pdb=False]
+--pprint
+    Enable auto pretty printing of results.
+    Equivalent to: [--PlainTextFormatter.pprint=True]
+--no-pprint
+    Disable auto pretty printing of results.
+    Equivalent to: [--PlainTextFormatter.pprint=False]
+--color-info
+    IPython can display information about objects via a set of functions,
+        and optionally can use colors for this, syntax highlighting
+        source code and various other elements. This is on by default, but can cause
+        problems with some pagers. If you see such problems, you can disable the
+        colours.
+    Equivalent to: [--InteractiveShell.color_info=True]
+--no-color-info
+    Disable using colors for info related things.
+    Equivalent to: [--InteractiveShell.color_info=False]
+--ignore-cwd
+    Exclude the current working directory from sys.path
+    Equivalent to: [--InteractiveShellApp.ignore_cwd=True]
+--no-ignore-cwd
+    Include the current working directory in sys.path
+    Equivalent to: [--InteractiveShellApp.ignore_cwd=False]
+--nosep
+    Eliminate all spacing between prompts.
+    Equivalent to: [--InteractiveShell.separate_in= --InteractiveShell.separate_out= --InteractiveShell.separate_out2=]    
+--matplotlib
+    Configure matplotlib for interactive use with
+        the default matplotlib backend. The exact options available
+        depend on what Matplotlib provides at runtime.
+    Equivalent to: [--InteractiveShellApp.matplotlib=auto]
+--secure
+    Use HMAC digests for authentication of messages.
+            Setting this flag will generate a new UUID to use as the HMAC key.
+    Equivalent to: [--Session.key=b'7f264ab5-9714e760a5d83614ce19a191' --Session.keyfile=]
+--no-secure
+    Don't authenticate messages.
+    Equivalent to: [--Session.key=b'' --Session.keyfile=]
+--log-level=<Enum>
+    Set the log level by value or name.
+    Choices: any of [0, 10, 20, 30, 40, 50, 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL']
+    Default: 30
+    Equivalent to: [--Application.log_level]
+--profile-dir=<Unicode>
+    Set the profile location directly. This overrides the logic used by the
+            `profile` option.
+    Default: ''
+    Equivalent to: [--ProfileDir.location]
+--profile=<Unicode>
+    The IPython profile to use.
+    Default: 'default'
+    Equivalent to: [--BaseIPythonApplication.profile]
+--ipython-dir=<Unicode>
+    The name of the IPython directory. This directory is used for logging
+    configuration (through profiles), history storage, etc. The default is
+    usually $HOME/.ipython. This option can also be specified through the
+    environment variable IPYTHONDIR.
+    Default: ''
+    Equivalent to: [--BaseIPythonApplication.ipython_dir]
+--config=<Unicode>
+    Path to an extra config file to load.
+        If specified, load this config file in addition to any other IPython
+    config.
+    Default: ''
+    Equivalent to: [--BaseIPythonApplication.extra_config_file]
+--ip=<Unicode>
+    Set the kernel's IP address [default localhost].
+            If the IP address is something other than localhost, then
+            Consoles on other machines will be able to connect
+            to the Kernel, so be careful!
+    Default: ''
+    Equivalent to: [--IPKernelApp.ip]
+--hb=<Int>
+    set the heartbeat port [default: random]
+    Default: 0
+    Equivalent to: [--IPKernelApp.hb_port]
+--shell=<Int>
+    set the shell (ROUTER) port [default: random]
+    Default: 0
+    Equivalent to: [--IPKernelApp.shell_port]
+--iopub=<Int>
+    set the iopub (PUB) port [default: random]
+    Default: 0
+    Equivalent to: [--IPKernelApp.iopub_port]
+--stdin=<Int>
+    set the stdin (ROUTER) port [default: random]
+    Default: 0
+    Equivalent to: [--IPKernelApp.stdin_port]
+--control=<Int>
+    set the control (ROUTER) port [default: random]
+    Default: 0
+    Equivalent to: [--IPKernelApp.control_port]
+-f=<Unicode>
+    JSON file in which to store connection info [default: kernel-<pid>.json]
+        This file will contain the IP, ports, and authentication key needed to connect
+        clients to this kernel. By default, this file will be created in the security dir
+        of the current profile, but can be specified by absolute path.
+    Default: ''
+    Equivalent to: [--IPKernelApp.connection_file]
+--transport=<CaselessStrEnum>
+    Choices: any of ['tcp', 'ipc'] (case-insensitive)
+    Default: 'tcp'
+    Equivalent to: [--IPKernelApp.transport]
+--autocall=<Enum>
+    Make IPython automatically call any callable object even if you didn't type
+    explicit parentheses. For example, 'str 43' becomes 'str(43)' automatically.
+    The value can be '0' to disable the feature, '1' for 'smart' autocall, where
+    it is not applied if there are no more arguments on the line, and '2' for
+    'full' autocall, where all callable objects are automatically called (even
+    if no arguments are present).
+    Choices: any of [0, 1, 2]
+    Default: 0
+    Equivalent to: [--InteractiveShell.autocall]
+--colors=<CaselessStrEnum>
+    Set the color scheme (NoColor, Neutral, Linux, or LightBG).
+    Choices: any of ['Neutral', 'NoColor', 'LightBG', 'Linux'] (case-insensitive)
+    Default: 'Neutral'
+    Equivalent to: [--InteractiveShell.colors]
+--logfile=<Unicode>
+    The name of the logfile to use.
+    Default: ''
+    Equivalent to: [--InteractiveShell.logfile]
+--logappend=<Unicode>
+    Start logging to the given file in append mode. Use `logfile` to specify a
+    log file to **overwrite** logs to.
+    Default: ''
+    Equivalent to: [--InteractiveShell.logappend]
+-c=<Unicode>
+    Execute the given command string.
+    Default: ''
+    Equivalent to: [--InteractiveShellApp.code_to_run]
+-m=<Unicode>
+    Run the module as a script.
+    Default: ''
+    Equivalent to: [--InteractiveShellApp.module_to_run]
+--ext=<list-item-1>...
+    Dotted module name(s) of one or more IPython extensions to load.
+    For specifying extra extensions to load on the command-line.
+    .. versionadded:: 7.10
+    Default: []
+    Equivalent to: [--InteractiveShellApp.extra_extensions]
+--gui=<CaselessStrEnum>
+    Enable GUI event loop integration with any of ('asyncio', 'glut', 'gtk',
+    'gtk2', 'gtk3', 'gtk4', 'osx', 'pyglet', 'qt', 'qt5', 'qt6', 'tk', 'wx',
+    'gtk2', 'qt4').
+    Choices: any of ['asyncio', 'glut', 'gtk', 'gtk2', 'gtk3', 'gtk4', 'osx', 'pyglet', 'qt', 'qt5', 'qt6', 'tk', 'wx', 'gtk2', 'qt4'] (case-insensitive) or None
+    Default: None
+    Equivalent to: [--InteractiveShellApp.gui]
+--pylab=<MatplotlibBackendCaselessStrEnum>
+    Pre-load matplotlib and numpy for interactive use,
+            selecting a particular matplotlib backend and loop integration.
+            The exact options available depend on what Matplotlib provides at runtime.
+    Choices: any of ['agg', 'auto', 'gtk', 'gtk3', 'gtk4', 'inline', 'ipympl', 'nbagg', 'notebook', 'osx', 'pdf', 'ps', 'qt', 'qt4', 'qt5', 'qt6', 'svg', 'tk', 'webagg', 'widget', 'wx'] (case-insensitive) or None
+    Default: None
+    Equivalent to: [--InteractiveShellApp.pylab]
+--matplotlib=<MatplotlibBackendCaselessStrEnum>
+    Configure matplotlib for interactive use with
+            the default matplotlib backend. The exact options available
+            depend on what Matplotlib provides at runtime.
+    Choices: any of ['agg', 'auto', 'gtk', 'gtk3', 'gtk4', 'inline', 'ipympl', 'nbagg', 'notebook', 'osx', 'pdf', 'ps', 'qt', 'qt4', 'qt5', 'qt6', 'svg', 'tk', 'webagg', 'widget', 'wx'] (case-insensitive) or None
+    Default: None
+    Equivalent to: [--InteractiveShellApp.matplotlib]
+--cache-size=<Int>
+    Set the size of the output cache.  The default is 1000, you can change it
+    permanently in your config file.  Setting it to 0 completely disables the
+    caching system, and the minimum value accepted is 3 (if you provide a value
+    less than 3, it is reset to 0 and a warning is issued).  This limit is
+    defined because otherwise you'll spend more time re-flushing a too small
+    cache than working
+    Default: 1000
+    Equivalent to: [--InteractiveShell.cache_size]
+--ident=<CUnicode>
+    The UUID identifying this session.
+    Default: ''
+    Equivalent to: [--Session.session]
+--user=<Unicode>
+    Username for the Session. Default is your system username.
+    Default: 'username'
+    Equivalent to: [--Session.username]
+--keyfile=<Unicode>
+    path to file containing execution key.
+    Default: ''
+    Equivalent to: [--Session.keyfile]
+
+To see all available configurables, use `--help-all`.
