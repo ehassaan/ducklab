@@ -54,24 +54,11 @@ export class IsqlSerializer implements INotebookSerializer {
         const parts = firstLine.split("|");
 
         if (parts.length < 2) throw Error("Cell identifiers are malformed");
-        switch (parts[0].trim().toUpperCase()) {
-            case CellType.SQL_RAW:
-                cellType = CellType.SQL_RAW;
-                break;
-            case CellType.MD:
-                cellType = CellType.MD;
-                break;
-            case CellType.TEXT:
-                cellType = CellType.TEXT;
-                break;
-            case CellType.SQL_VIEW:
-                cellType = CellType.SQL_VIEW;
-                break;
-            default:
-                throw Error("Cell identifiers are malformed");
+        let cellTypeText = parts[0].trim().toUpperCase();
+        if (!(cellTypeText in CellType)) {
+            throw Error("Cell identifiers are malformed");
         }
-
-
+        cellType = cellTypeText as CellType;
         const content = cellText.slice(firstLine.length + 1);
         return {
             content: content.slice(0, content.length - 1),
