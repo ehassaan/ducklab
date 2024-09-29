@@ -1,18 +1,17 @@
 
 import * as vscode from "vscode";
-import { DuckdbDataSource } from '../data/duckdb/DuckdbDataSource';
+import { DuckdbDataSource } from '../../data/duckdb/DuckdbDataSource';
 import { IFieldInfo, ITabularResultSet } from '@ducklab/core';
-import { Jupyter, Kernel } from '@vscode/jupyter-extension';
 import { PythonExtension } from '@vscode/python-extension';
 import { IKernelSpec as IKernelSpec, KernelType } from './IKernelSpec';
 import { KernelManager } from './KernelManager';
 
-export class DucklabController {
+export class IPykernelController {
 
-    readonly id = 'ducklab-controller';
-    readonly notebookType = 'isql';
+    readonly id = 'ipykernel-controller';
+    readonly notebookType = 'ipykernel';
     readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
-    readonly label: string = 'In-Memory';
+    readonly label: string = 'Select Kernel';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
     readonly supportsExecutionOrder?: boolean | undefined;
@@ -24,7 +23,7 @@ export class DucklabController {
 
     ds: DuckdbDataSource;
 
-    constructor({ base_path, db_path }) {
+    constructor({ }) {
         console.log("Kernel Picker");
 
         this._controller = vscode.notebooks.createNotebookController(
@@ -32,8 +31,6 @@ export class DucklabController {
             'isql',
             crypto.randomUUID().toString()
         );
-
-        this.ds = new DuckdbDataSource(this.id, { dataPath: base_path, dbPath: db_path });
 
         this._controller.supportedLanguages = this.supportedLanguages;
         this._controller.supportsExecutionOrder = true;
@@ -112,42 +109,42 @@ export class DucklabController {
         }, 15000);
     }
 
-    async selectKernel() {
-        let activeTab: any = vscode.window.tabGroups.activeTabGroup.activeTab.input;
-        if (!activeTab) {
-            console.log("No active tab");
-            return;
-        };
-        console.log("window: ", activeTab.uri);
-        const uri = activeTab.uri;
-        const notebookEditor =
-            vscode.window.activeNotebookEditor?.notebook?.uri?.toString() === uri.toString()
-                ? vscode.window.activeNotebookEditor
-                : await vscode.window.showNotebookDocument(await vscode.workspace.openNotebookDocument(uri));
-        // vscode.commands.executeCommand("notebook.selectKernel", {
-        //     notebookEditor,
-        // }).then(res => {
-        //     console.log("Select kernel res: ", typeof (res), res);
-        // });
-        let kernels = this.getKernelNotebook(notebookEditor.notebook);
-        console.log("Found kernels: ", kernels);
-    }
+    // async selectKernel() {
+    //     let activeTab: any = vscode.window.tabGroups.activeTabGroup.activeTab.input;
+    //     if (!activeTab) {
+    //         console.log("No active tab");
+    //         return;
+    //     };
+    //     console.log("window: ", activeTab.uri);
+    //     const uri = activeTab.uri;
+    //     const notebookEditor =
+    //         vscode.window.activeNotebookEditor?.notebook?.uri?.toString() === uri.toString()
+    //             ? vscode.window.activeNotebookEditor
+    //             : await vscode.window.showNotebookDocument(await vscode.workspace.openNotebookDocument(uri));
+    //     // vscode.commands.executeCommand("notebook.selectKernel", {
+    //     //     notebookEditor,
+    //     // }).then(res => {
+    //     //     console.log("Select kernel res: ", typeof (res), res);
+    //     // });
+    //     let kernels = this.getKernelNotebook(notebookEditor.notebook);
+    //     console.log("Found kernels: ", kernels);
+    // }
 
-    async getKernelNotebook(document: vscode.NotebookDocument): Promise<Kernel | undefined> {
-        const extension = vscode.extensions.getExtension<Jupyter>('ms-toolsai.jupyter');
-        if (!extension) {
-            vscode.window.showErrorMessage('Reactive Jupyter: Jupyter extension not installed');
-            throw new Error('Reactive Jupyter: Jupyter extension not installed');
-        }
-        if (!extension.isActive) { await extension.activate(); }
-        const api = extension.exports;
-        console.log("JupyterApi: ", extension.exports);
-        return new Promise<Kernel | undefined>(async (resolve) => {
-            const kernel = await api.kernels.getKernel(document.uri);
-            console.log("FoundKernel: ", kernel);
-            if (kernel && (kernel as any).language === 'python') { resolve(kernel); } else { resolve(undefined); }
-        });
-    }
+    // async getKernelNotebook(document: vscode.NotebookDocument): Promise<Kernel | undefined> {
+    //     const extension = vscode.extensions.getExtension<Jupyter>('ms-toolsai.jupyter');
+    //     if (!extension) {
+    //         vscode.window.showErrorMessage('Reactive Jupyter: Jupyter extension not installed');
+    //         throw new Error('Reactive Jupyter: Jupyter extension not installed');
+    //     }
+    //     if (!extension.isActive) { await extension.activate(); }
+    //     const api = extension.exports;
+    //     console.log("JupyterApi: ", extension.exports);
+    //     return new Promise<Kernel | undefined>(async (resolve) => {
+    //         const kernel = await api.kernels.getKernel(document.uri);
+    //         console.log("FoundKernel: ", kernel);
+    //         if (kernel && (kernel as any).language === 'python') { resolve(kernel); } else { resolve(undefined); }
+    //     });
+    // }
 
     private getRow(cols: IFieldInfo[], obj: any) {
         let row = "";
@@ -215,6 +212,5 @@ export class DucklabController {
             ]));
             execution.end(false, Date.now());
         }
-
     }
 }

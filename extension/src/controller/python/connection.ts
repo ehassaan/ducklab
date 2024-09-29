@@ -3,15 +3,15 @@ import getPort from 'get-port';
 import * as crypto from 'crypto';
 import * as zmq from 'zeromq';
 import { promises as fs } from 'fs';
-import { promiseMap } from './util';
+import { promiseMap } from '../util';
 import * as wireProtocol from '@nteract/messaging/lib/wire-protocol';
 import { RawJupyterMessage } from "@nteract/messaging/lib/wire-protocol";
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { IDisposable } from '../disposable';
-// import { Subject, Observable, from } from 'rxjs';
-import { ExecuteRequest, JupyterMessage, JupyterMessageHeader, MessageType } from '@nteract/messaging';
-import { Subject } from 'rxjs';
+import { IDisposable } from '../../disposable';
+import { JupyterMessage, JupyterMessageHeader } from '@nteract/messaging';
+import { TypedEmitter } from '../TypedEmitter';
+import { mkdir } from 'fs/promises';
 // import { IMessage, MessageContent } from './messaging';
 
 /* Interacting with the Python interface that likes lots of snake_cases: */
@@ -54,19 +54,19 @@ export function fromRawMessage(message: RawJupyterMessage, channel: string): Jup
     };
 }
 
-export class Connection implements IDisposable {
+export class PythonConnection implements IDisposable {
 
     public readonly id: string;
-    public readonly messages = new Subject<JupyterMessage>();
+    public readonly messages = new TypedEmitter<JupyterMessage>();
 
     /**
      * Establishes a new Connection listening in ports and with a connection
      * file ready to pass to a kernel.
      */
     public static async create() {
-        const routingId = crypto.randomBytes(8).toString('hex');
+        const routingId = crypto.randomUUID();
         const sockets: ISockets = await promiseMap({
-            key: crypto.randomBytes(32).toString('hex'),
+            key: crypto.randomUUID(),
             signatureScheme: 'hmac-sha256',
             control: createSocket(new zmq.Dealer({ routingId })),
             heartbeat: createSocket(new zmq.Push()),
@@ -77,7 +77,7 @@ export class Connection implements IDisposable {
 
         sockets.iopub.socket.subscribe();
 
-        const cnx = new Connection(sockets, await createConnectionFile(sockets));
+        const cnx = new PythonConnection(sockets, await createConnectionFile(sockets));
         cnx.processSocketMessages(sockets.control.socket, "control");
         cnx.processSocketMessages(sockets.iopub.socket, "iopub");
         cnx.processSocketMessages(sockets.shell.socket, "shell");
@@ -98,7 +98,7 @@ export class Connection implements IDisposable {
     ) {
         for await (const msg of socket) {
             const message = wireProtocol.decode(msg, this.sockets.key, this.sockets.signatureScheme);
-            this.messages.next(fromRawMessage(message, channel));
+            this.messages.emit(fromRawMessage(message, channel));
         }
     }
 
@@ -107,7 +107,7 @@ export class Connection implements IDisposable {
      * in response to it.
      */
     public async send(message: JupyterMessage) {
-        console.log("Sending message: ", message);
+        console.log("Sending message: ", message.header.msg_type, message.header.msg_id, message);
         await this.sendRaw(toRawMessage(message), message.channel);
     }
 
@@ -139,22 +139,6 @@ export class Connection implements IDisposable {
     }
 }
 
-function getSocketName(msg_type: MessageType): SendChannel | ReceiveChannel {
-    switch (msg_type) {
-        case 'execute_request':
-            return 'shell';
-        case 'execute_reply':
-            return 'iopub';
-        case 'execute_result':
-            return 'iopub';
-        case 'shutdown_request':
-            return 'control';
-        case 'shutdown_reply':
-            return 'control';
-        default:
-            throw Error("MessageType not recognized: " + msg_type);
-    }
-};
 
 async function createConnectionFile(sockets: ISockets, host = '127.0.0.1'): Promise<string> {
     const contents = JSON.stringify({
@@ -169,7 +153,13 @@ async function createConnectionFile(sockets: ISockets, host = '127.0.0.1'): Prom
         key: sockets.key,
     });
 
-    const fname = join(tmpdir(), `ducklab-kernel-${crypto.randomBytes(8).toString('hex')}.json`);
+    let parent = join(tmpdir(), "ducklab");
+    try {
+        await mkdir(parent, { recursive: true });
+    }
+    catch {
+    }
+    const fname = join(parent, `ducklab-kernel-${crypto.randomBytes(8).toString('hex')}.json`);
     await fs.writeFile(fname, contents);
     return fname;
 }

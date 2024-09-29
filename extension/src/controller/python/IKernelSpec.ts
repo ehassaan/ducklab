@@ -3,7 +3,7 @@ import zmq from "zeromq";
 
 export enum KernelType {
     IPYKERNEL = "IPYKERNEL",
-    // JUPYTER = "JUPYTER",
+    DUCKDB = "DUCKDB",
 }
 
 export interface IPyKernelConnectionInfo {

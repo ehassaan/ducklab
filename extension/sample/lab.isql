@@ -35,5 +35,19 @@ select * from 'data/MOCK_DATA.csv';
 
 select * from 'extension/src/mount-s3/housing_data/housing_data.parquet'
 
--- %% SQL_RAW | unnamed
+-- %% PYTHON | unnamed
+import time
+
+print("Hello from python")
+time.sleep(3)
+print("Hello from python2")
+time.sleep(3)
+print("Hello from python3")
+
+-- %% PYTHON | unnamed
+import pandas as pd
+
+df = pd.DataFrame([{ "a": 1, "b": 2}, { "a": 1, "b": 2}, { "a": 1, "b": 2}])
+df
+-- %% PYTHON | unnamed
 

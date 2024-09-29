@@ -238,7 +238,7 @@ To see all configurable class-options for some <cmd>, use:
 --ident=<CUnicode>
     The UUID identifying this session.
     Default: ''
-    Equivalent to: [--Session.session]
+    Equivalent to: [--Session.session]  
 --user=<Unicode>
     Username for the Session. Default is your system username.
     Default: 'username'

@@ -7,21 +7,21 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
 
   serializer: INotebookSerializer;
 
-  languageMap = {
+  readonly languageMap = {
     sql: CellType.SQL_RAW,
     "sql-view": CellType.SQL_VIEW,
     plaintext: CellType.TEXT,
     markdown: CellType.MD,
     python: CellType.PYTHON
-  };
+  } as const;
 
-  cellTypeMap = {
+  readonly cellTypeMap = {
     [CellType.SQL_RAW]: "sql",
     [CellType.SQL_VIEW]: "sql-view",
     [CellType.TEXT]: "plaintext",
     [CellType.MD]: "markdown",
     [CellType.PYTHON]: "python"
-  };
+  } as const;
 
   constructor(serializer: INotebookSerializer) {
     this.serializer = serializer;
@@ -31,9 +31,9 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
     let cellKind = cell.type === CellType.MD ? vscode.NotebookCellKind.Markup : vscode.NotebookCellKind.Code;
 
 
-    let languageId;
+    let languageId: string;
     if (!(cell.type in this.cellTypeMap)) {
-      languageId = CellType.TEXT;
+      languageId = "plaintext";
     }
     else {
       languageId = this.cellTypeMap[cell.type];
@@ -54,13 +54,13 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
     var textContent = new TextDecoder().decode(content);
     console.log(textContent);
     let notebook = this.serializer.parse(textContent);
-    console.log("Desierialized: ", notebook.cells);
+    console.warn("Desierialized: ", notebook.id);
 
     let cells = notebook.cells.map(cell => this.createCellData(cell));
 
     let nbData = new vscode.NotebookData(cells);
     nbData.metadata = {
-      notebook: notebook.id
+      id: notebook.id,
     };
     console.log("Loaded: ", nbData);
     return nbData;
@@ -82,13 +82,13 @@ export class NotebookSerializer implements vscode.NotebookSerializer {
       else {
         cellType = this.languageMap[langId];
       }
-      let cell = new NotebookCell(crypto.randomUUID(), name, notebook, data.cells[i].value, cellType);
+      let cell = new NotebookCell(notebook.id + i, name, notebook, data.cells[i].value, cellType);
       notebook.cells.push(cell);
     }
 
     try {
       let content = this.serializer.serialize(notebook);
-      console.log("Saving:\n", notebook, content);
+      console.log("Saving: ", notebook.id);
 
       return new TextEncoder().encode(content);
     }

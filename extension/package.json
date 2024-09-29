@@ -104,7 +104,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@ducklab/core": "0.3.17",
+    "@ducklab/core": "0.3.18",
     "@nteract/messaging": "^7.0.20",
     "apache-arrow": "^17.0.0",
     "aws-sdk": "^2.1685.0",
