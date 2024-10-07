@@ -1,12 +1,12 @@
 
 import * as vscode from "vscode";
 import { IFieldInfo, ITabularResultSet } from '@ducklab/core';
-import { Environment, PythonExtension, ResolvedEnvironment } from '@vscode/python-extension';
+import { PythonExtension, ResolvedEnvironment } from '@vscode/python-extension';
 import { IKernelSpec, KernelType } from './python/IKernelSpec';
 import { KernelManager } from './python/KernelManager';
 import { IRunningKernel } from './IRunningKernel';
 import { MessageType, OutputMessage } from './messaging';
-import { from } from 'rxjs';
+import { IDisposable } from '@/disposable';
 
 
 function fromEnvToSpec(env: ResolvedEnvironment): IKernelSpec {
@@ -20,7 +20,7 @@ function fromEnvToSpec(env: ResolvedEnvironment): IKernelSpec {
     };
 }
 
-export class NotebookController {
+export class NotebookController implements IDisposable {
 
     readonly id = 'ducklab-controller';
     readonly notebookType = 'isql';
@@ -41,21 +41,26 @@ export class NotebookController {
     constructor() {
         console.log("SelectionController constructor");
 
-        this._controller = vscode.notebooks.createNotebookController(this.id, this.notebookType, this.label,
-            (cells, notebook, controller) => {
-                return this.executeHandler(cells, notebook, controller);
-            }
-        );
-        this._controller.interruptHandler = (notebook) => {
-            if (this.kernelMap[notebook.uri.fsPath]) {
-                this.kernelManager.get(this.kernelMap[notebook.uri.fsPath])?.interrupt();
-            }
-        };
-        this._controller.onDidChangeSelectedNotebooks(({ notebook, selected }) => {
-            console.log("NotebookSelection: ", selected, notebook);
-        });
-        vscode.commands.registerCommand("ducklab.listKernels", () => this.requestKernelSelection());
-        this.listenEnvironmentChangeEvent();
+        try {
+            this._controller = vscode.notebooks.createNotebookController(this.id, this.notebookType, this.label,
+                (cells, notebook, controller) => {
+                    return this.executeHandler(cells, notebook, controller);
+                }
+            );
+            this._controller.interruptHandler = (notebook) => {
+                if (this.kernelMap[notebook.uri.fsPath]) {
+                    this.kernelManager.get(this.kernelMap[notebook.uri.fsPath])?.interrupt();
+                }
+            };
+            this._controller.onDidChangeSelectedNotebooks(({ notebook, selected }) => {
+                console.log("NotebookSelection: ", selected, notebook);
+            });
+            vscode.commands.registerCommand("ducklab.listKernels", () => this.requestKernelSelection());
+            this.listenEnvironmentChangeEvent();
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 
     public getInnerController() {
@@ -207,28 +212,30 @@ export class NotebookController {
         execution.executionOrder = ++this._executionOrder;
         execution.start(Date.now()); // Keep track of elapsed time to execute cell.
         execution.clearOutput(cell);
+        let failed = false;
         try {
             let resEmitter = await kernel.execute(cell.document.getText());
             resEmitter.on(event => {
                 console.log("Result: ", event);
                 if (event.msgType === MessageType.Output) {
-
-                    let text = (event as OutputMessage).content.text;
+                    const msg = (event as OutputMessage);
 
                     execution.appendOutput([
                         new vscode.NotebookCellOutput([
-                            vscode.NotebookCellOutputItem.text(text)
+                            vscode.NotebookCellOutputItem.text(msg.content.data, msg.content.contentType)
                         ])
                     ]);
                 }
                 if (event.msgType === MessageType.Error) {
+                    console.log("Error: ", event);
                     execution.appendOutput(new vscode.NotebookCellOutput([
-                        vscode.NotebookCellOutputItem.error(new Error(event.content.traceback))
+                        vscode.NotebookCellOutputItem.stderr(event.content.traceback)
                     ]));
+                    failed = true;
                 }
             });
             resEmitter.onDispose(() => {
-                execution.end(true, Date.now());
+                execution.end(!failed, Date.now());
             });
         }
 

@@ -42,6 +42,7 @@ const config = [
             })
         ],
         external: [
+            ...builtinModules,
             "vscode",
             "duckdb-async",
             "zeromq"

@@ -14,7 +14,7 @@ export interface ErrorContent {
 }
 
 export interface OutputContent {
-    text: string;
+    data: string;
     contentType: string;
 }
 
@@ -37,9 +37,9 @@ export function transformKnownMessage(msg: JupyterMessage) {
             msgType: MessageType.Error,
             msgId: msg.header.msg_id,
             content: {
-                contentType: "string",
+                contentType: "text/plain",
                 output: msg.content.text,
-                traceback: msg.content.traceback,
+                traceback: msg.content.traceback.join("\n"),
                 ename: msg.content.ename,
                 evalue: msg.content.evalue
             }
@@ -51,8 +51,30 @@ export function transformKnownMessage(msg: JupyterMessage) {
             msgId: msg.header.msg_id,
             parentMsgId: msg.parent_header.msg_id,
             content: {
-                contentType: "string",
-                text: msg.content.text
+                contentType: "text/plain",
+                data: msg.content.text
+            }
+        } as OutputMessage;
+    }
+    else if (msg.header.msg_type === "execute_result") {
+        let data = null;
+        let type = "text/plain";
+        let formats = ["text/html", "application/json", "image/png", "image/jpg", "image/jpeg"];
+
+        for (const fmt of formats) {
+            if (msg.content.data[fmt]) {
+                data = msg.content.data[fmt];
+                type = fmt;
+                break;
+            }
+        }
+        return {
+            msgType: MessageType.Output,
+            msgId: msg.header.msg_id,
+            parentMsgId: msg.parent_header.msg_id,
+            content: {
+                contentType: type,
+                data: data
             }
         } as OutputMessage;
     }

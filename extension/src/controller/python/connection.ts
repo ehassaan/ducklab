@@ -98,6 +98,7 @@ export class PythonConnection implements IDisposable {
     ) {
         for await (const msg of socket) {
             const message = wireProtocol.decode(msg, this.sockets.key, this.sockets.signatureScheme);
+            console.log("Message Received: ", channel, message.header.msg_type, message.parent_header.msg_id, message);
             this.messages.emit(fromRawMessage(message, channel));
         }
     }

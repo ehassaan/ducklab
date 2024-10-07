@@ -1,7 +1,6 @@
 -- %% SQL_RAW | mytable
 
 select * from mytable1232
-
 -- %% SQL_RAW | unnamed
 create or replace view myview as (select *
 
@@ -48,6 +47,8 @@ print("Hello from python3")
 import pandas as pd
 
 df = pd.DataFrame([{ "a": 1, "b": 2}, { "a": 1, "b": 2}, { "a": 1, "b": 2}])
+print(df)
+-- %% PYTHON | unnamed
 df
 -- %% PYTHON | unnamed
 

@@ -60,7 +60,6 @@ export class PythonKernel implements IRunningKernel {
             console.log("spawn");
         });
         this.connection.messages.on(msg => {
-            console.log("Message Received: ", msg.header.msg_type, msg.parent_header.msg_id, msg);
 
             this.updateStatus(msg);
             let convertedMsg = transformKnownMessage(msg);
@@ -123,8 +122,8 @@ export class PythonKernel implements IRunningKernel {
 
     public async execute(code: string): Promise<TypedEmitter<IKernelMessage>> {
         let request = executeRequest(code, {
-            allow_stdin: false,
-            silent: true,
+            allow_stdin: true,
+            silent: false,
             stop_on_error: true,
             store_history: true,
             user_expressions: {}
