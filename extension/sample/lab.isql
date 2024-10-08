@@ -42,12 +42,14 @@ time.sleep(3)
 print("Hello from python2")
 time.sleep(3)
 print("Hello from python3")
-
+asd
 -- %% PYTHON | unnamed
 import pandas as pd
 
 df = pd.DataFrame([{ "a": 1, "b": 2}, { "a": 1, "b": 2}, { "a": 1, "b": 2}])
 print(df)
+-- %% PYTHON | unnamed
+asdsad
 -- %% PYTHON | unnamed
 df
 -- %% PYTHON | unnamed

@@ -28,7 +28,7 @@ export class NotebookController implements IDisposable {
     readonly label: string = 'Ducklab';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
-    readonly supportsExecutionOrder?: boolean | undefined;
+    readonly supportsExecutionOrder = true;
     readonly kernelManager = new KernelManager();
     private kernelMap: { [nbId: string]: string; } = {};
 
@@ -55,6 +55,8 @@ export class NotebookController implements IDisposable {
             this._controller.onDidChangeSelectedNotebooks(({ notebook, selected }) => {
                 console.log("NotebookSelection: ", selected, notebook);
             });
+            this._controller.supportsExecutionOrder = this.supportsExecutionOrder;
+            this._controller.supportedLanguages = this.supportedLanguages;
             vscode.commands.registerCommand("ducklab.listKernels", () => this.requestKernelSelection());
             this.listenEnvironmentChangeEvent();
         }
@@ -75,13 +77,12 @@ export class NotebookController implements IDisposable {
         }
         let kernel = await this.kernelManager.launchKernel(spec);
         this.kernelMap[notebook.uri.fsPath] = kernel.id;
-        await kernel.waitReady(20);
+        await kernel.waitReady(90);
         console.log("Kernel Ready: ", kernel.status, kernel);
         return kernel;
     }
 
     async executeHandler(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) {
-
         console.log("Execute: ", notebook);
         try {
             let kernel = await this.resolveKernel(notebook);
@@ -208,42 +209,52 @@ export class NotebookController implements IDisposable {
     }
 
     private async _doExecution(cell: vscode.NotebookCell, kernel: IRunningKernel): Promise<void> {
+        let failed = false;
         const execution = this._controller.createNotebookCellExecution(cell);
+
         execution.executionOrder = ++this._executionOrder;
         execution.start(Date.now()); // Keep track of elapsed time to execute cell.
-        execution.clearOutput(cell);
-        let failed = false;
+        await execution.clearOutput();
+        let output = new vscode.NotebookCellOutput([]);
+        await execution.replaceOutput(output);
+
         try {
             let resEmitter = await kernel.execute(cell.document.getText());
-            resEmitter.on(event => {
-                console.log("Result: ", event);
+            resEmitter.on(async (event) => {
+                console.log("Result: ", cell.index, event.msgType, event.content);
                 if (event.msgType === MessageType.Output) {
                     const msg = (event as OutputMessage);
 
-                    execution.appendOutput([
-                        new vscode.NotebookCellOutput([
+                    if (msg.content.contentType === "text/html") {
+                        await execution.appendOutput(new vscode.NotebookCellOutput([
                             vscode.NotebookCellOutputItem.text(msg.content.data, msg.content.contentType)
-                        ])
-                    ]);
+                        ]));
+                    }
+                    else {
+                        await execution.appendOutputItems([
+                            vscode.NotebookCellOutputItem.stdout(msg.content.data)
+                        ], output);
+                    }
                 }
                 if (event.msgType === MessageType.Error) {
                     console.log("Error: ", event);
-                    execution.appendOutput(new vscode.NotebookCellOutput([
+                    failed = true;
+                    await execution.appendOutput(new vscode.NotebookCellOutput([
                         vscode.NotebookCellOutputItem.stderr(event.content.traceback)
                     ]));
-                    failed = true;
                 }
             });
             resEmitter.onDispose(() => {
+                console.log("Response emitter Disposed: ", cell.index);
                 execution.end(!failed, Date.now());
             });
         }
 
         catch (e) {
             console.log("Exception during execution: ", e);
-            execution.replaceOutput(new vscode.NotebookCellOutput([
-                vscode.NotebookCellOutputItem.error(new Error(e.message))
-            ]));
+            // await execution.replaceOutput(new vscode.NotebookCellOutput([
+            //     vscode.NotebookCellOutputItem.error(new Error(e.message))
+            // ]), cell);
             execution.end(false, Date.now());
         }
     }

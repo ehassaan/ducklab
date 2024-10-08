@@ -5,7 +5,7 @@ import { TypedEmitter } from "../TypedEmitter";
 import { ChildProcess, ChildProcessWithoutNullStreams } from 'child_process';
 import { executeRequest, ExecuteRequest, JupyterMessage } from '@nteract/messaging';
 import { IRunningKernel, KernelStatus } from "../IRunningKernel";
-import { ErrorMessage, OutputMessage, MessageType, IKernelMessage, transformKnownMessage } from "../messaging";
+import { ErrorMessage, OutputMessage, MessageType, IKernelMessage, transformKnownMessage as transformDataMessage } from "../messaging";
 
 
 export class PythonKernel implements IRunningKernel {
@@ -24,6 +24,7 @@ export class PythonKernel implements IRunningKernel {
     }
     private set status(v) {
         this._status = v;
+        this.statusChanged.emit(v);
     }
 
     private _requestCancellation = new TypedEmitter<void>();
@@ -62,7 +63,7 @@ export class PythonKernel implements IRunningKernel {
         this.connection.messages.on(msg => {
 
             this.updateStatus(msg);
-            let convertedMsg = transformKnownMessage(msg);
+            let convertedMsg = transformDataMessage(msg);
             if (!convertedMsg) {
                 return;
             }
@@ -80,15 +81,12 @@ export class PythonKernel implements IRunningKernel {
             switch (msg.content.execution_state) {
                 case "starting":  // this message means it is already started. Why Jupyter?
                     this.status = KernelStatus.Idle;
-                    this.statusChanged.emit(this.status);
                     break;
                 case "idle":
                     this.status = KernelStatus.Idle;
-                    this.statusChanged.emit(this.status);
                     break;
                 case "busy":
                     this.status = KernelStatus.Busy;
-                    this.statusChanged.emit(this.status);
                     break;
                 default:
                     break;
@@ -145,11 +143,18 @@ export class PythonKernel implements IRunningKernel {
             if (res.header.session !== this.id) return;
             if (res.parent_header.msg_id !== req.header.msg_id) return;
 
-            let message = transformKnownMessage(res);
+            let message = transformDataMessage(res);
             if (message) {
                 emitter.emit(message);
             }
-            if (res.header.msg_type === "execute_reply") {
+            else {
+                console.log("Unknown Message: ", res);
+            }
+            if (res.header.msg_type === "error") {
+                unsub();  // execution completed, no need to listen more events
+                emitter.dispose();
+            }
+            else if (res.header.msg_type === "execute_reply") {
                 unsub();  // execution completed, no need to listen more events
                 emitter.dispose();
             }

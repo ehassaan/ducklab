@@ -19,7 +19,8 @@ export class TypedEmitter<T = any> {
     }
 
     public on(callback: (event: T) => any) {
-        this._subscriptions.push({ callback, id: this._counterSub++ });
+        this._counterSub++;
+        this._subscriptions.push({ callback, id: this._counterSub });
         let counter = this._counterSub;
         return () => {
             let idx = this._subscriptions.findIndex(e => e.id === counter);
@@ -38,7 +39,12 @@ export class TypedEmitter<T = any> {
 
     public dispose() {
         for (let cb of this._dispose) {
-            cb.callback();
+            try {
+                cb.callback();
+            }
+            catch (e) {
+                console.error("Error in dispose: ", e);
+            }
         }
     }
 }
