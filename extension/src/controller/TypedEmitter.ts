@@ -9,7 +9,7 @@ export class TypedEmitter<T = any> {
 
     private _subscriptions: CallbackSubscription<T>[] = [];
     private _counterSub = 0;
-    private _dispose: CallbackSubscription<void>[] = [];  // subscriptions for dispose event
+    private _dispose: CallbackSubscription<number>[] = [];  // subscriptions for dispose event
     private _counterDis = 0;
 
     public emit(event: T) {
@@ -28,7 +28,7 @@ export class TypedEmitter<T = any> {
         };
     }
 
-    onDispose(callback: () => any) {
+    onDispose(callback: (code: number) => any) {
         this._dispose.push({ callback, id: this._counterSub++ });
         let counter = this._counterDis;
         return () => {
@@ -37,14 +37,15 @@ export class TypedEmitter<T = any> {
         };
     }
 
-    public dispose() {
+    public dispose(code: number = 0) {
         for (let cb of this._dispose) {
             try {
-                cb.callback();
+                cb.callback(code);
             }
             catch (e) {
                 console.error("Error in dispose: ", e);
             }
         }
+        this._dispose = [];
     }
 }

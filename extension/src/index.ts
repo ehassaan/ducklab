@@ -2,8 +2,9 @@ import * as vscode from 'vscode';
 import { NotebookSerializer } from './serializer/NotebookSerializer';
 import { IsqlSerializer, DatabricksSerializer } from "@ducklab/core";
 import { Utils } from "vscode-uri";
-import { NotebookController } from './controller/NotebookController';
+import { NotebookController } from './controller/DucklabController';
 import { importDatabricksPyFile } from './databricks/import_db';
+import { DucklabSparkController } from './controller/DucklabSparkController';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -38,6 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
     try {
         // new NotebookController();
         context.subscriptions.push(new NotebookController());
+        context.subscriptions.push(new DucklabSparkController());
     }
     catch (ex) {
         console.log("Failed: ", ex);

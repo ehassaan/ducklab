@@ -16,7 +16,7 @@ export interface IRunningKernel {
     stdout: TypedEmitter<OutputMessage>;
     stderr: TypedEmitter<ErrorMessage>;
     // message: TypedEmitter<IKernelMessage>;
-    exit: TypedEmitter;
+    // exit: TypedEmitter;
     status: KernelStatus;
     statusChanged: TypedEmitter<KernelStatus>;
     execute(code: string): Promise<TypedEmitter<IKernelMessage>>;

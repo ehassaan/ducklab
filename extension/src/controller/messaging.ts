@@ -59,7 +59,7 @@ export function transformKnownMessage(msg: JupyterMessage) {
     else if (msg.header.msg_type === "execute_result") {
         let data = null;
         let type = "text/plain";
-        let formats = ["text/html", "application/json", "image/png", "image/jpg", "image/jpeg"];
+        let formats = ["text/html", "application/json", "image/png", "image/jpg", "image/jpeg", "text/plain"];
 
         for (const fmt of formats) {
             if (msg.content.data[fmt]) {

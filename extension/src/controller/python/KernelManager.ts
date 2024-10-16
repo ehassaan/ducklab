@@ -2,7 +2,7 @@ import { exec, spawn } from 'child_process';
 import { IKernelSpec } from './IKernelSpec';
 import { PythonConnection } from './connection';
 import { PythonKernel } from "./PythonKernel";
-import { IRunningKernel } from '../IRunningKernel';
+import { IRunningKernel, KernelStatus } from '../IRunningKernel';
 
 
 export class KernelManager {
@@ -77,7 +77,9 @@ export class KernelManager {
 
     kill(kernelId: string) {
         if (kernelId in this.kernels) {
-            this.kernels[kernelId].dispose();
+            if (this.kernels[kernelId].status !== KernelStatus.Killed) {
+                this.kernels[kernelId].dispose();
+            }
             delete this.kernels[kernelId];
         }
     }

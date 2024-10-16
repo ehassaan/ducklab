@@ -3,7 +3,7 @@ import { IKernelSpec } from './IKernelSpec';
 import { PythonConnection } from "./connection";
 import { TypedEmitter } from "../TypedEmitter";
 import { ChildProcess, ChildProcessWithoutNullStreams } from 'child_process';
-import { executeRequest, ExecuteRequest, JupyterMessage } from '@nteract/messaging';
+import { executeRequest, JupyterMessage, MessageType as NativeMessageType } from '@nteract/messaging';
 import { IRunningKernel, KernelStatus } from "../IRunningKernel";
 import { ErrorMessage, OutputMessage, MessageType, IKernelMessage, transformKnownMessage as transformDataMessage } from "../messaging";
 
@@ -25,9 +25,10 @@ export class PythonKernel implements IRunningKernel {
     private set status(v) {
         this._status = v;
         this.statusChanged.emit(v);
+        if (v === KernelStatus.Killed) {
+            this.exit.emit(null);
+        }
     }
-
-    private _requestCancellation = new TypedEmitter<void>();
 
     constructor(
         readonly info: IKernelSpec,
@@ -46,16 +47,13 @@ export class PythonKernel implements IRunningKernel {
         });
         this._process.on("error", err => {
             console.log("error: ", err);
-            this.exit.emit(err);
         });
         this._process.on("disconnect", () => {
             console.log("disconnect");
         });
         this._process.on("exit", code => {
             console.log("exit: ", code);
-            this.exit.emit(
-                code && this._status !== KernelStatus.Killed ? new Error(`Kernel exited with code ${code}`) : undefined,
-            );
+            this.dispose();
         });
         this._process.on("spawn", () => {
             console.log("spawn");
@@ -94,28 +92,28 @@ export class PythonKernel implements IRunningKernel {
         }
     }
 
-    public async waitReady(timeout_seconds: number = 120) {
+    public async waitReady(timeout_ms: number = 120000) {
         if (this._status !== KernelStatus.NotReady) return;
         return new Promise<void>((resolve, reject) => {
 
             let cancel = setTimeout(() => {
                 unsub();
                 return reject(Error("Timeout while waiting for kernel start"));
-            }, timeout_seconds * 1000);
+            }, timeout_ms);
 
             let unsub = this.statusChanged.on(changed => {
-                if (changed !== KernelStatus.NotReady) {
-                    clearTimeout(cancel);
-                    unsub();
-                    return resolve();
+                if (changed === KernelStatus.NotReady) {
+                    return;
                 }
+                clearTimeout(cancel);
+                unsub();
+
+                if (changed === KernelStatus.Killed) {
+                    return reject(Error("Kernel killed"));
+                }
+                return resolve();
             });
         });
-    }
-
-    public async interrupt() {
-        this._process.kill("SIGINT");
-        // this._requestCancellation.emit();
     }
 
     public async execute(code: string): Promise<TypedEmitter<IKernelMessage>> {
@@ -134,6 +132,58 @@ export class PythonKernel implements IRunningKernel {
 
         await this.connection.send(request);
         return emitter;
+    }
+
+    public async executeSync(code: string, timeout_ms: number): Promise<IKernelMessage[]> {
+        return new Promise(async (resolve, reject) => {
+            console.log("Init code: ", code);
+            let res = await this.execute(code);
+            let results: IKernelMessage[] = [];
+            res.on(ev => {
+                console.log("Init response: ", ev);
+                results.push(ev);
+            });
+            let interval = setTimeout(() => {
+                unsub();
+                return reject(Error("Timeout: Did not receive any response from kernel"));
+            }, timeout_ms);
+            const unsub = res.onDispose(code => {
+                if (code) {
+                    clearTimeout(interval);
+                    return reject(Error("Failed: " + results));
+                }
+                else {
+                    clearTimeout(interval);
+                    return resolve(results);
+                }
+            });
+        });
+    }
+
+    private createNativeMessage(msgType: NativeMessageType, channel: string, content: any) {
+        const msg: JupyterMessage = {
+            header: {
+                msg_id: crypto.randomUUID(),
+                session: this.id,
+                msg_type: msgType,
+                username: "ducklab",
+                version: "5.3",
+                date: new Date().toISOString()
+            },
+            metadata: {},
+            content: null,
+            parent_header: null,
+            channel: channel
+        };
+        return msg;
+    }
+
+    public async interrupt() {
+        this.dispose();
+        // this._process.kill("SIGTERM");
+        // this.status = KernelStatus.Killed;
+        // const msg = this.createNativeMessage("interrupt_request", "control", {});
+        // await this.connection.send(msg);
     }
 
     private createResponseEmitter(req: JupyterMessage) {
@@ -159,12 +209,16 @@ export class PythonKernel implements IRunningKernel {
                 emitter.dispose();
             }
         });
+        this.exit.on(ev => {
+            emitter.dispose(1);
+        });
         return emitter;
     }
 
     public dispose() {
         this._process.kill();
+        this.stderr.dispose();
+        this.stdout.dispose();
         this.status = KernelStatus.Killed;
-        this.statusChanged.emit(KernelStatus.Killed);
     }
 }
