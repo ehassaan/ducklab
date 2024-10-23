@@ -53,4 +53,26 @@ asdsad
 -- %% PYTHON | unnamed
 df
 -- %% PYTHON | unnamed
+print(spark)
+-- %% PYTHON | unnamed
+import pandas as pd
+from duckdb.experimental.spark.sql.functions import lit, col
+
+
+pandas_df = pd.DataFrame({
+    'age': [34, 45, 23, 56],
+    'name': ['Joan', 'Peter', 'John', 'Bob']
+})
+
+df = spark.createDataFrame(pandas_df)
+df = df.withColumn(
+    'location', lit('Seattle')
+)
+res = df.select(
+    col('age'),
+    col('location')
+)
+
+display(res)
+-- %% PYTHON | unnamed
 

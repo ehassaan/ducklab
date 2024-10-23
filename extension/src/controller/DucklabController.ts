@@ -6,9 +6,10 @@ import { MessageType, OutputMessage } from './messaging';
 import { IDisposable } from '@/disposable';
 import { TypedEmitter } from './TypedEmitter';
 import { KernelSelector } from './vs/KernelSelector';
+import path from 'path';
 
 
-export class NotebookController implements IDisposable {
+export class DucklabController implements IDisposable {
 
     readonly id = 'ducklab';
     readonly notebookType = 'isql';
@@ -23,8 +24,11 @@ export class NotebookController implements IDisposable {
     private readonly _controller: vscode.NotebookController;
     private _executionOrder = 0;
     private kSelector = new KernelSelector();
+    private tempPath: string;
 
-    constructor() {
+    constructor(opts: { tempPath: string; }) {
+
+        this.tempPath = opts.tempPath;
 
         try {
             this._controller = vscode.notebooks.createNotebookController(this.id,
@@ -40,7 +44,10 @@ export class NotebookController implements IDisposable {
                 console.log("NotebookSelection: ", selected, notebook);
             });
 
-            vscode.commands.registerCommand("ducklab.listKernels", () => this.kSelector.requestKernelSelection());
+            this.kSelector.init(`
+                import duckdb
+                db = duckdb.connect(r'${path.join(this.tempPath, this.id)}.duckdb')
+            `, 60000);
         }
         catch (e) {
             console.log(e);
@@ -129,7 +136,7 @@ export class NotebookController implements IDisposable {
                 resEmitter = await kernel.execute(cell.document.getText());
             }
             if (cell.document.languageId.toLowerCase() === "sql") {
-                resEmitter = await kernel.execute(`db.execute(${cell.document.getText()})`);
+                resEmitter = await kernel.execute(`db.execute("""${cell.document.getText()}""")`);
             }
             resEmitter.on(async (event) => {
                 console.log("Result: ", cell.index, event.msgType, event.content);

@@ -8,6 +8,7 @@ import { IRunningKernel, KernelStatus } from '../IRunningKernel';
 export class KernelManager {
 
     kernels: { [id: string]: IRunningKernel; } = {};
+    requiredPackages = ["ipykernel", "duckdb"];
 
     async runCommand(kernel: IKernelSpec, cmd: string) {
         let promise = new Promise<string>((resolve, reject) => {
@@ -31,23 +32,30 @@ export class KernelManager {
         let lines = pipList.replaceAll("\r\n", "\n").split("\n");
         if (lines.length <= 2) return [];
 
-        let packages = lines.slice(2).map(line => {
+        let packages = {};
+
+        lines.slice(2).map(line => {
             let parts = line.replace(new RegExp("\\s+"), ":").split(":");
-            return {
-                name: parts[0],
-                version: parts[1]
-            };
+            packages[parts[0].toLowerCase()] = parts[1];
         });
         return packages;
     }
 
-    async installDeps(kernel: IKernelSpec) {
-        await this.runCommand(kernel, "-m pip install ipykernel");
-    }
+    async installRequiredDeps(kernel: IKernelSpec, packages: { [name: string]: string; }) {
+        console.log("Required packages: ", this.requiredPackages);
 
-    async hasRequiredDeps(packages: { name: string, version: string; }[]) {
-        let ipykernel = packages.filter(p => p.name.toLowerCase() === "ipykernel");
-        if (ipykernel.length === 0) return false;
+        for (const pkg of this.requiredPackages) {
+            if (!(pkg.toLowerCase() in packages)) {
+                let res = await this.runCommand(kernel, `-m pip install ${pkg}`);
+                console.log(`Package response: ${pkg} - ${res}`);
+            }
+            else {
+                console.log(`Package found ${pkg}==${packages[pkg]}`);
+            }
+        }
+
+        for (const pkg of this.requiredPackages) {
+        }
     }
 
     get(id: string) {
@@ -59,10 +67,9 @@ export class KernelManager {
 
     async launchKernel(spec: IKernelSpec) {
         let packages = await this.listDeps(spec);
-        if (!this.hasRequiredDeps(packages)) {
-            console.log("Installing required dependencies...");
-            await this.installDeps(spec);
-        }
+        console.log("Installed Packages: ", packages);
+        console.log("Installing required packages...");
+        await this.installRequiredDeps(spec, packages);
         let conn = await PythonConnection.create();
         let process = this.runProcess(spec, ["-m", "ipykernel_launcher", "-f", conn.connectionFile, "--ident", conn.id, "--user", "ducklab"]);
         let kernel = new PythonKernel(

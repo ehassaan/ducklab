@@ -13,13 +13,14 @@ export class KernelSelector {
     private entry_script: string;
     private init_timeout_ms: number;
 
-    async init(entry_script = null, init_timeout_ms = 60000) {
+    async init(entry_script: string = null, init_timeout_ms = 60000) {
         if (!this._python) {
             this._python = await PythonExtension.api();
             await this._python.ready;
         }
         this.listenEnvironmentChangeEvent();
-        this.entry_script = entry_script;
+        entry_script = entry_script.replace("\r\n", "\n");
+        this.entry_script = entry_script.split("\n").map(x => x.trim()).join("\n"); // remove whitespaces from eahc line
         this.init_timeout_ms = init_timeout_ms;
     }
 
@@ -98,9 +99,11 @@ export class KernelSelector {
         let kernel = await this.kernelManager.launchKernel(spec);
         this.kernelMap[notebook.uri.fsPath] = kernel.id;
         await kernel.waitReady(this.init_timeout_ms);
+        console.log("Init: ", this);
         if (this.entry_script) {
             console.log("Init entry_scirpt: ", this.entry_script);
-            await kernel.executeSync(this.entry_script, this.init_timeout_ms);
+            let res = await kernel.executeSync(this.entry_script, this.init_timeout_ms);
+            console.log("init response: ", res);
         }
         console.log("Kernel Ready: ", kernel.status, kernel);
         return kernel;

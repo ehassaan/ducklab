@@ -56,7 +56,7 @@ export function transformKnownMessage(msg: JupyterMessage) {
             }
         } as OutputMessage;
     }
-    else if (msg.header.msg_type === "execute_result") {
+    else if (msg.header.msg_type === "execute_result" || msg.header.msg_type === "display_data") {
         let data = null;
         let type = "text/plain";
         let formats = ["text/html", "application/json", "image/png", "image/jpg", "image/jpeg", "text/plain"];

@@ -6,6 +6,7 @@ import { MessageType, OutputMessage } from './messaging';
 import { IDisposable } from '@/disposable';
 import { TypedEmitter } from './TypedEmitter';
 import { KernelSelector } from './vs/KernelSelector';
+import path from 'path';
 
 
 export class DucklabSparkController implements IDisposable {
@@ -23,8 +24,11 @@ export class DucklabSparkController implements IDisposable {
     private readonly _controller: vscode.NotebookController;
     private _executionOrder = 0;
     private kSelector = new KernelSelector();
+    private tempPath: string;
 
-    constructor() {
+    constructor(opts: { tempPath: string; }) {
+
+        this.tempPath = opts.tempPath;
 
         try {
             this._controller = vscode.notebooks.createNotebookController(this.id,
@@ -40,14 +44,19 @@ export class DucklabSparkController implements IDisposable {
                 console.log("NotebookSelection: ", selected, notebook);
             });
 
-            vscode.commands.registerCommand("ducklab.listKernels", () => this.kSelector.requestKernelSelection());
             this.kSelector.init(`
-                import os
-                import sys
+                import duckdb
+                db = duckdb.connect(r'${path.join(this.tempPath, this.id)}.duckdb')
+                
+                # import os
+                # import sys
                 # sys.path.append(os.path.abspath('./pyspark.py'))  # can be used to rename duckdb.experimental.spark to pyspark
+                
                 from duckdb.experimental.spark.sql import SparkSession
                 spark = SparkSession.builder.getOrCreate()
-                `, 10000);
+
+            `, 60000);
+
         }
         catch (e) {
             console.log(e);
@@ -136,7 +145,7 @@ export class DucklabSparkController implements IDisposable {
                 resEmitter = await kernel.execute(cell.document.getText());
             }
             if (cell.document.languageId.toLowerCase() === "sql") {
-                resEmitter = await kernel.execute(`db.execute(${cell.document.getText()})`);
+                resEmitter = await kernel.execute(`db.execute("""${cell.document.getText()}""")`);
             }
             resEmitter.on(async (event) => {
                 console.log("Result: ", cell.index, event.msgType, event.content);
