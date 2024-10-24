@@ -68,11 +68,17 @@ df = spark.createDataFrame(pandas_df)
 df = df.withColumn(
     'location', lit('Seattle')
 )
-res = df.select(
+df = df.select(
     col('age'),
     col('location')
 )
 
-display(res)
+display(df)
 -- %% PYTHON | unnamed
+df.createOrReplaceTempView("myview")
+-- %% SQL_RAW | unnamed
+select * from myview
+-- %% PYTHON | unnamed
+spark.sql("select * from myview")
+-- %% SQL_RAW | unnamed
 

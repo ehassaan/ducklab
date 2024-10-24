@@ -145,7 +145,7 @@ export class DucklabSparkController implements IDisposable {
                 resEmitter = await kernel.execute(cell.document.getText());
             }
             if (cell.document.languageId.toLowerCase() === "sql") {
-                resEmitter = await kernel.execute(`db.execute("""${cell.document.getText()}""")`);
+                resEmitter = await kernel.execute(`spark.sql("""${cell.document.getText()}""")`);
             }
             resEmitter.on(async (event) => {
                 console.log("Result: ", cell.index, event.msgType, event.content);

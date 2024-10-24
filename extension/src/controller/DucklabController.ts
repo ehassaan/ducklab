@@ -136,7 +136,7 @@ export class DucklabController implements IDisposable {
                 resEmitter = await kernel.execute(cell.document.getText());
             }
             if (cell.document.languageId.toLowerCase() === "sql") {
-                resEmitter = await kernel.execute(`db.execute("""${cell.document.getText()}""")`);
+                resEmitter = await kernel.execute(`db.query("""${cell.document.getText()}""")`);
             }
             resEmitter.on(async (event) => {
                 console.log("Result: ", cell.index, event.msgType, event.content);
