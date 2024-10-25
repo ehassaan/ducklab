@@ -10,9 +10,7 @@ import { ErrorMessage, OutputMessage, MessageType, IKernelMessage, transformKnow
 
 export class PythonKernel implements IRunningKernel {
 
-    // public readonly stderr = new TypedEmitter<string>();
     public readonly exit = new TypedEmitter<Error | undefined>();
-    // public readonly stdout = new TypedEmitter<string>();
     public readonly stdout = new TypedEmitter<OutputMessage>();
     public readonly stderr = new TypedEmitter<ErrorMessage>();
     public readonly statusChanged = new TypedEmitter<KernelStatus>();

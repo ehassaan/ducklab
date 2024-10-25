@@ -36,7 +36,6 @@ export class IPykernelController {
         this._controller.supportsExecutionOrder = true;
 
         this.onDidChangeSelectedNotebooks = this._controller.onDidChangeSelectedNotebooks;
-        // this._controller.executeHandler = this.executeHa\ndler.bind(this);
         // vscode.commands.getCommands(false).then(res => {
         //     console.log("Commands: ", res);
         //     vscode.workspace.fs.writeFile(vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, "./commands.json"),

@@ -1,7 +1,7 @@
 {
   "name": "ducklab",
-  "displayName": "Ducklab (preview)",
-  "description": "Interactive SQL Notebooks. Powered by DuckDB",
+  "displayName": "Ducklab",
+  "description": "Interactive SQL/Python Notebooks. Powered by DuckDB",
   "version": "0.4.0",
   "license": "Apache-2.0",
   "publisher": "ducklake",
@@ -20,11 +20,12 @@
     "vscode": "^1.58.0"
   },
   "keywords": [
+    "notebookKernelIsql",
     "sql",
     "notebooks",
     "duckdb",
     "ducklab",
-    "notebookKernelIsql"
+    "pyspark"
   ],
   "categories": [
     "Data Science",
@@ -32,8 +33,7 @@
   ],
   "extensionDependencies": [
     "vscode.sql",
-    "vscode.python",
-    "ms-toolsai.jupyter"
+    "vscode.python"
   ],
   "type": "module",
   "main": "./dist/build/index.cjs",

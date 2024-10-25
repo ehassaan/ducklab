@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> Interactive SQL Notebooks | Powered by DuckDB
+<p align="center"> Interactive SQL and PySpark Notebooks | Powered by DuckDB
     <br> 
 </p>
 
@@ -24,62 +24,50 @@
 
 - [📝 Table of Contents](#-table-of-contents)
 - [🧐 About ](#-about-)
+- [🔥 Features ](#-features-)
 - [🏁 Getting Started ](#-getting-started-)
-  - [Prerequisites](#prerequisites)
-  - [Installing](#installing)
-- [🚀 Deployment ](#-deployment-)
+  - [Using Ducklab Kernel](#using-ducklab-kernel)
+  - [Using Ducklab Spark Kernel](#using-ducklab-spark-kernel)
+  - [Import Databricks Notebook](#import-databricks-notebook)
 - [💬 Contribute](#-contribute)
   - [Implement a new feature](#implement-a-new-feature)
   - [Request a new feature](#request-a-new-feature)
   - [Fix a bug](#fix-a-bug)
-- [⛏️ Built Using ](#️-built-using-)
 - [🎉 Acknowledgements ](#-acknowledgements-)
 
 ## 🧐 About <a name = "about"></a>
 
-DuckLab provides local SQL notebook experience for adhoc data analysis. It uses DuckDB to process your data within browser and VS Code. No data leaves your machine.
+DuckLab for VS Code provides data analysis features for SQL, PySpark and Python. It uses DuckDB to process your data locally.
+
+## 🔥 Features <a name = "features"></a>
+
+- Ducklab Kernel to run SQL and Python using same duckdb instance (exposed as `db` variable)
+- Ducklab Spark Kernel allows running pyspark code using `duckdb.experimental.spark` module (exposed as `spark`, a `SparkSession` instance).
+- Import Databricks `.py` notebooks and preview in a user-friendly VS Code Notebook window.
+- Use any python, venv or conda environment detected by VS Code Python extension.
+- Git-friendly `.isql` format. This format is plain SQL and Python. 
+- Ducklab doesn't use `ipynb` format which stores cell outputs in the file and pollutes git. It also makes diff in pull requests unreadable.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-Create a new `.isql` file and start writing SQL.
+### Using Ducklab Kernel
 
-To install from source,
+1. Create a new `.isql` file.
+2. Select kernel `Ducklab` / `Ducklab (Spark)`
+3. Select Python environment from bottom-right corner
+4. `Ducklab` kernel will have `db` variable (duckdb connection) already initialized for you.
 
-### Prerequisites
+### Using Ducklab Spark Kernel
 
-Install NodeJs 16 or above.
+1. Create a new `.isql` file.
+2. Select kernel `Ducklab (Spark)`
+3. Select Python environment from bottom-right corner
+4. `Ducklab (Spark)` kernel will have `spark` variable (SparkSession) already initialized for you.
 
-[https://nodejs.org/](https://nodejs.org/)
+### Import Databricks Notebook
 
-### Installing
-
-A step by step series of examples that tell you how to get a development env running.
-
-It is recommended to use `pnpm`,
-
-```
-# Install pnpm (if you don't have it installed already)
-npm i -g pnpm
-
-# install dependencies
-pnpm imstall
-
-# Start the dev server
-pnpm run dev
-```
-
-Or if you are using `npm`
-```
-# install dependencies
-npm install
-
-# start the dev server
-npm run dev
-```
-
-## 🚀 Deployment <a name = "deployment"></a>
-
-Application has no backend, build can be generated using `pnpm run build` and `dist` folder can be deployed as a static application on any static site hosting.
+1. Right click on a Databricks `.py` notebook file
+2. Click `Import Databricks Notebook`
 
 ## 💬 Contribute
 
@@ -98,12 +86,6 @@ Contributions are most welcome. There are various ways you can contribute,
 1. If you are resolving an issue, please add fix: #<issue number> <short message> in your PR title (e.g.fix: #3899 update entities encoding/decoding).
 2. Provide a short description of the bug in your PR and/or link to the issue.
 
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [VueJs](https://vuejs.org/) - Web Framework
-- [Vuetify](https://vuetifyjs.com/) - Material UI Framework
-- [DuckDb](https://duckdb.org/) - In-process database
-
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
-- [duckdb-wasm](https://github.com/duckdb/duckdb-wasm)
+- [DuckDb](https://duckdb.org/) - In-process analytics database
