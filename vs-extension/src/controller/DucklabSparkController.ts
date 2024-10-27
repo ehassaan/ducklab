@@ -14,7 +14,7 @@ export class DucklabSparkController implements IDisposable {
     readonly id = 'ducklab-spark';
     readonly notebookType = 'isql';
     readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
-    readonly label: string = 'Ducklab (Spark)';
+    readonly label: string = 'ducklab-spark';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
     readonly supportsExecutionOrder = true;
@@ -26,7 +26,7 @@ export class DucklabSparkController implements IDisposable {
     private kSelector = new KernelSelector();
     private tempPath: string;
 
-    constructor(opts: { tempPath: string; }) {
+    constructor(opts: { tempPath: string; workingDir: string; }) {
 
         this.tempPath = opts.tempPath;
 
@@ -44,9 +44,11 @@ export class DucklabSparkController implements IDisposable {
                 console.log("NotebookSelection: ", selected, notebook);
             });
 
+            // json stringify to escape the string
             this.kSelector.init(`
                 import duckdb
                 db = duckdb.connect(r'${path.join(this.tempPath, this.id)}.duckdb')
+                db.execute('set file_search_path=${JSON.stringify(opts.workingDir)};')
                 
                 # import os
                 # import sys
@@ -55,7 +57,9 @@ export class DucklabSparkController implements IDisposable {
                 from duckdb.experimental.spark.sql import SparkSession
                 spark = SparkSession.builder.getOrCreate()
 
-            `, 60000);
+            `, 60000).then(() => {
+                this.kSelector.requestKernelSelection(vscode.window.activeNotebookEditor.notebook);
+            });
 
         }
         catch (e) {

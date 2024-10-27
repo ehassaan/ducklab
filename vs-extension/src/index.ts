@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import { NotebookSerializer } from './serializer/NotebookSerializer';
-import { IsqlSerializer, DatabricksSerializer } from "@ducklab/core";
-import { Utils } from "vscode-uri";
-import { DucklabController } from './controller/DucklabController';
+import { IsqlSerializer } from "@ducklab/core";
+import { DucklabPythonController } from './controller/DucklabPythonController';
 import { importDatabricksPyFile } from './databricks/import_db';
 import { DucklabSparkController } from './controller/DucklabSparkController';
 import os from "os";
@@ -12,7 +11,7 @@ import fs from "fs";
 export function activate(context: vscode.ExtensionContext) {
 
     // writeFile('context0.json');
-    // const base_path = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    const base_path = vscode.workspace.workspaceFolders[0].uri.fsPath;
     // console.log("Base Path: ", base_path, vscode.workspace.workspaceFolders[0].uri);
     // console.log("vscode.notebook: ", Object.keys(vscode.notebooks));
 
@@ -20,8 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
         if (err) throw Error("Temp directory not accessible");
 
         try {
-            context.subscriptions.push(new DucklabController({ tempPath: path }));
-            context.subscriptions.push(new DucklabSparkController({ tempPath: path }));
+            context.subscriptions.push(new DucklabPythonController({ tempPath: path, workingDir: base_path }));
+            context.subscriptions.push(new DucklabSparkController({ tempPath: path, workingDir: base_path }));
         }
         catch (ex) {
             console.log("Failed: ", ex);

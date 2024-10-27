@@ -20,6 +20,9 @@ importers:
       aws-sdk:
         specifier: ^2.1685.0
         version: 2.1691.0
+      duckdb:
+        specifier: ^1.1.1
+        version: 1.1.1(encoding@0.1.13)
       duckdb-async:
         specifier: ^1.0.0
         version: 1.1.1(encoding@0.1.13)
@@ -51,6 +54,9 @@ importers:
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
+      '@mapbox/node-pre-gyp':
+        specifier: ^1.0.11
+        version: 1.0.11(encoding@0.1.13)
       '@rollup/plugin-alias':
         specifier: ^5.1.0
         version: 5.1.1(rollup@4.24.0)
@@ -65,7 +71,7 @@ importers:
         version: 15.3.0(rollup@4.24.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.24.0)(tslib@2.7.0)(typescript@5.6.2)
+        version: 11.1.6(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.2)
       '@types/node':
         specifier: ^22.5.0
         version: 22.7.4
@@ -105,6 +111,9 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.7.4)(typescript@5.6.2)
+      tslib:
+        specifier: ^2.8.0
+        version: 2.8.0
       typescript:
         specifier: ^5.5.4
         version: 5.6.2
@@ -2711,8 +2720,8 @@ packages:
   tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
-  tslib@2.7.0:
-    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
+  tslib@2.8.0:
+    resolution: {integrity: sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==}
 
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
@@ -2935,17 +2944,17 @@ snapshots:
 
   '@azure/abort-controller@1.1.0':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@azure/abort-controller@2.1.2':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@azure/core-auth@1.8.0':
     dependencies:
       '@azure/abort-controller': 2.1.2
       '@azure/core-util': 1.10.0
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@azure/core-client@1.9.2':
     dependencies:
@@ -2955,7 +2964,7 @@ snapshots:
       '@azure/core-tracing': 1.2.0
       '@azure/core-util': 1.10.0
       '@azure/logger': 1.1.4
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - supports-color
 
@@ -2968,18 +2977,18 @@ snapshots:
       '@azure/logger': 1.1.4
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.5
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - supports-color
 
   '@azure/core-tracing@1.2.0':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@azure/core-util@1.10.0':
     dependencies:
       '@azure/abort-controller': 2.1.2
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@azure/identity@4.4.1':
     dependencies:
@@ -2996,13 +3005,13 @@ snapshots:
       jws: 4.0.0
       open: 8.4.2
       stoppable: 1.1.0
-      tslib: 2.7.0
+      tslib: 2.8.0
     transitivePeerDependencies:
       - supports-color
 
   '@azure/logger@1.1.4':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@azure/msal-browser@3.25.0':
     dependencies:
@@ -3533,14 +3542,14 @@ snapshots:
     optionalDependencies:
       rollup: 4.24.0
 
-  '@rollup/plugin-typescript@11.1.6(rollup@4.24.0)(tslib@2.7.0)(typescript@5.6.2)':
+  '@rollup/plugin-typescript@11.1.6(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.2)':
     dependencies:
       '@rollup/pluginutils': 5.1.2(rollup@4.24.0)
       resolve: 1.22.8
       typescript: 5.6.2
     optionalDependencies:
       rollup: 4.24.0
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@rollup/pluginutils@5.1.2(rollup@4.24.0)':
     dependencies:
@@ -3610,7 +3619,7 @@ snapshots:
 
   '@swc/helpers@0.5.13':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@tootallnate/once@2.0.0': {}
 
@@ -3838,7 +3847,7 @@ snapshots:
       command-line-usage: 7.0.3
       flatbuffers: 24.3.25
       json-bignum: 0.0.3
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   aproba@2.0.0: {}
 
@@ -5778,7 +5787,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   safe-buffer@5.2.1: {}
 
@@ -6032,7 +6041,7 @@ snapshots:
 
   tslib@1.14.1: {}
 
-  tslib@2.7.0: {}
+  tslib@2.8.0: {}
 
   tunnel-agent@0.6.0:
     dependencies:

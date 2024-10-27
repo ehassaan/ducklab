@@ -8,16 +8,17 @@
   "icon": "./logo.png",
   "repository": "https://github.com/HassaanAkbar/ducklab",
   "scripts": {
-    "build": "npm run build-rollup && npm run post-build",
-    "build-rollup": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "post-build": "cd dist && npm i duckdb-async && npm run package",
+    "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build-all": "npm run build-rollup && npm run post-build",
+    "install-native": "npm i duckdb-async && npm i zeromq",
+    "post-build": "cd dist && npm run install-native && npm run package",
     "package": "vsce package",
     "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest"
   },
   "engines": {
-    "vscode": "^1.58.0"
+    "vscode": "^1.61.0"
   },
   "keywords": [
     "notebookKernelIsql",
@@ -35,8 +36,8 @@
     "vscode.sql",
     "vscode.python"
   ],
-  "type": "module",
-  "main": "./dist/build/index.cjs",
+  "type": "commonjs",
+  "main": "./out/index.js",
   "activationEvents": [
     "onNotebook:ipynb-ducklab",
     "onNotebook:isql"
@@ -83,6 +84,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@mapbox/node-pre-gyp": "^1.0.11",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-json": "^6.1.0",
@@ -101,6 +103,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
+    "tslib": "^2.8.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
@@ -108,6 +111,7 @@
     "@nteract/messaging": "^7.0.20",
     "apache-arrow": "^17.0.0",
     "aws-sdk": "^2.1685.0",
+    "duckdb": "^1.1.1",
     "duckdb-async": "^1.0.0",
     "get-port": "^7.1.0",
     "mock-aws-s3": "^4.0.2",

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://ducklab.netlify.app" rel="noopener">
- <img width=200px src="https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/wasm/public/logo.png" alt="Project logo"></a>
+ <img width=200px src="./logo.png" alt="Project logo"></a>
 </p>
 
 <!-- <h3 align="center">ducklab</h3> -->
@@ -53,7 +53,7 @@ DuckLab for VS Code provides data analysis features for SQL, PySpark and Python.
 ### Using Ducklab Kernel
 
 1. Create a new `.isql` file.
-2. Select kernel `Ducklab` / `Ducklab (Spark)`
+2. Select kernel `ducklab-python` / `ducklab-spark`
 3. Select Python environment from bottom-right corner
 4. `Ducklab` kernel will have `db` variable (duckdb connection) already initialized for you.
 

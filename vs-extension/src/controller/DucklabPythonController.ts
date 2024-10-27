@@ -9,12 +9,12 @@ import { KernelSelector } from './vs/KernelSelector';
 import path from 'path';
 
 
-export class DucklabController implements IDisposable {
+export class DucklabPythonController implements IDisposable {
 
     readonly id = 'ducklab';
     readonly notebookType = 'isql';
     readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
-    readonly label: string = 'Ducklab';
+    readonly label: string = 'ducklab-python';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
     readonly supportsExecutionOrder = true;
@@ -24,11 +24,11 @@ export class DucklabController implements IDisposable {
     private readonly _controller: vscode.NotebookController;
     private _executionOrder = 0;
     private kSelector = new KernelSelector();
-    private tempPath: string;
+    private opts;
 
-    constructor(opts: { tempPath: string; }) {
+    constructor(opts: { tempPath: string; workingDir: string; }) {
 
-        this.tempPath = opts.tempPath;
+        this.opts = opts;
 
         try {
             this._controller = vscode.notebooks.createNotebookController(this.id,
@@ -44,10 +44,14 @@ export class DucklabController implements IDisposable {
                 console.log("NotebookSelection: ", selected, notebook);
             });
 
+            // json stringify to escape the string
             this.kSelector.init(`
                 import duckdb
-                db = duckdb.connect(r'${path.join(this.tempPath, this.id)}.duckdb')
-            `, 60000);
+                db = duckdb.connect(r'${path.join(opts.tempPath, this.id)}.duckdb')
+                db.execute('set file_search_path=${JSON.stringify(opts.workingDir)};')
+            `, 60000).then(() => {
+                this.kSelector.requestKernelSelection(vscode.window.activeNotebookEditor.notebook);
+            });
         }
         catch (e) {
             console.log(e);

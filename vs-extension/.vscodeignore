@@ -8,4 +8,5 @@ src/**
 **/*.map
 **/*.ts
 sample/**
-!node_modules
+node_modules/
+!prebuild

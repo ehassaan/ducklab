@@ -49,7 +49,7 @@ export class KernelSelector {
         let env = await this._python.environments.resolveEnvironment(envPath);
         let spec: IKernelSpec;
         if (!env) {
-            spec = await this.requestKernelSelection();
+            spec = await this.requestKernelSelection(notebook);
         }
         else {
             spec = this.fromEnvToSpec(env);
@@ -58,7 +58,7 @@ export class KernelSelector {
         return kernel;
     }
 
-    public async requestKernelSelection() {
+    public async requestKernelSelection(notebook: vscode.NotebookDocument) {
         let envs = await this.listEnvs();
         let kernels = envs.map(this.fromEnvToSpec);
         let selectedSpec = await this.showPickup(kernels, "Select Python Kernel");
@@ -66,7 +66,10 @@ export class KernelSelector {
         if (!selectedSpec) {
             return;
         }
-        await this._python.environments.updateActiveEnvironmentPath(envs.filter(e => e.id === selectedSpec.id)[0]);
+        await this._python.environments.updateActiveEnvironmentPath(
+            envs.filter(e => e.id === selectedSpec.id)[0],
+            notebook.uri
+        );
         return selectedSpec;
     }
 
