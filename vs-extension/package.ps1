@@ -23,10 +23,9 @@ try {
         New-Item -Force -ItemType Directory ./lib/binding
         Copy-Item -Force -Recurse ./node_modules/duckdb/lib/binding/duckdb.node ./lib/binding/
         Copy-Item -Force -Recurse ./node_modules/zeromq/prebuilds ./
-    
         # Package extension
         npx vsce package --no-dependencies --githubBranch main --target $platform-$arch --out ./dist
-        
+        # npx vsce publish --packagePath dist/$(Get-ChildItem -Filter ducklab-$target-$arch*.vsix -Recurse ./dist) -p $env:VSCE_PAT
     }
 }
 catch {

@@ -7,7 +7,7 @@
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
-  "icon": "https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/public/favicon.ico",
+  "icon": "https://raw.githubusercontent.com/ehassaan/ducklab/main/public/favicon.ico",
   "license": "Apache-2.0",
   "homepage": "https://ducklab.netlify.app",
   "keywords": [
