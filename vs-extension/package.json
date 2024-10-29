@@ -2,11 +2,11 @@
   "name": "ducklab",
   "displayName": "Ducklab",
   "description": "Interactive SQL/Python Notebooks. Powered by DuckDB",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "Apache-2.0",
   "publisher": "ducklake",
   "icon": "./logo.png",
-  "repository": "https://github.com/HassaanAkbar/ducklab",
+  "repository": "https://github.com/ehassaan/ducklab",
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "package": "powershell package.ps1",

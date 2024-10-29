@@ -8,9 +8,9 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![License](https://img.shields.io/badge/dynamic/json?label=version&query=version&url=https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/extension/package.json)](https://ducklab.netlify.app)
-[![GitHub Issues](https://img.shields.io/github/issues/HassaanAkbar/ducklab.svg)](https://github.com/HassaanAkbar/ducklab/issues)
-[![License](https://img.shields.io/badge/dynamic/json?label=license&query=license&url=https://raw.githubusercontent.com/HassaanAkbar/ducklab/main/extension/package.json)](/LICENSE)
+[![License](https://img.shields.io/badge/dynamic/json?label=version&query=version&url=https://raw.githubusercontent.com/ehassaan/ducklab/main/extension/package.json)](https://ducklab.netlify.app)
+[![GitHub Issues](https://img.shields.io/github/issues/ehassaan/ducklab.svg)](https://github.com/ehassaan/ducklab/issues)
+[![License](https://img.shields.io/badge/dynamic/json?label=license&query=license&url=https://raw.githubusercontent.com/ehassaan/ducklab/main/extension/package.json)](/LICENSE)
 
 </div>
 

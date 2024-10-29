@@ -25,8 +25,9 @@ try {
         Copy-Item -Force -Recurse ./node_modules/zeromq/prebuilds ./
     
         # Package extension
-        npx vsce package --no-dependencies --target $platform-$arch --out ./dist
-    }    
+        npx vsce package --no-dependencies --githubBranch main --target $platform-$arch --out ./dist
+        
+    }
 }
 catch {
     Write-Error $Error[0]
