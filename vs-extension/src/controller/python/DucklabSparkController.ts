@@ -1,35 +1,35 @@
 
 import * as vscode from "vscode";
 import { IFieldInfo, ITabularResultSet } from '@ducklab/core';
-import { IRunningKernel } from './IRunningKernel';
-import { MessageType, OutputMessage } from './messaging';
+import { IRunningKernel } from '../IRunningKernel';
+import { MessageType, OutputMessage } from '../messaging';
 import { IDisposable } from '@/disposable';
-import { TypedEmitter } from './TypedEmitter';
-import { KernelSelector } from './vs/KernelSelector';
+import { TypedEmitter } from '../TypedEmitter';
+import { KernelSelector } from '../vs/KernelSelector';
 import path from 'path';
+import { IControllerOpts } from '../IControllerOpts';
 
 
-export class DucklabPythonController implements IDisposable {
+export class DucklabSparkController implements IDisposable {
 
-    readonly id = 'ducklab';
+    readonly id = 'ducklab-spark';
     readonly notebookType = 'isql';
     readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
-    readonly label: string = 'ducklab-python';
+    readonly label: string = 'ducklab-spark';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
     readonly supportsExecutionOrder = true;
 
     onDidChangeSelectedNotebooks: vscode.Event<{ readonly notebook: vscode.NotebookDocument; readonly selected: boolean; }>;
 
+    public readonly opts: IControllerOpts;
     private readonly _controller: vscode.NotebookController;
     private _executionOrder = 0;
     private kSelector = new KernelSelector();
-    private opts;
 
-    constructor(opts: { tempPath: string; workingDir: string; }) {
+    constructor(opts: IControllerOpts) {
 
         this.opts = opts;
-
         try {
             this._controller = vscode.notebooks.createNotebookController(this.id,
                 this.notebookType,
@@ -40,22 +40,33 @@ export class DucklabPythonController implements IDisposable {
             this._controller.supportsExecutionOrder = this.supportsExecutionOrder;
             this._controller.supportedLanguages = this.supportedLanguages;
 
-            this._controller.onDidChangeSelectedNotebooks(({ notebook, selected }) => {
-                console.log("NotebookSelection: ", selected, notebook);
-            });
+            vscode.workspace.onDidCloseNotebookDocument(nb => this.onNotebookClose(nb));
+
 
             // json stringify to escape the string
             this.kSelector.init(`
                 import duckdb
-                db = duckdb.connect(r'${path.join(opts.tempPath, this.id)}.duckdb')
+                db = duckdb.connect(r'${path.join(this.opts.tempPath, this.id)}.duckdb')
                 db.execute('set file_search_path=${JSON.stringify(opts.workingDir)};')
-            `, 60000).then(() => {
-                this.kSelector.requestKernelSelection(vscode.window.activeNotebookEditor.notebook);
-            });
+                
+                # import os
+                # import sys
+                # sys.path.append(os.path.abspath('./pyspark.py'))  # can be used to rename duckdb.experimental.spark to pyspark
+                
+                from duckdb.experimental.spark.sql import SparkSession
+                spark = SparkSession.builder.getOrCreate()
+
+            `, 60000);
+
         }
         catch (e) {
             console.log(e);
         }
+    }
+
+    private onNotebookClose(notebook: vscode.NotebookDocument) {
+        this.kSelector.killAttachedKernel(notebook);
+        console.log("Disposed: ", notebook.uri.fsPath);
     }
 
     async interruptHandler(notebook) {
@@ -140,7 +151,7 @@ export class DucklabPythonController implements IDisposable {
                 resEmitter = await kernel.execute(cell.document.getText());
             }
             if (cell.document.languageId.toLowerCase() === "sql") {
-                resEmitter = await kernel.execute(`db.query("""${cell.document.getText()}""")`);
+                resEmitter = await kernel.execute(`spark.sql("""${cell.document.getText()}""")`);
             }
             resEmitter.on(async (event) => {
                 console.log("Result: ", cell.index, event.msgType, event.content);

@@ -71,9 +71,9 @@ const config = [
             "vscode",
             // "duckdb-async",
             // "zeromq",
-            "nock",
-            "aws-sdk",
-            "aws-s3"
+            // "nock",
+            // "aws-sdk",
+            // "aws-s3"
         ],
         input: 'src/index.ts',
         output: {

@@ -1,34 +1,36 @@
 
 import * as vscode from "vscode";
 import { IFieldInfo, ITabularResultSet } from '@ducklab/core';
-import { IRunningKernel } from './IRunningKernel';
-import { MessageType, OutputMessage } from './messaging';
+import { IRunningKernel } from '../IRunningKernel';
+import { MessageType, OutputMessage } from '../messaging';
 import { IDisposable } from '@/disposable';
-import { TypedEmitter } from './TypedEmitter';
-import { KernelSelector } from './vs/KernelSelector';
+import { TypedEmitter } from '../TypedEmitter';
+import { KernelSelector } from '../vs/KernelSelector';
 import path from 'path';
+import { IControllerOpts } from '../IControllerOpts';
+import { getResourceId } from '../utils';
 
 
-export class DucklabSparkController implements IDisposable {
+export class DucklabPythonController implements IDisposable {
 
-    readonly id = 'ducklab-spark';
+    readonly id = 'ducklab';
     readonly notebookType = 'isql';
     readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
-    readonly label: string = 'ducklab-spark';
+    readonly label: string = 'ducklab-python';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
     readonly supportsExecutionOrder = true;
 
     onDidChangeSelectedNotebooks: vscode.Event<{ readonly notebook: vscode.NotebookDocument; readonly selected: boolean; }>;
 
+    public readonly opts: IControllerOpts;
     private readonly _controller: vscode.NotebookController;
     private _executionOrder = 0;
     private kSelector = new KernelSelector();
-    private tempPath: string;
 
-    constructor(opts: { tempPath: string; workingDir: string; }) {
+    constructor(opts: IControllerOpts) {
 
-        this.tempPath = opts.tempPath;
+        this.opts = opts;
 
         try {
             this._controller = vscode.notebooks.createNotebookController(this.id,
@@ -44,27 +46,23 @@ export class DucklabSparkController implements IDisposable {
                 console.log("NotebookSelection: ", selected, notebook);
             });
 
+            vscode.workspace.onDidCloseNotebookDocument(nb => this.onNotebookClose(nb));
+
             // json stringify to escape the string
             this.kSelector.init(`
                 import duckdb
-                db = duckdb.connect(r'${path.join(this.tempPath, this.id)}.duckdb')
+                db = duckdb.connect(r'${path.join(opts.tempPath, this.id)}.duckdb')
                 db.execute('set file_search_path=${JSON.stringify(opts.workingDir)};')
-                
-                # import os
-                # import sys
-                # sys.path.append(os.path.abspath('./pyspark.py'))  # can be used to rename duckdb.experimental.spark to pyspark
-                
-                from duckdb.experimental.spark.sql import SparkSession
-                spark = SparkSession.builder.getOrCreate()
-
-            `, 60000).then(() => {
-                this.kSelector.requestKernelSelection(vscode.window.activeNotebookEditor.notebook);
-            });
-
+            `, 60000);
         }
         catch (e) {
             console.log(e);
         }
+    }
+
+    private onNotebookClose(notebook: vscode.NotebookDocument) {
+        this.kSelector.killAttachedKernel(notebook);
+        console.log("Disposed: ", notebook.uri.fsPath);
     }
 
     async interruptHandler(notebook) {
@@ -149,7 +147,7 @@ export class DucklabSparkController implements IDisposable {
                 resEmitter = await kernel.execute(cell.document.getText());
             }
             if (cell.document.languageId.toLowerCase() === "sql") {
-                resEmitter = await kernel.execute(`spark.sql("""${cell.document.getText()}""")`);
+                resEmitter = await kernel.execute(`db.query("""${cell.document.getText()}""")`);
             }
             resEmitter.on(async (event) => {
                 console.log("Result: ", cell.index, event.msgType, event.content);

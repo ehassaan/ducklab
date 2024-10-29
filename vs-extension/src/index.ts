@@ -1,11 +1,14 @@
 import * as vscode from 'vscode';
 import { NotebookSerializer } from './serializer/NotebookSerializer';
 import { IsqlSerializer } from "@ducklab/core";
-import { DucklabPythonController } from './controller/DucklabPythonController';
+import { DucklabPythonController } from './controller/python/DucklabPythonController';
 import { importDatabricksPyFile } from './databricks/import_db';
-import { DucklabSparkController } from './controller/DucklabSparkController';
+import { DucklabSparkController } from './controller/python/DucklabSparkController';
 import os from "os";
 import fs from "fs";
+import { DucklabSQLController } from './controller/nodejs/DucklabSQLController';
+
+process.env.node_pre_gyp_mock_s3 = undefined;
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -21,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             context.subscriptions.push(new DucklabPythonController({ tempPath: path, workingDir: base_path }));
             context.subscriptions.push(new DucklabSparkController({ tempPath: path, workingDir: base_path }));
+            context.subscriptions.push(new DucklabSQLController({ tempPath: path, workingDir: base_path }));
         }
         catch (ex) {
             console.log("Failed: ", ex);

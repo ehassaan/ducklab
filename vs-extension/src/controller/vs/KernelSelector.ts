@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { KernelManager } from '../python/KernelManager';
 import { IKernelSpec, KernelType } from '../python/IKernelSpec';
 import { KernelStatus } from '../IRunningKernel';
+import { getResourceId } from '../utils';
 
 
 export class KernelSelector {
@@ -31,14 +32,16 @@ export class KernelSelector {
     }
 
     async resolveKernel(notebook: vscode.NotebookDocument) {
-        if (notebook.uri.fsPath in this.kernelMap) {
-            const kernel = this.kernelManager.get(this.kernelMap[notebook.uri.fsPath]);
+        const nbId = getResourceId(notebook.uri);
+
+        if (nbId in this.kernelMap) {
+            const kernel = this.kernelManager.get(this.kernelMap[nbId]);
             if (kernel.status !== KernelStatus.Killed) {
                 return kernel;
             }
             else {
-                delete this.kernelMap[notebook.uri.fsPath];
-                this.kernelManager.kill(notebook.uri.fsPath);
+                delete this.kernelMap[nbId];
+                this.kernelManager.kill(nbId);
             }
         }
         if (!this._python) {
@@ -94,13 +97,15 @@ export class KernelSelector {
     }
 
     private async attachKernel(notebook: vscode.NotebookDocument, spec: IKernelSpec) {
-        let paths = Object.keys(this.kernelMap).filter(k => k === notebook.uri.fsPath);
+        const nbId = getResourceId(notebook.uri);
+
+        let paths = Object.keys(this.kernelMap).filter(k => k === nbId);
         if (paths.length > 0) {
             this.kernelManager.kill(this.kernelMap[paths[0]]);
             console.log("Disposed kernel: ", paths[0], this.kernelMap[paths[0]]);
         }
         let kernel = await this.kernelManager.launchKernel(spec);
-        this.kernelMap[notebook.uri.fsPath] = kernel.id;
+        this.kernelMap[nbId] = kernel.id;
         await kernel.waitReady(this.init_timeout_ms);
         console.log("Init: ", this);
         if (this.entry_script) {
@@ -113,10 +118,19 @@ export class KernelSelector {
     }
 
     public async getAttachedKernel(notebook: vscode.NotebookDocument) {
-        if (this.kernelMap[notebook.uri.fsPath]) {
-            const kernel = this.kernelManager.get(this.kernelMap[notebook.uri.fsPath]);
+        const nbId = getResourceId(notebook.uri);
+        if (this.kernelMap[nbId]) {
+            const kernel = this.kernelManager.get(this.kernelMap[nbId]);
             if (!kernel) return;
             return kernel;
+        }
+        return;
+    }
+
+    public async killAttachedKernel(notebook: vscode.NotebookDocument) {
+        const nbId = getResourceId(notebook.uri);
+        if (nbId in this.kernelMap) {
+            this.kernelManager.kill(this.kernelMap[nbId]);
         }
         return;
     }

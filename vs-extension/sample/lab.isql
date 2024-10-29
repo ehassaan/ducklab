@@ -81,4 +81,6 @@ select * from myview
 -- %% PYTHON | unnamed
 spark.sql("select * from myview")
 -- %% SQL_RAW | unnamed
+select * from pragma_version();
+-- %% SQL_RAW | unnamed
 

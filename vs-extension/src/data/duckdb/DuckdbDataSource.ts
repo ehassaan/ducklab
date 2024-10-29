@@ -9,7 +9,7 @@ import {
   type ITabularExecuteOpts,
 } from '@ducklab/core';
 import * as arrow from 'apache-arrow';
-import { Database } from "duckdb-async";
+import { Database } from "./duckdb-async";
 
 // polyfill
 (BigInt.prototype as any).toJSON = function () {
@@ -31,7 +31,7 @@ export class DuckdbDataSource extends TabularDataSource {
       rawLimit: -1,
       extensions: [],
       dbPath: "./temp_duckdb.db",
-      dataPath: "./data/",
+      dataSearchPath: "./data/",
       ...duckOpts,
     };
   }
@@ -39,7 +39,7 @@ export class DuckdbDataSource extends TabularDataSource {
   public async _init() {
     console.log("Init duckdb");
     const db = await Database.create(this.opts.dbPath);
-    await db.exec(`set file_search_path='${this.opts.dataPath}';`);
+    await db.exec(`set file_search_path='${this.opts.dataSearchPath}';`);
     console.log("Init duckdb: ", db);
     return db;
   }
@@ -215,5 +215,5 @@ export interface DuckOptions {
   previewLimit?: number;
   rawLimit?: number;
   dbPath?: string;
-  dataPath: string;
+  dataSearchPath: string;
 }

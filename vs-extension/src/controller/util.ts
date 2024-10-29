@@ -1,6 +1,4 @@
 import { promises as fs } from 'fs';
-import { Event } from 'vscode';
-import { Observable } from 'rxjs';
 
 type ResolvedMap<T> = { [K in keyof T]: T[K] extends PromiseLike<infer U> ? U : T[K] };
 
@@ -30,11 +28,6 @@ export const uniqueBy = <T, R>(
     });
 };
 
-export const observeCodeEvent = <T>(event: Event<T>): Observable<T> =>
-    new Observable(subscriber => {
-        const disposable = event(data => subscriber.next(data));
-        return () => disposable.dispose();
-    });
 
 export const exists = async (path: string) => {
     try {

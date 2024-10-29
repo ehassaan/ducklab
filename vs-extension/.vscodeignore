@@ -1,6 +1,6 @@
 .vscode/**
 .vscode-test/**
-dist/test/**
+dist/
 src/**
 .gitignore
 **/tsconfig.json
@@ -9,4 +9,5 @@ src/**
 **/*.ts
 sample/**
 node_modules/
-!prebuild
+./*.sh
+./*.ps1

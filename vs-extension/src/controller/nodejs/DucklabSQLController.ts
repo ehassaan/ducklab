@@ -2,26 +2,29 @@
 import * as vscode from "vscode";
 import { DuckdbDataSource } from '../../data/duckdb/DuckdbDataSource';
 import { IFieldInfo, ITabularResultSet } from '@ducklab/core';
+import { IControllerOpts } from '../IControllerOpts';
+import path from "path";
+import { getResourceId } from '../utils';
 
-export class SQLController {
+export class DucklabSQLController {
 
-    readonly id = 'sql-controller';
+    readonly id = 'ducklab-sql';
     readonly notebookType = 'isql';
-    readonly supportedLanguages = ['sql', 'markdown', 'plaintext', 'python'];
-    readonly label: string = 'In-Memory';
+    readonly supportedLanguages = ['sql', 'markdown', 'plaintext'];
+    readonly label: string = 'ducklab-sql';
     readonly description?: string | undefined;
     readonly detail?: string | undefined;
-    readonly supportsExecutionOrder?: boolean | undefined;
+    readonly supportsExecutionOrder?: boolean | undefined = true;
 
-    onDidChangeSelectedNotebooks: vscode.Event<{ readonly notebook: vscode.NotebookDocument; readonly selected: boolean; }>;
 
+    public readonly opts: IControllerOpts;
     private readonly _controller: vscode.NotebookController;
     private _executionOrder = 0;
+    private kernels: { [id: string]: DuckdbDataSource; } = {};
 
-    ds: DuckdbDataSource;
+    constructor(opts: IControllerOpts) {
 
-    constructor({ base_path, db_path }) {
-        console.log("SQLController constructor");
+        this.opts = opts;
 
         this._controller = vscode.notebooks.createNotebookController(
             this.id,
@@ -29,12 +32,32 @@ export class SQLController {
             this.label
         );
 
-        this.ds = new DuckdbDataSource(this.id, { dataPath: base_path, dbPath: db_path });
-
+        this._controller.executeHandler = this.executeHandler.bind(this);
+        this._controller.supportsExecutionOrder = this.supportsExecutionOrder;
         this._controller.supportedLanguages = this.supportedLanguages;
-        this._controller.supportsExecutionOrder = true;
 
-        this.onDidChangeSelectedNotebooks = this._controller.onDidChangeSelectedNotebooks;
+        vscode.workspace.onDidCloseNotebookDocument(nb => this.onNotebookClose(nb));
+    }
+
+    private onNotebookClose(notebook: vscode.NotebookDocument) {
+        const nbId = getResourceId(notebook.uri);
+        if (nbId in this.kernels) {
+            this.kernels[nbId].dispose();
+            delete this.kernels[nbId];
+            console.log("Disposed: ", nbId);
+        }
+    }
+
+    public async resolveKernel(notebook: vscode.NotebookDocument) {
+        const nbId = getResourceId(notebook.uri);
+        if (!(nbId in this.kernels)) {
+            this.kernels[nbId] = new DuckdbDataSource(nbId, {
+                dataSearchPath: this.opts.workingDir,
+                dbPath: path.join(this.opts.tempPath, "ducklab", nbId + ".db")
+            });
+            await this.kernels[nbId].connect();
+        }
+        return this.kernels[nbId];
     }
 
     public getInnerController() {
@@ -42,13 +65,14 @@ export class SQLController {
     }
 
     async executeHandler(cells: vscode.NotebookCell[], notebook: vscode.NotebookDocument, controller: vscode.NotebookController) {
+        const kernel = await this.resolveKernel(notebook);
         for (const cell of cells) {
-            this._doExecution(cell);
+            this._doExecution(cell, kernel);
         }
     }
 
     dispose(): void {
-        this.ds.dispose();
+        Object.keys(this.kernels).map(k => this.kernels[k].dispose());
     }
 
     private getRow(cols: IFieldInfo[], obj: any) {
@@ -91,13 +115,14 @@ export class SQLController {
         return text;
     }
 
-    private async _doExecution(cell: vscode.NotebookCell): Promise<void> {
+    private async _doExecution(cell: vscode.NotebookCell, kernel: DuckdbDataSource): Promise<void> {
+        console.log("Executing: ", cell.document.getText());
         const execution = this._controller.createNotebookCellExecution(cell);
         execution.executionOrder = ++this._executionOrder;
         execution.start(Date.now()); // Keep track of elapsed time to execute cell.
 
         try {
-            const results = await this.ds.queryNative(cell.document.getText());
+            const results = await kernel.queryNative(cell.document.getText());
             console.log("results: ", results);
 
             let text = this.renderTable(results);
