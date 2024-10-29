@@ -26,7 +26,8 @@
 - [🧐 About ](#-about-)
 - [🔥 Features ](#-features-)
 - [🏁 Getting Started ](#-getting-started-)
-  - [Using Ducklab Kernel](#using-ducklab-kernel)
+  - [Using Ducklab SQL Kernel (no dependencies required)](#using-ducklab-sql-kernel-no-dependencies-required)
+  - [Using Ducklab Python Kernel](#using-ducklab-python-kernel)
   - [Using Ducklab Spark Kernel](#using-ducklab-spark-kernel)
   - [Import Databricks Notebook](#import-databricks-notebook)
 - [💬 Contribute](#-contribute)
@@ -50,19 +51,52 @@ DuckLab for VS Code provides data analysis features for SQL, PySpark and Python.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-### Using Ducklab Kernel
+### Using Ducklab SQL Kernel (no dependencies required)
 
 1. Create a new `.isql` file.
-2. Select kernel `ducklab-python` / `ducklab-spark`
-3. Select Python environment from bottom-right corner
-4. `Ducklab` kernel will have `db` variable (duckdb connection) already initialized for you.
+2. Select kernel `ducklab-sql`
+3. Run SQL queries e.g. `select * from 'data/MOCK_DATA.csv';`
+
+<img src="./assets/sql_query.png">
+
+### Using Ducklab Python Kernel
+
+1. Make sure python or Anaconda is installed.
+2. Create a new `.isql` file.
+3. Select kernel `ducklab-python`
+4. Select Python environment from bottom-right corner
+5. `ducklab-python` kernel will have `db` variable (duckdb connection) already initialized for you.
+6. Run python or SQL code
 
 ### Using Ducklab Spark Kernel
 
-1. Create a new `.isql` file.
-2. Select kernel `Ducklab (Spark)`
-3. Select Python environment from bottom-right corner
-4. `Ducklab (Spark)` kernel will have `spark` variable (SparkSession) already initialized for you.
+1. Make sure python or Anaconda is installed.
+2. Create a new `.isql` file.
+3. Select kernel `ducklab-spark`
+4. Select Python environment from bottom-right corner
+5. `ducklab-spark` kernel will have `spark` variable (SparkSession) already initialized for you.
+6. Run spark code,
+
+```
+import pandas as pd
+from duckdb.experimental.spark.sql.functions import lit, col
+
+pandas_df = pd.DataFrame({
+    'age': [34, 45, 23, 56],
+    'name': ['Joan', 'Peter', 'John', 'Bob']
+})
+
+df = spark.createDataFrame(pandas_df)
+df = df.withColumn(
+    'location', lit('Seattle')
+)
+df = df.select(
+    col('age'),
+    col('location')
+)
+
+display(df)
+```
 
 ### Import Databricks Notebook
 

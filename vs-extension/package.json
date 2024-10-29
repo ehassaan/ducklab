@@ -59,11 +59,6 @@
     ],
     "commands": [
       {
-        "command": "ducklab.listKernels",
-        "title": "Select a kernel",
-        "category": "DuckLab"
-      },
-      {
         "command": "ducklab.importDatabricksPy",
         "title": "Import Databricks Noteboook",
         "category": "DuckLab"
