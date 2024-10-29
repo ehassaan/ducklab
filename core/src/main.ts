@@ -18,6 +18,7 @@ export type { ISqlConfig } from '@/translator/sql/ISqlConfig';
 export { SqlTranslator } from '@/translator/sql/SqlTranslator';
 export type { INotebookSerializer } from '@/notebook/INotebookSerializer';
 export { IsqlSerializer } from '@/notebook/IsqlSerializer';
+export { DatabricksSerializer } from '@/notebook/DatabricksSerializer';
 export { Notebook, type INotebookConfig, type IUserConfig } from '@/notebook/Notebook';
 export { CellType, NotebookCell } from '@/notebook/NotebookCell';
 export { DataSourceUndefined } from '@/entities/exceptions';

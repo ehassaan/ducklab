@@ -18,7 +18,7 @@ export class Notebook {
     config: INotebookConfig;
 
     constructor(id?: string, config?: INotebookConfig, dataSource?: TabularDataSource) {
-        if (window && window.crypto) {
+        if (typeof window !== "undefined" && window.crypto) {
             this.id = id ?? window.crypto.randomUUID();
         }
         else {

@@ -1,0 +1,22 @@
+[
+    {
+        "type": "PYTHON",
+        "input": "import numpy as np\n\n# Type the following on the next line: a = np.array([1,2,3])"
+    },
+    {
+        "type": "PYTHON",
+        "input": "df = spark.sql(\"\"\"\nselect carat, cut, color, price \nfrom default.diamonds\nwhere price < 350\n\"\"\")"
+    },
+    {
+        "type": "MD",
+        "input": "# MAGIC %md\n# MAGIC ### Improved code editing with Monaco\n# MAGIC To enable the new editor in the Notebook:\n# MAGIC\n# MAGIC 1. Click your username at the top right of the workspace and select **User Settings** from the drop down.\n# MAGIC 2. Click the **Notebook Settings** tab.\n# MAGIC 3. Check the box next to **Turn on the new notebook editor**."
+    },
+    {
+        "type": "MD",
+        "input": "# MAGIC %md\n# MAGIC ### Autocomplete-as-you-type\n# MAGIC <br>\n# MAGIC <img src=\"https://github.com/databricks/notebook_gallery/blob/main/assets/bordered/autocomplete.gif?raw=true\" width=600/>"
+    },
+    {
+        "type": "SQL_RAW",
+        "input": "# MAGIC %sql\n# MAGIC select carat, cut, color, price\n# MAGIC from default.diamonds\n# MAGIC where price < 350"
+    }
+]

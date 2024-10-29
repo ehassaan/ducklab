@@ -1,0 +1,86 @@
+-- %% SQL_RAW | mytable
+
+select * from mytable1232
+-- %% SQL_RAW | unnamed
+create or replace view myview as (select *
+
+from read_csv_auto("data/MOCK_DATA.csv")
+limit 10
+);
+
+select * from myview;
+
+-- %% SQL_RAW | unnamed
+select * from myview
+
+-- %% SQL_RAW | unnamed
+SET memory_limit = '16GB';
+SET memory_limit = '12GB';
+SET enable_progress_bar = true;
+SET threads = 4;
+select * from myview;
+
+-- %% SQL_RAW | unnamed
+
+SELECT *
+FROM duckdb_settings() WHERE name like '%max%';
+
+-- set file_search_path='c:/Users/Hassan.Akbar/Documents/VsCode/ducklab';
+
+-- %% SQL_RAW | unnamed
+select * from 'data/MOCK_DATA.csv';
+
+-- %% SQL_RAW | unnamed
+
+select * from 'extension/src/mount-s3/housing_data/housing_data.parquet'
+
+-- %% PYTHON | unnamed
+import time
+
+print("Hello from python")
+time.sleep(3)
+print("Hello from python2")
+time.sleep(3)
+print("Hello from python3")
+asd
+-- %% PYTHON | unnamed
+import pandas as pd
+
+df = pd.DataFrame([{ "a": 1, "b": 2}, { "a": 1, "b": 2}, { "a": 1, "b": 2}])
+print(df)
+-- %% PYTHON | unnamed
+asdsad
+-- %% PYTHON | unnamed
+df
+-- %% PYTHON | unnamed
+print(db)
+-- %% PYTHON | unnamed
+import pandas as pd
+from duckdb.experimental.spark.sql.functions import lit, col
+
+
+pandas_df = pd.DataFrame({
+    'age': [34, 45, 23, 56],
+    'name': ['Joan', 'Peter', 'John', 'Bob']
+})
+
+df = spark.createDataFrame(pandas_df)
+df = df.withColumn(
+    'location', lit('Seattle')
+)
+df = df.select(
+    col('age'),
+    col('location')
+)
+
+display(df)
+-- %% PYTHON | unnamed
+df.createOrReplaceTempView("myview")
+-- %% SQL_RAW | unnamed
+select * from myview
+-- %% PYTHON | unnamed
+spark.sql("select * from myview")
+-- %% SQL_RAW | unnamed
+select * from pragma_version();
+-- %% SQL_RAW | unnamed
+
