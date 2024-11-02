@@ -4,6 +4,7 @@
 name: Publish-VSCode
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - ducklab-vscode/v*
