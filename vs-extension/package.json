@@ -8,10 +8,10 @@
   "icon": "./assets/logo.png",
   "repository": "https://github.com/ehassaan/ducklab",
   "scripts": {
+    "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "package": "./package.sh",
-    "post-build": "cd dist && npm run install-native && npm run package",
-    "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "publish": "find ./dist -name ducklab*.vsix -exec npx vsce publish --packagePath {} -p $VSCE_PAT \\;",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest"
   },
