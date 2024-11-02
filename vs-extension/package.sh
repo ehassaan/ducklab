@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Clear previous builds
 rm -rf ./dist
 mkdir ./dist
