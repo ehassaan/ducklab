@@ -60,7 +60,7 @@ It is recommended to use `pnpm`,
 npm i -g pnpm
 
 # install dependencies
-pnpm imstall
+pnpm install
 
 # Start the dev server
 pnpm run dev
