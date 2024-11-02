@@ -6,7 +6,7 @@ name: Publish-VSCode
 on:
   push:
     tags:
-      - v*
+      - ducklab-vscode/v*
 
 jobs:
   build-and-publish:
@@ -18,7 +18,7 @@ jobs:
           node-version: 20
       - working-directory: ./vs-extension
       - run: npm i -g pnpm
-      - run: pnpm ci
+      - run: pnpm install
       - run: pnpm run build
       - run: pnpm run package
       - run: pnpm run publish
