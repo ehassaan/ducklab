@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Clear previous builds
 rm -rf ./dist
 mkdir ./dist
@@ -13,13 +15,19 @@ targets=(
     "darwin-arm64"
 )
 
+cp -rf ./node_modules/zeromq/prebuilds ./
+
+
 for p in ${targets[@]}; do
     platform=$(echo $p | cut -d "-" -f 1)
     arch=$(echo $p | cut -d "-" -f 2)
 
-    # Download the right DuckDB binary for this target
-    ./node_modules/@mapbox/node-pre-gyp/bin/node-pre-gyp install --directory ./node_modules/duckdb --target_platform=$platform --target_arch=$arch --update-binary || exit 1
+    npx node-pre-gyp install --directory ./node_modules/duckdb --target_platform=$platform --target_arch=$arch --update-binary
 
+    mkdir -p ./lib/binding
+    cp -rf ./node_modules/duckdb/lib/binding/duckdb.node ./lib/binding/
+    
     # Package extension
-    vsce package --target $platform-$arch --out ./dist || exit 1
+    npx vsce package --no-dependencies --target $platform-$arch --out ./dist --baseContentUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/ --baseImagesUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/
+
 done
