@@ -21,6 +21,7 @@ jobs:
           node-version: 20
       - working-directory: ./vs-extension
         run: |
+          chmod +x package.sh
           npm i -g pnpm
           pnpm install
           pnpm run build
