@@ -9,7 +9,7 @@
   "repository": "https://github.com/ehassaan/ducklab",
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "package": "sh package.sh",
+    "package": "./package.sh",
     "post-build": "cd dist && npm run install-native && npm run package",
     "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "lint": "eslint src --ext .ts,.tsx",
