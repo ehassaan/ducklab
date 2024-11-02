@@ -3,6 +3,8 @@
 Remove-Item -Recurse -Force ./dist
 mkdir dist
 
+Copy-Item -Force -Recurse ./node_modules/zeromq/prebuilds ./
+
 # Targets to build against
 $targets = @(
     "win32-x64"
@@ -22,21 +24,11 @@ try {
 
         New-Item -Force -ItemType Directory ./lib/binding
         Copy-Item -Force -Recurse ./node_modules/duckdb/lib/binding/duckdb.node ./lib/binding/
-        Copy-Item -Force -Recurse ./node_modules/zeromq/prebuilds ./
         # Package extension
         npx vsce package --no-dependencies --target $platform-$arch --out ./dist --baseContentUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/ --baseImagesUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/
-        # npx vsce publish --packagePath dist/$(Get-ChildItem -Filter ducklab-$target-$arch*.vsix -Recurse ./dist) -p $env:VSCE_PAT
     }
 }
 catch {
     Write-Error $Error[0]
     exit 1
 }
-
-
-# for %%p in (%targets%) DO (
-#     echo %%p
-# )
-# @REM for %%p in ($targets) do (
-
-#     @REM )
