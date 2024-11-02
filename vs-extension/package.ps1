@@ -24,7 +24,7 @@ try {
         Copy-Item -Force -Recurse ./node_modules/duckdb/lib/binding/duckdb.node ./lib/binding/
         Copy-Item -Force -Recurse ./node_modules/zeromq/prebuilds ./
         # Package extension
-        npx vsce package --no-dependencies --githubBranch main --target $platform-$arch --out ./dist
+        npx vsce package --no-dependencies --target $platform-$arch --out ./dist --baseContentUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/ --baseImagesUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/
         # npx vsce publish --packagePath dist/$(Get-ChildItem -Filter ducklab-$target-$arch*.vsix -Recurse ./dist) -p $env:VSCE_PAT
     }
 }
