@@ -4,6 +4,7 @@
 name: Publish-VSCode
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - ducklab-vscode/v*
@@ -11,15 +12,18 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    env:
+      VSCE_PAT: ${{ secrets.VSCODE_MARKETPLACE_PAT }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - working-directory: ./vs-extension
-      - run: npm i -g pnpm
-      - run: pnpm install
-      - run: pnpm run build
-      - run: pnpm run package
-      - run: pnpm run publish
+        run: |
+          npm i -g pnpm
+          pnpm install
+          pnpm run build
+          pnpm run package
+          pnpm run publish
  

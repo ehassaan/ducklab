@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://ducklab.netlify.app" rel="noopener">
- <img width=200px src="./logo.png" alt="Project logo"></a>
+ <img width=200px src="./assets/logo.png" alt="Project logo"></a>
 </p>
 
 <!-- <h3 align="center">ducklab</h3> -->
@@ -42,11 +42,11 @@ DuckLab for VS Code provides data analysis features for SQL, PySpark and Python.
 
 ## 🔥 Features <a name = "features"></a>
 
-- Ducklab Kernel to run SQL and Python using same duckdb instance (exposed as `db` variable)
+- Run SQL and Python in the same notebook using same duckdb instance (exposed as `db` variable in python)
 - Ducklab Spark Kernel allows running pyspark code using `duckdb.experimental.spark` module (exposed as `spark`, a `SparkSession` instance).
 - Import Databricks `.py` notebooks and preview in a user-friendly VS Code Notebook window.
 - Use any python, venv or conda environment detected by VS Code Python extension.
-- Git-friendly `.isql` format. This format is plain SQL and Python. 
+- Git-friendly `.isql` format. This format is plain text and human readable. 
 - Ducklab doesn't use `ipynb` format which stores cell outputs in the file and pollutes git. It also makes diff in pull requests unreadable.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
