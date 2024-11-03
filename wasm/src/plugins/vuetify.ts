@@ -5,14 +5,14 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css';
+import 'vuetify/styles';
 
 // Composables
-import { createVuetify } from 'vuetify'
+import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
-import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
-import { mdiFile, mdiFolder, mdiDelete, mdiPlus, mdiClose, mdiPlay, mdiArrowDown, mdiChevronDown, mdiChevronUp, mdiArrowUp, mdiChevronRight, mdiMoonFirstQuarter, mdiSunAngle, mdiLightbulb, mdiFloppy, mdiCodeBraces, mdiRefresh } from "@mdi/js";
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
+import { mdiFile, mdiFolder, mdiDelete, mdiPlus, mdiClose, mdiPlay, mdiArrowDown, mdiChevronDown, mdiChevronUp, mdiArrowUp, mdiChevronRight, mdiMoonFirstQuarter, mdiSunAngle, mdiLightbulb, mdiFloppy, mdiCodeBraces, mdiRefresh, mdiGithub } from "@mdi/js";
 import { useDark } from '@vueuse/core';
 
 
@@ -27,7 +27,7 @@ const duckLabDark = {
     secondary: '#024959',
     'primary-contrast': '#fff',
   }, //226368
-}
+};
 
 const duckLabLight = {
   dark: false,
@@ -38,7 +38,7 @@ const duckLabLight = {
     secondary: '#F2B56B',
     'primary-contrast': '#fff', // contrast primary
   },
-}
+};
 
 
 export default createVuetify({
@@ -63,6 +63,7 @@ export default createVuetify({
       save: mdiFloppy,
       code: mdiCodeBraces,
       refresh: mdiRefresh,
+      github: mdiGithub
     },
     sets: {
       mdi,
@@ -81,4 +82,4 @@ export default createVuetify({
       // },
     },
   },
-})
+});

@@ -11,9 +11,10 @@ import "@/theme/default.less";
 .app {
   height: 100vh;
   width: 100vw;
+  font-family: 'Open Sans';
 }
 
 :root {
-  overflow: auto;  
+  overflow: auto;
 }
 </style>

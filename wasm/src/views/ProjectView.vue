@@ -41,7 +41,7 @@ onBeforeMount(async () => {
     previewLimit: 200,
     rawLimit: 1000,
     extensions: []
-  })
+  });
   loading.value = true;
   try {
     await duck.connect();
