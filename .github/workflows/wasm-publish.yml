@@ -1,5 +1,5 @@
 
-name: Publish-VSCode
+name: Publish-Wasm
 
 on:
   workflow_dispatch:
@@ -10,8 +10,6 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    env:
-      VSCE_PAT: ${{ secrets.VSCODE_MARKETPLACE_PAT }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,10 +21,12 @@ jobs:
           pnpm install
           pnpm run build
 
-      - uses: jsmrcaga/action-netlify-deploy@v2.0.0
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
         with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.DUCKLAB_NETLIFY }}
-          NETLIFY_DEPLOY_TO_PROD: true
-          build_directory: ./dist
-        
-          
+          publish-dir: './wasm/dist'
+          production-branch: main
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.DUCKLAB_NETLIFY_PAT }}
+          NETLIFY_SITE_ID: ${{ secrets.DUCKLAB_NETLIFY_SITE_ID }}
+        timeout-minutes: 1
