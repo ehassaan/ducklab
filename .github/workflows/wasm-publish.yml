@@ -1,0 +1,32 @@
+
+name: Publish-Wasm
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - ducklab-wasm/v*
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - working-directory: ./wasm
+        run: |
+          npm i -g pnpm
+          pnpm install
+          pnpm run build
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: './wasm/dist'
+          production-branch: main
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.DUCKLAB_NETLIFY_PAT }}
+          NETLIFY_SITE_ID: ${{ secrets.DUCKLAB_NETLIFY_SITE_ID }}
+        timeout-minutes: 1
