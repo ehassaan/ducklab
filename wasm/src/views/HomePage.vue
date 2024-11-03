@@ -113,7 +113,8 @@ import Logo from '@/components/Logo.vue';
 .feature-title {
     font-weight: bold;
     margin-bottom: 5px;
-    border-bottom: 1px solid #0004;
+    border-bottom: 1px solid;
+    border-color: var(--theme-color-shadow);
 }
 
 .links {

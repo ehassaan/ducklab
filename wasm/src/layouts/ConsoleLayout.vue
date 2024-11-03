@@ -27,7 +27,7 @@ import Logo from '@/components/Logo.vue';
 import { useTheme } from 'vuetify';
 import { useDark, useToggle } from '@vueuse/core';
 
-const isDark = useDark();
+const isDark = useDark({ initialValue: 'light' });
 const toggleDark = useToggle(isDark);
 
 const theme = useTheme();

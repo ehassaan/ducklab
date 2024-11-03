@@ -16,7 +16,7 @@ import { mdiFile, mdiFolder, mdiDelete, mdiPlus, mdiClose, mdiPlay, mdiArrowDown
 import { useDark } from '@vueuse/core';
 
 
-const isDark = useDark();
+const isDark = useDark({ initialValue: 'light' });
 
 const duckLabDark = {
   dark: true,
@@ -26,6 +26,7 @@ const duckLabDark = {
     primary: '#226368',
     secondary: '#024959',
     'primary-contrast': '#fff',
+    shadow: '#fff'
   }, //226368
 };
 
@@ -37,6 +38,7 @@ const duckLabLight = {
     primary: '#024873',
     secondary: '#F2B56B',
     'primary-contrast': '#fff', // contrast primary
+    shadow: '#000'
   },
 };
 
