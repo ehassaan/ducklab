@@ -11,7 +11,7 @@
     "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "package": "./package.sh",
-    "publish": "find ./dist -name ducklab*.vsix -exec npx vsce publish --packagePath {} -p $VSCE_PAT \\;",
+    "publish": "find ./dist -name ducklab*.vsix -exec sh -c 'npx vsce publish --packagePath {} -p $VSCE_PAT || exit 1' \\;",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "jest"
   },
