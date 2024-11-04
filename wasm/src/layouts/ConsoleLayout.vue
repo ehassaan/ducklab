@@ -46,6 +46,8 @@ function toggleTheme() {
   height: 100%;
   width: 100%;
   overflow: auto;
+  align-self: stretch;
+  align-items: stretch
 }
 
 .main-container {
