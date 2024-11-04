@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@duckdb/duckdb-wasm':
-        specifier: 1.28.1-dev106.0
-        version: 1.28.1-dev106.0
+        specifier: '1.29'
+        version: 1.29.0
       '@ducklab/core':
         specifier: 0.3.14
         version: 0.3.14
@@ -133,8 +133,8 @@ packages:
     resolution: {integrity: sha512-dQjSq/7HaSjRM43FFGnv5keM2HsxpmyV1PfaSVm0nzzjwwTmjOe6J4bC8e3+pTEIgHaHj+1ZlLThRJ2auc/w1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@duckdb/duckdb-wasm@1.28.1-dev106.0':
-    resolution: {integrity: sha512-HcA9q/Yq1t8nAIg2rl8DmOTjKy1tAHSdBGHlCcWAm5StsfAjcm+f0STBEH3hmWPk0qEtOJF30OR+GfeyUOP+hA==}
+  '@duckdb/duckdb-wasm@1.29.0':
+    resolution: {integrity: sha512-8Zq7vafQuIz9gklC/9375KE38UlkaS2n8+yvG+/JK7irm3DjwYNJHL4xfplIj0bSHFIg6we5XhWYFqtE/vO3+Q==}
 
   '@ducklab/core@0.3.14':
     resolution: {integrity: sha512-5UvHW8pYKvf5k77ULGXnwzTH9+ZusDgQKrJUr8wbr4999JQsgGwRGTIl76l0JVt+ChtpWHudOXrs8eEqSNNgow==}
@@ -408,6 +408,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@swc/helpers@0.5.13':
+    resolution: {integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==}
+
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
@@ -415,8 +418,14 @@ packages:
   '@types/command-line-args@5.2.0':
     resolution: {integrity: sha512-UuKzKpJJ/Ief6ufIaIzr3A/0XnluX7RvFgwkV89Yzvm77wCh1kFaFmqN8XEnGcN62EuHdedQjEMb8mYxFLGPyA==}
 
+  '@types/command-line-args@5.2.3':
+    resolution: {integrity: sha512-uv0aG6R0Y8WHZLTamZwtfsDLVRnOa+n+n5rEvFWL5Na5gZ8V2Teab/duDPFzIIIhs9qizDpcavCusCLJZu62Kw==}
+
   '@types/command-line-usage@5.0.2':
     resolution: {integrity: sha512-n7RlEEJ+4x4TS7ZQddTmNSxP+zziEG0TNsMfiRIxcIVXt71ENJ9ojeXmGO3wPoTdn7pJcU2xc3CJYMktNT6DPg==}
+
+  '@types/command-line-usage@5.0.4':
+    resolution: {integrity: sha512-BwR5KP3Es/CSht0xqBcUXS3qCAUVXwpRKsV2+arxeb65atasuXG9LykC9Ab10Cw3s2raH92ZqOeILaQbsB2ACg==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -430,8 +439,8 @@ packages:
   '@types/node@18.19.14':
     resolution: {integrity: sha512-EnQ4Us2rmOS64nHDWr0XqAD8DsO6f3XR6lf9UIIrZQpUzPVdN/oPuEzfDWNHSyXLvoGgjuEm/sPwFGSSs35Wtg==}
 
-  '@types/node@20.3.0':
-    resolution: {integrity: sha512-cumHmIAf6On83X7yP+LrsEyUOf/YlociZelmpRYaGFydoaPdxdt80MAbu6vWerQT2COCp2nPvHdsbD7tHn/YlQ==}
+  '@types/node@20.17.6':
+    resolution: {integrity: sha512-VEI7OdvK2wP7XHnsuXbAJnEpEkF6NjSN45QJlL4VGqZSXsnicpesdTWsg9RISeSdYd3yeRj/y3k5KGjUXYnFwQ==}
 
   '@types/pad-left@2.1.1':
     resolution: {integrity: sha512-Xd22WCRBydkGSApl5Bw0PhAOHKSVjNL3E3AwzKaps96IMraPqy5BvZIsBVK6JLwdybUzjHnuWVwpDd0JjTfHXA==}
@@ -642,8 +651,8 @@ packages:
     resolution: {integrity: sha512-g17ARsc/KEAzViy8PEFsDBlL4ZLx3BesgQCplDLgUWtY0aFWNdEmfaZsbbXVRDfQ21D7vbUKtu0ZWNgcbxDrig==}
     hasBin: true
 
-  apache-arrow@14.0.2:
-    resolution: {integrity: sha512-EBO2xJN36/XoY81nhLcwCJgFwkboDZeyNQ+OPsG7bCoQjc2BT0aTyH/MR6SrL+LirSNz+cYqjGRlupMMlP1aEg==}
+  apache-arrow@17.0.0:
+    resolution: {integrity: sha512-X0p7auzdnGuhYMVKYINdQssS4EcKec9TCXyez/qtJt32DrIMGbzqiaMiQ0X6fQlQpw8Fl0Qygcv4dfRAr5Gu9Q==}
     hasBin: true
 
   aproba@2.0.0:
@@ -969,8 +978,8 @@ packages:
   flatbuffers@23.3.3:
     resolution: {integrity: sha512-jmreOaAT1t55keaf+Z259Tvh8tR/Srry9K8dgCgvizhKSEr6gLGgaOJI2WFL5fkOpGOGRZwxUrlFn0GCmXUy6g==}
 
-  flatbuffers@23.5.26:
-    resolution: {integrity: sha512-vE+SI9vrJDwi1oETtTIFldC/o9GsVKRM+s6EL0nQgxXlYV1Vc4Tk30hj4xGICftInKQKj1F3up2n8UbIVobISQ==}
+  flatbuffers@24.3.25:
+    resolution: {integrity: sha512-3HDgPbgiwWMI9zVB7VYBHaMrbOO7Gm0v+yD2FV/sCKj+9NDeVL7BOBYUuhWAQGKWOzBo8S9WdMvV0eixO233XQ==}
 
   flatted@3.2.9:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
@@ -1704,6 +1713,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
   unique-filename@2.0.1:
     resolution: {integrity: sha512-ODWHtkkdx3IAR+veKxFV+VBkUMcN+FaqzUUd7IZzt+0zhDZFPFxhlqwPF3YQvMHx1TD0tdgYl+kuPnJ8E6ql7A==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
@@ -1882,9 +1894,9 @@ snapshots:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  '@duckdb/duckdb-wasm@1.28.1-dev106.0':
+  '@duckdb/duckdb-wasm@1.29.0':
     dependencies:
-      apache-arrow: 14.0.2
+      apache-arrow: 17.0.0
 
   '@ducklab/core@0.3.14': {}
 
@@ -2076,11 +2088,19 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.9.6':
     optional: true
 
+  '@swc/helpers@0.5.13':
+    dependencies:
+      tslib: 2.6.2
+
   '@tootallnate/once@2.0.0': {}
 
   '@types/command-line-args@5.2.0': {}
 
+  '@types/command-line-args@5.2.3': {}
+
   '@types/command-line-usage@5.0.2': {}
+
+  '@types/command-line-usage@5.0.4': {}
 
   '@types/estree@1.0.5': {}
 
@@ -2092,7 +2112,9 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.3.0': {}
+  '@types/node@20.17.6':
+    dependencies:
+      undici-types: 6.19.8
 
   '@types/pad-left@2.1.1': {}
 
@@ -2301,7 +2323,7 @@ snapshots:
 
   '@vue/shared@3.4.15': {}
 
-  '@vuetify/loader-shared@1.7.1(vue@3.4.15(typescript@5.3.3))(vuetify@3.5.2(typescript@5.3.3)(vite-plugin-vuetify@1.0.2)(vue@3.4.15(typescript@5.3.3)))':
+  '@vuetify/loader-shared@1.7.1(vue@3.4.15(typescript@5.3.3))(vuetify@3.5.2)':
     dependencies:
       find-cache-dir: 3.3.2
       upath: 2.0.1
@@ -2385,17 +2407,16 @@ snapshots:
       pad-left: 2.1.0
       tslib: 2.6.2
 
-  apache-arrow@14.0.2:
+  apache-arrow@17.0.0:
     dependencies:
-      '@types/command-line-args': 5.2.0
-      '@types/command-line-usage': 5.0.2
-      '@types/node': 20.3.0
-      '@types/pad-left': 2.1.1
+      '@swc/helpers': 0.5.13
+      '@types/command-line-args': 5.2.3
+      '@types/command-line-usage': 5.0.4
+      '@types/node': 20.17.6
       command-line-args: 5.2.1
       command-line-usage: 7.0.1
-      flatbuffers: 23.5.26
+      flatbuffers: 24.3.25
       json-bignum: 0.0.3
-      pad-left: 2.1.0
       tslib: 2.6.2
 
   aproba@2.0.0: {}
@@ -2797,7 +2818,7 @@ snapshots:
 
   flatbuffers@23.3.3: {}
 
-  flatbuffers@23.5.26: {}
+  flatbuffers@24.3.25: {}
 
   flatted@3.2.9: {}
 
@@ -3505,6 +3526,8 @@ snapshots:
 
   undici-types@5.26.5: {}
 
+  undici-types@6.19.8: {}
+
   unique-filename@2.0.1:
     dependencies:
       unique-slug: 3.0.0
@@ -3523,7 +3546,7 @@ snapshots:
 
   vite-plugin-vuetify@1.0.2(vite@5.0.12(@types/node@18.19.14)(less@4.2.0)(sass@1.70.0))(vue@3.4.15(typescript@5.3.3))(vuetify@3.5.2):
     dependencies:
-      '@vuetify/loader-shared': 1.7.1(vue@3.4.15(typescript@5.3.3))(vuetify@3.5.2(typescript@5.3.3)(vite-plugin-vuetify@1.0.2)(vue@3.4.15(typescript@5.3.3)))
+      '@vuetify/loader-shared': 1.7.1(vue@3.4.15(typescript@5.3.3))(vuetify@3.5.2)
       debug: 4.3.4
       upath: 2.0.1
       vite: 5.0.12(@types/node@18.19.14)(less@4.2.0)(sass@1.70.0)

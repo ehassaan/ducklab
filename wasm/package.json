@@ -1,6 +1,6 @@
 {
   "name": "ducklab",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -17,7 +17,7 @@
     "wasm"
   ],
   "dependencies": {
-    "@duckdb/duckdb-wasm": "1.28.1-dev106.0",
+    "@duckdb/duckdb-wasm": "1.29",
     "@ducklab/core": "0.3.14",
     "@mdi/font": "7.0.96",
     "@mdi/js": "^7.3.67",
