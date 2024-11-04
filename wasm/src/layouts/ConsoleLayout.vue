@@ -31,7 +31,6 @@ const isDark = useDark({ initialValue: 'light' });
 const toggleDark = useToggle(isDark);
 
 const theme = useTheme();
-const drawer = ref(false);
 
 function toggleTheme() {
   theme.global.name.value = isDark.value ? 'light' : 'dark';
@@ -41,13 +40,13 @@ function toggleTheme() {
 
 
 </script>
-<style>
+<style scoped>
 .main {
   height: 100%;
   width: 100%;
   overflow: auto;
   align-self: stretch;
-  align-items: stretch
+  align-items: stretch;
 }
 
 .main-container {
@@ -55,5 +54,7 @@ function toggleTheme() {
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-self: stretch;
+  align-items: stretch;
 }
 </style>
