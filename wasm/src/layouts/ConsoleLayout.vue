@@ -6,7 +6,9 @@
     <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
 
     <v-toolbar-title>
-      <Logo></Logo>
+      <router-link style="text-decoration: none;" to="/">
+        <Logo></Logo>
+      </router-link>
     </v-toolbar-title>
     <v-btn @click="toggleTheme">
       <v-icon inline-block align-middle :icon="isDark ? '$moon' : '$light'" />
@@ -22,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import Logo from '@/components/Logo.vue';
 import { useTheme } from 'vuetify';
 import { useDark, useToggle } from '@vueuse/core';

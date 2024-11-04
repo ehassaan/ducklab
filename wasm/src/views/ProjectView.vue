@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import FileExplorer from '@/components/file-explorer/FileExplorer.vue';
-import { ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 import NotebookView from './NotebookView.vue';
 import { onBeforeMount } from 'vue';
@@ -50,14 +50,14 @@ onBeforeMount(async () => {
     console.log(err);
   }
   loading.value = false;
-
-  window.addEventListener('beforeunload', (event) => {
-    if (notebookStore.unsavedChanges) {
-      event.preventDefault();
-      event.returnValue = '';
-    }
-  });
+  window.onbeforeunload = beforeUnload;
 });
+
+function beforeUnload(event: BeforeUnloadEvent) {
+  if (notebookStore.unsavedChanges) {
+    event.preventDefault();
+  }
+}
 
 async function onRemove(files: FileSystemReference[]) {
   console.log("removing: ", files);
