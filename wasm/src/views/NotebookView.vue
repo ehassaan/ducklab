@@ -27,7 +27,6 @@ import { onMounted } from "vue";
 import CellComponent from "@/components/CellComponent.vue";
 import { PropType } from "vue";
 import { ref } from "vue";
-import { useStorageStore } from "@/store/storage";
 
 let props = defineProps({
     dataSource: {
@@ -36,13 +35,12 @@ let props = defineProps({
     }
 });
 let notebookStore = useNotebookStore();
-let storageStore = useStorageStore();
 let showToast = ref(false);
 let toastMsg = ref("");
 
 onMounted(() => {
     notebookStore.setDataSource(props.dataSource);
-    if (notebookStore.cells.length === 0) notebookStore.createCell();
+    if (notebookStore.cells.length === 0) notebookStore.initNotebook();
 });
 
 function cellRenamed(ds: TabularDataset, name: string) {

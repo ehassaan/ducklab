@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   root: true,
   env: {
     node: true,
@@ -11,4 +11,4 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 'off',
   },
-}
+};

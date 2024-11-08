@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import FileExplorer from '@/components/file-explorer/FileExplorer.vue';
-import { ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 import NotebookView from './NotebookView.vue';
 import { onBeforeMount } from 'vue';
@@ -29,11 +29,13 @@ import { useStorageStore } from '@/store/storage';
 import { Splitpanes, Pane } from 'splitpanes';
 import { useNotebookStore } from '@/store/notebook';
 import 'splitpanes/dist/splitpanes.css';
+import { registerMonaco } from '@/plugins/monaco';
 
 let duck: DuckdbDataSource;
 let storageStore = useStorageStore();
 let notebookStore = useNotebookStore();
 let loading = ref(false);
+let completionProvider: any = null;
 
 onBeforeMount(async () => {
   duck = new DuckdbDataSource("default", {
@@ -50,14 +52,20 @@ onBeforeMount(async () => {
     console.log(err);
   }
   loading.value = false;
+  window.onbeforeunload = beforeUnload;
 
-  window.addEventListener('beforeunload', (event) => {
-    if (notebookStore.unsavedChanges) {
-      event.preventDefault();
-      event.returnValue = '';
-    }
-  });
+  completionProvider = await registerMonaco();
 });
+
+onBeforeUnmount(() => {
+  completionProvider.dispose();
+});
+
+function beforeUnload(event: BeforeUnloadEvent) {
+  if (notebookStore.unsavedChanges) {
+    event.preventDefault();
+  }
+}
 
 async function onRemove(files: FileSystemReference[]) {
   console.log("removing: ", files);

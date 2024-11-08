@@ -10,7 +10,6 @@ import 'vuetify/styles';
 
 // Composables
 import { createVuetify } from 'vuetify';
-import * as components from 'vuetify/components';
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import { mdiFile, mdiFolder, mdiDelete, mdiPlus, mdiClose, mdiPlay, mdiArrowDown, mdiChevronDown, mdiChevronUp, mdiArrowUp, mdiChevronRight, mdiMoonFirstQuarter, mdiSunAngle, mdiLightbulb, mdiFloppy, mdiCodeBraces, mdiRefresh, mdiGithub } from "@mdi/js";
 import { useDark } from '@vueuse/core';
@@ -44,7 +43,6 @@ const duckLabLight = {
 
 
 export default createVuetify({
-  components,
   icons: {
     defaultSet: 'mdi',
     aliases: {

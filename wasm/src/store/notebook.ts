@@ -5,7 +5,7 @@ import { TabularDataset, IFetchQuery, IsqlSerializer, Notebook, NotebookCell, Ce
 // import { CellType, NotebookCell } from '@/entities/NotebookCell';
 import { FileSystemReference } from '@/entities/FileSystemReference';
 import { createReference } from './storage';
-import { DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
+// import { type DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 
 
 export const useNotebookStore = defineStore('notebook', () => {
@@ -24,9 +24,14 @@ export const useNotebookStore = defineStore('notebook', () => {
     isCode: true
   });
 
-  function setDataSource(ds: DuckdbDataSource) {
+  function setDataSource(ds: any) {
     notebook.value.dataSource = ds;
     dataSource = ds;
+  }
+
+  function initNotebook() {
+    createCell();
+    unsavedChanges.value = false;
   }
 
   function createCell(afterCell: NotebookCell | null = null) {
@@ -121,7 +126,10 @@ export const useNotebookStore = defineStore('notebook', () => {
   return {
     setDataSource, createCell, renameDataset, deleteCell,
     getCell, load, exportToSql, save,
-    cells: computed(() => notebook.value.cells), dataSource: notebook.value.dataSource, unsavedChanges, currFile
+    cells: computed(() => notebook.value.cells), dataSource: notebook.value.dataSource,
+    unsavedChanges,
+    initNotebook,
+    currFile
   };
 
 });
