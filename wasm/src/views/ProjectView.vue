@@ -29,11 +29,13 @@ import { useStorageStore } from '@/store/storage';
 import { Splitpanes, Pane } from 'splitpanes';
 import { useNotebookStore } from '@/store/notebook';
 import 'splitpanes/dist/splitpanes.css';
+import { registerMonaco } from '@/plugins/monaco';
 
 let duck: DuckdbDataSource;
 let storageStore = useStorageStore();
 let notebookStore = useNotebookStore();
 let loading = ref(false);
+let completionProvider: any = null;
 
 onBeforeMount(async () => {
   duck = new DuckdbDataSource("default", {
@@ -51,6 +53,12 @@ onBeforeMount(async () => {
   }
   loading.value = false;
   window.onbeforeunload = beforeUnload;
+
+  completionProvider = await registerMonaco();
+});
+
+onBeforeUnmount(() => {
+  completionProvider.dispose();
 });
 
 function beforeUnload(event: BeforeUnloadEvent) {

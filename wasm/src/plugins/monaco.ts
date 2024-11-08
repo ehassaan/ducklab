@@ -23,12 +23,12 @@ export async function registerMonaco() {
                 kind: monaco.languages.CompletionItemKind.Field,
                 insertText: item.suggestion,
                 range: range
-            }
+            };
         });
         return suggestions;
     }
 
-    monaco.languages.registerCompletionItemProvider("sql", {
+    const provider = monaco.languages.registerCompletionItemProvider("sql", {
         provideCompletionItems: async function (model, position) {
             const word = model.getWordUntilPosition(position);
             const range = {
@@ -47,4 +47,6 @@ export async function registerMonaco() {
             };
         },
     });
+
+    return provider;
 }

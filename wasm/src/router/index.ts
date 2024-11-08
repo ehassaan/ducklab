@@ -9,20 +9,20 @@ const routes = [
     path: '/',
     component: () => import('@/views/HomePage.vue'),
   },
-  // {
-  //   path: '/lab',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import('@/layouts/ConsoleLayout.vue'),
-  //   children: [
-  //     {
-  //       name: 'project',
-  //       path: '',
-  //       component: import('@/views/ProjectView.vue'),
-  //     },
-  //   ]
-  // },
+  {
+    path: '/lab',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('@/layouts/ConsoleLayout.vue'),
+    children: [
+      {
+        name: 'project',
+        path: '',
+        component: import('@/views/ProjectView.vue'),
+      },
+    ]
+  },
 ];
 
 const router = createRouter({
