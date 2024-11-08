@@ -76,6 +76,8 @@ import Logo from '@/components/Logo.vue';
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .title {
@@ -84,6 +86,8 @@ import Logo from '@/components/Logo.vue';
     font-weight: normal;
     font-size: 74px;
     user-select: none;
+    display: flex;
+    overflow: visible;
     /* margin: auto; */
 }
 
@@ -91,7 +95,8 @@ import Logo from '@/components/Logo.vue';
     font-weight: normal;
     font-size: 18px;
     text-align: center;
-    /* margin: auto; */
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
 .features {
@@ -99,8 +104,6 @@ import Logo from '@/components/Logo.vue';
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    margin-left: 10%;
-    margin-right: 10%;
 }
 
 .feature {
@@ -128,5 +131,26 @@ import Logo from '@/components/Logo.vue';
 
 .link {
     margin: 5px;
+}
+
+@media only screen and (max-width: 610px) {
+    .title {
+        font-size: 54px;
+    }
+
+    .links {
+        flex-direction: column
+    }
+}
+
+@media only screen and (max-width: 860px) {
+    .features {
+        flex-direction: column
+    }
+
+    .feature {
+        text-align: center;
+    }
+
 }
 </style>
