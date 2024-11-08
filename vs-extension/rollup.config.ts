@@ -34,36 +34,20 @@ const config = [
             nodeResolve({ preferBuiltins: true }),
             commonjs({
                 ignoreDynamicRequires: true
-                // dynamicRequireTargets: [
-                //     "./prebuilds/**/*.node",
-                //     "./lib/**/*.node",
-                // ]
             }),
-            // copy({
-            //     hook: "buildEnd",
-            //     targets: [
-            //         {
-            //             src: "package.json",
-            //             dest: "out/"
-            //         },
-            //         {
-            //             src: ".vscodeignore",
-            //             dest: "out/"
-            //         },
-            //         {
-            //             src: 'LICENSE',
-            //             dest: 'out/'
-            //         },
-            //         {
-            //             src: 'README.md',
-            //             dest: 'out/'
-            //         },
-            //         {
-            //             src: 'logo.png',
-            //             dest: 'out/'
-            //         },
-            // ]
-            // }),
+            copy({
+                hook: "buildEnd",
+                targets: [
+                    {
+                        src: "./node_modules/duckdb/lib/binding/duckdb.node",
+                        dest: "out/lib/binding/"
+                    },
+                    {
+                        src: "./node_modules/zeromq/prebuilds",
+                        dest: "out/prebuilds"
+                    },
+                ]
+            }),
             // updatePackageJson("out/package.json", { "main": "index.cjs" })
         ],
         external: [

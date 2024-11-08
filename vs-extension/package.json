@@ -46,10 +46,18 @@
     "onNotebook:isql"
   ],
   "contributes": {
+    "iconThemes": [
+      {
+        "id": "ducklab-icons",
+        "label": "Ducklab-Icons",
+        "path": "./assets/icons.json"
+      }
+    ],
     "notebooks": [
       {
         "type": "isql",
         "displayName": "Ducklab",
+        "icon": "./assets/logo.png",
         "selector": [
           {
             "filenamePattern": "*.isql"
@@ -65,12 +73,6 @@
       }
     ],
     "menus": {
-      "notebook/toolbar": [
-        {
-          "command": "ducklab.listKernels",
-          "title": "MenuItem - Execute code against a Python Kernel"
-        }
-      ],
       "explorer/context": [
         {
           "when": "resourceExtname == '.py'",
