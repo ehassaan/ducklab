@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Logo from '@/components/Logo.vue';
+
 </script>
 
 <template>
@@ -21,7 +22,7 @@ import Logo from '@/components/Logo.vue';
         <h2 class="subtitle">Interactive SQL, Python and PySpark Notebook environment | Powered by DuckDB</h2>
 
         <div class="links">
-            <v-btn class="link" color="primary" to="/lab">Ducklab for Web</v-btn>
+            <v-btn class="link" color="primary" :to="{ name: 'project' }">Ducklab for Web</v-btn>
             <v-btn class="link" color="primary"
                 href="https://marketplace.visualstudio.com/items?itemName=ducklake.ducklab">Ducklab for VS Code</v-btn>
         </div>

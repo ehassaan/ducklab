@@ -1,5 +1,5 @@
 // Composables
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { useNotebookStore } from '@/store/notebook';
 
 let notebookStore: any = null;
@@ -19,11 +19,11 @@ const routes = [
       {
         name: 'project',
         path: '',
-        component: import('@/views/ProjectView.vue'),
+        component: () => import('@/views/ProjectView.vue'),
       },
     ]
   },
-];
+] as RouteRecordRaw[];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
