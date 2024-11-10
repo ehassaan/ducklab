@@ -1,7 +1,5 @@
 import { TabularDataSource } from '@/entities/tabular/TabularDataSource';
 import { NotebookCell } from "@/notebook/NotebookCell";
-import crypto from "crypto";
-
 
 export interface IUserConfig {
     previewLimit?: number;
@@ -22,7 +20,7 @@ export class Notebook {
             this.id = id ?? window.crypto.randomUUID();
         }
         else {
-            this.id = id ?? crypto.randomUUID();
+            this.id = id ?? require('crypto').randomUUID();
         }
         this.dataSource = dataSource;
         this.config = config ?? {};
