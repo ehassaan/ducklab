@@ -72,7 +72,7 @@ import Logo from '@/components/Logo.vue';
     </v-main>
 </template>
 
-<style lang="css">
+<style lang="css" scoped>
 .main {
     display: flex;
     flex-direction: column;
