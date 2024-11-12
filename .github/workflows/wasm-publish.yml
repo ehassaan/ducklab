@@ -30,9 +30,18 @@ jobs:
       #     NETLIFY_AUTH_TOKEN: ${{ secrets.DUCKLAB_NETLIFY_PAT }}
       #     NETLIFY_SITE_ID: ${{ secrets.DUCKLAB_NETLIFY_SITE_ID }}
       #   timeout-minutes: 1
+      
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          name: github-pages
+          path: ./wasm/dist
+          retention-days: 1
 
       - name: Deploy GitHub Pages site
         uses: actions/deploy-pages@v4.0.5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: github-pages
           timeout: 600000 # 5 mins
     
