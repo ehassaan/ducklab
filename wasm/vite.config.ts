@@ -17,6 +17,7 @@ export default defineConfig({
       autoImport: true,
     }),
   ],
+  base: process.env.BASE_URL ?? "/",
   define: { 'process.env': {} },
   resolve: {
     alias: {
