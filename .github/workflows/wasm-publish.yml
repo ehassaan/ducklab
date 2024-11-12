@@ -37,7 +37,7 @@ jobs:
         with:
           name: github-pages
           path: ./wasm/dist
-          retention-days: 1
+          retention-days: 30
 
   deploy:
     # Add a dependency to the build job
