@@ -21,12 +21,18 @@ jobs:
           pnpm install
           pnpm run build
 
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3.0
+      # - name: Deploy to Netlify
+      #   uses: nwtgck/actions-netlify@v3.0
+      #   with:
+      #     publish-dir: './wasm/dist'
+      #     production-branch: main
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.DUCKLAB_NETLIFY_PAT }}
+      #     NETLIFY_SITE_ID: ${{ secrets.DUCKLAB_NETLIFY_SITE_ID }}
+      #   timeout-minutes: 1
+
+      - name: Deploy GitHub Pages site
+        uses: actions/deploy-pages@v4.0.5
         with:
-          publish-dir: './wasm/dist'
-          production-branch: main
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.DUCKLAB_NETLIFY_PAT }}
-          NETLIFY_SITE_ID: ${{ secrets.DUCKLAB_NETLIFY_SITE_ID }}
-        timeout-minutes: 1
+          timeout: 600000 # 5 mins
+    
