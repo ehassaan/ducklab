@@ -6,7 +6,8 @@
   "license": "Apache-2.0",
   "publisher": "ducklake",
   "icon": "./assets/logo.png",
-  "repository": "https://github.com/ehassaan/ducklab",
+  "homepage": "https://lab.ducklake.io",
+  "repository": "https://github.com/ducklake-hq/ducklab",
   "scripts": {
     "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",

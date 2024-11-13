@@ -28,6 +28,6 @@ for p in ${targets[@]}; do
     cp -rf ./node_modules/duckdb/lib/binding/duckdb.node ./lib/binding/
     
     # Package extension
-    npx vsce package --no-dependencies --target $platform-$arch --out ./dist --baseContentUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/ --baseImagesUrl https://raw.githubusercontent.com/ehassaan/ducklab/refs/heads/main/vs-extension/
+    npx vsce package --no-dependencies --target $platform-$arch --out ./dist --baseContentUrl https://raw.githubusercontent.com/ducklake-hq/ducklab/refs/heads/main/vs-extension/ --baseImagesUrl https://raw.githubusercontent.com/ducklake-hq/ducklab/refs/heads/main/vs-extension/
 
 done

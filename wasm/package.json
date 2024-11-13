@@ -7,10 +7,11 @@
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
-  "icon": "https://raw.githubusercontent.com/ehassaan/ducklab/main/public/favicon.ico",
+  "icon": "https://raw.githubusercontent.com/ducklake-hq/ducklab/main/wasm/public/favicon.ico",
   "license": "Apache-2.0",
   "type": "module",
   "homepage": "https://lab.ducklake.io/",
+  "repository": "https://github.com/ducklake-hq/ducklab",
   "keywords": [
     "duckdb",
     "sql",
