@@ -1,5 +1,0 @@
-[[redirects]]
-  from = "/lab*"
-  to = "/"
-  status = 200
-  force = true

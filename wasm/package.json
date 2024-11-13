@@ -10,7 +10,7 @@
   "icon": "https://raw.githubusercontent.com/ehassaan/ducklab/main/public/favicon.ico",
   "license": "Apache-2.0",
   "type": "module",
-  "homepage": "https://ducklab.netlify.app",
+  "homepage": "https://lab.ducklake.io/",
   "keywords": [
     "duckdb",
     "sql",
