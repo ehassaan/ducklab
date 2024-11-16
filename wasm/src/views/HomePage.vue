@@ -11,7 +11,7 @@ import Logo from '@/components/Logo.vue';
             <Logo></Logo>
         </v-toolbar-title>
 
-        <v-btn href="https://github.com/ehassaan/ducklab" icon="$github">
+        <v-btn href="https://github.com/ducklake-hq/ducklab" icon="$github">
         </v-btn>
 
     </v-app-bar>
