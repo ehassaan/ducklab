@@ -21,22 +21,7 @@
           <v-icon icon="$refresh"></v-icon>
           <v-tooltip activator="parent" top>Refresh</v-tooltip>
         </v-btn>
-        <!-- <v-btn @click="() => onEvent('download')" color="primary" :disable="!selectedAny" size="sm" outline dense>
-        <v-icon name="mdi-download"></v-icon>
-        <v-tooltip activator="parent" top>Download</v-tooltip>
-      </v-btn>
-      <v-btn @click="() => onEvent('copy')" color="primary" :disable="!selectedAny" size="sm" outline dense>
-        <v-icon name="mdi-content-copy"></v-icon>
-        <v-tooltip activator="parent" top>Copy</v-tooltip>
-      </v-btn>
-      <v-btn @click="() => onEvent('cut')" color="primary" :disable="!selectedAny" size="sm" outline dense>
-        <v-icon name="mdi-content-cut"></v-icon>
-        <v-tooltip activator="parent" top>Cut</v-tooltip>
-      </v-btn>
-      <v-btn @click="() => onEvent('paste')" color="primary" size="sm" outline dense>
-        <v-icon name="mdi-content-paste"></v-icon>
-        <v-tooltip activator="parent" top>Paste</v-tooltip>
-      </v-btn> -->
+
         <v-spacer class="hspacer"></v-spacer>
         <v-btn class="toolbar-btn delete-btn" @click="() => onToolbarAction('remove')" color="black"
           :disabled="!selectedAny" size="sm" outline dense>
@@ -44,14 +29,17 @@
           <v-tooltip activator="parent" top>Detach</v-tooltip>
         </v-btn>
       </div>
-
       <v-spacer class="vspacer"></v-spacer>
 
       <div class="drop-section">
         <v-progress-circular indeterminate class="loading" v-if="loading"></v-progress-circular>
-
         <div ref="dropZoneRef" class="dropzone">
           <div v-if="isOverDropZone" class="drop-overlay"></div>
+
+          <div v-if="!storageStore.root" class="empty-workspace" @click="openDir">
+            <v-icon style="font-size: 74px;" icon="$folder"></v-icon>
+            <p>Open a file or folder containing your data</p>
+          </div>
 
           <div class="filelist" v-if="!loading">
             <NestedListItem @select="onSelect" :selectable="true" v-if="storageStore.root" :file="storageStore.root"
@@ -97,7 +85,7 @@ let emit = defineEmits([
 
 let storageStore = useStorageStore();
 
-let selected = ref<{ [key: string]: boolean }>({});
+let selected = ref<{ [key: string]: boolean; }>({});
 let tab = ref();
 let error = ref('');
 let showError = ref(false);
@@ -112,7 +100,6 @@ onMounted(async () => {
   console.log("CWD: ", cwd.value);
   showError.value = !window.showDirectoryPicker;
   error.value = constants.ERROR_FS_API_NOT_SUPPORTED;
-
   await refresh();
 
 });
@@ -136,7 +123,7 @@ async function refresh() {
 async function openFile() {
   if (!window.showOpenFilePicker) {
     showError.value = true;
-    error.value = constants.ERROR_FS_API_NOT_SUPPORTED
+    error.value = constants.ERROR_FS_API_NOT_SUPPORTED;
     return;
   }
   const files = await window.showOpenFilePicker({
@@ -161,7 +148,7 @@ async function openFile() {
   emit("import", storageStore.root);
 }
 
-function onSelect(selection: { [key: string]: boolean }) {
+function onSelect(selection: { [key: string]: boolean; }) {
   console.log(selection);
   selected.value = selection;
 }
@@ -169,7 +156,7 @@ function onSelect(selection: { [key: string]: boolean }) {
 async function openDir() {
   if (!window.showOpenFilePicker) {
     showError.value = true;
-    error.value = constants.ERROR_FS_API_NOT_SUPPORTED
+    error.value = constants.ERROR_FS_API_NOT_SUPPORTED;
     return;
   }
   const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite', multiple: false }) as FileSystemDirectoryHandle;
@@ -180,12 +167,6 @@ async function openDir() {
 
 function onToolbarAction(event: 'remove' | 'copy' | 'cut' | 'download') {
   const files: any[] = [];
-  // for (let fil in selected.value) {
-  //   if (selected.value[fil]) {
-  //     let matches = files.filter(f => f.path === fil);
-  //     if (matches && matches.length > 0) files.push(matches[0]);
-  //   }
-  // }
   emit(event, files);
 }
 
@@ -195,9 +176,7 @@ function save() {
 
 
 function onDrop(files: File[] | null) {
-
   if (!files) return;
-
   // emit('import', createReferences(vmFolder.value, files));
 }
 
@@ -247,6 +226,24 @@ async function requestPermission(file: FileSystemReference) {
     display: flex;
     flex-direction: column;
     overflow: auto;
+
+    .empty-workspace {
+      width: 100%;
+      height: 100%;
+      font-size: 72px;
+      color: var(--theme-color-shadow);
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+
+      p {
+        font-size: 16px;
+        text-align: center;
+      }
+    }
 
     .dropzone {
       height: 100%;

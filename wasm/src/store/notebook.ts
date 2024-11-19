@@ -5,6 +5,7 @@ import { TabularDataset, IFetchQuery, IsqlSerializer, Notebook, NotebookCell, Ce
 // import { CellType, NotebookCell } from '@/entities/NotebookCell';
 import { FileSystemReference } from '@/entities/FileSystemReference';
 import { createReference } from './storage';
+import { get, set } from 'idb-keyval';
 // import { type DuckdbDataSource } from '@/entities/duckdb_wasm/DuckdbDataSource';
 
 
@@ -21,7 +22,7 @@ export const useNotebookStore = defineStore('notebook', () => {
     path: '',
     permission: 'denied',
     type: 'isql',
-    isCode: true
+    isCode: true,
   });
 
   function setDataSource(ds: any) {
@@ -29,9 +30,19 @@ export const useNotebookStore = defineStore('notebook', () => {
     dataSource = ds;
   }
 
-  function initNotebook() {
+  async function initNotebook() {
     createCell();
     unsavedChanges.value = false;
+    const sql = await get("notebook");
+    if (sql) {
+      loadFromText("untitled.sql", sql);
+    }
+
+    setInterval(async () => {
+      if (unsavedChanges.value) {
+        await save(true);
+      }
+    }, 5000);
   }
 
   function createCell(afterCell: NotebookCell | null = null) {
@@ -86,7 +97,7 @@ export const useNotebookStore = defineStore('notebook', () => {
     ds.name = name;
   }
 
-  function exportToSql() {
+  function exportToText() {
     const serializer = new IsqlSerializer();
     const result = serializer.serialize(notebook.value as Notebook);
     return result;
@@ -99,22 +110,32 @@ export const useNotebookStore = defineStore('notebook', () => {
     const text = await file.text();
     console.log(text);
 
-    const serializer = new IsqlSerializer();
-    const nb = serializer.parse(text, fileRef.name);
-    nb.dataSource = dataSource;
-    notebook.value = nb;
+    loadFromText(fileRef.name, text);
     currFile.value = fileRef;
-    dsIndex.value = notebook.value.cells.length + 1;
-    unsavedChanges.value = false;
-
   }
 
-  async function save() {
-    const sql = exportToSql();
+  function loadFromText(name: string, text: string) {
+    const serializer = new IsqlSerializer();
+    const nb = serializer.parse(text, name);
+    nb.dataSource = dataSource;
+    notebook.value = nb;
+    dsIndex.value = notebook.value.cells.length + 1;
+    unsavedChanges.value = false;
+  }
+
+  async function save(auto = false) {
+    const sql = exportToText();
     console.log("Saving: ", sql);
     if (!currFile.value.handle) {
-      const localHandle = await getNewFileHandle();
-      currFile.value = await createReference(localHandle);
+      if (auto) {
+        set("notebook", sql);
+        unsavedChanges.value = false;
+        return;
+      }
+      else {
+        const localHandle = await getNewFileHandle();
+        currFile.value = await createReference(localHandle);
+      }
     }
     if (!currFile.value.handle) throw Error("Failed to save file");
     const writable = await (currFile.value.handle as FileSystemFileHandle).createWritable();
@@ -125,7 +146,7 @@ export const useNotebookStore = defineStore('notebook', () => {
 
   return {
     setDataSource, createCell, renameDataset, deleteCell,
-    getCell, load, exportToSql, save,
+    getCell, load, exportToSql: exportToText, save,
     cells: computed(() => notebook.value.cells), dataSource: notebook.value.dataSource,
     unsavedChanges,
     initNotebook,
