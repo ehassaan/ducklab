@@ -10,6 +10,7 @@
         <Logo></Logo>
       </router-link>
     </v-toolbar-title>
+    <v-btn icon="$github" target="_blank" href="https://github.com/ducklake-hq/ducklab"></v-btn>
     <v-btn @click="toggleTheme">
       <v-icon inline-block align-middle :icon="isDark ? '$moon' : '$light'" />
       <span class="ml-2">{{ isDark ? 'Dark' : 'Light' }}</span>
