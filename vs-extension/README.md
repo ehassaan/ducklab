@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://lab.ducklake.io" rel="noopener">
+  <a href="https://ducklake.io/ducklab" rel="noopener">
  <img width=200px src="./assets/logo.png" alt="Project logo"></a>
 </p>
 

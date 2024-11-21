@@ -10,7 +10,7 @@
   "icon": "https://raw.githubusercontent.com/ducklake-hq/ducklab/main/wasm/public/favicon.ico",
   "license": "Apache-2.0",
   "type": "module",
-  "homepage": "https://lab.ducklake.io/",
+  "homepage": "https://ducklake.io/ducklab",
   "repository": "https://github.com/ducklake-hq/ducklab",
   "keywords": [
     "duckdb",

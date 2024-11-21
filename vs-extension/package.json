@@ -2,11 +2,11 @@
   "name": "ducklab",
   "displayName": "Ducklab",
   "description": "Interactive SQL/Python Notebooks. Powered by DuckDB",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "license": "Apache-2.0",
   "publisher": "ducklake",
   "icon": "./assets/logo.png",
-  "homepage": "https://lab.ducklake.io",
+  "homepage": "https://ducklake.io/ducklab",
   "repository": "https://github.com/ducklake-hq/ducklab",
   "scripts": {
     "dev": "rollup --watch --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
