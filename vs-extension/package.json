@@ -2,10 +2,10 @@
   "name": "ducklab",
   "displayName": "Ducklab",
   "description": "Interactive SQL/Python Notebooks. Powered by DuckDB",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "license": "Apache-2.0",
   "publisher": "ducklake",
-  "icon": "./assets/logo.png",
+  "icon": "./assets/logo_dark.png",
   "homepage": "https://ducklake.io/ducklab",
   "repository": "https://github.com/ducklake-hq/ducklab",
   "scripts": {
@@ -66,12 +66,7 @@
       }
     ],
     "menus": {
-      "notebook/toolbar": [
-        {
-          "command": "ducklab.listKernels",
-          "title": "MenuItem - Execute code against a Python Kernel"
-        }
-      ],
+      "notebook/toolbar": [],
       "explorer/context": [
         {
           "when": "resourceExtname == '.py'",
