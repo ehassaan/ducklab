@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://ducklake.io/ducklab" rel="noopener">
- <img width=200px src="./assets/logo.png" alt="Project logo"></a>
+ <img width=200px src="./assets/logo_dark.png" alt="Project logo"></a>
 </p>
 
 <!-- <h3 align="center">ducklab</h3> -->
