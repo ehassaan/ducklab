@@ -21,11 +21,8 @@ importers:
         specifier: ^2.1685.0
         version: 2.1691.0
       duckdb:
-        specifier: ^1.1.1
-        version: 1.1.1(encoding@0.1.13)
-      duckdb-async:
-        specifier: ^1.0.0
-        version: 1.1.1(encoding@0.1.13)
+        specifier: ^1.1.3
+        version: 1.1.3(encoding@0.1.13)
       get-port:
         specifier: ^7.1.0
         version: 7.1.0
@@ -1224,11 +1221,8 @@ packages:
   domutils@3.1.0:
     resolution: {integrity: sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==}
 
-  duckdb-async@1.1.1:
-    resolution: {integrity: sha512-9ITQNzG+96sL6OWid+BTkRKGFTImk70MWrTeHRAtY5zf0Hdg4qDwEsi5BVQQATMiJQQw4RzNBCXEjhecFzoOug==}
-
-  duckdb@1.1.1:
-    resolution: {integrity: sha512-cFT+zsduuanxQsq7TlgIdmRREkRYb0EUQlj4hgilM0yBnJbt+i0r6Qu30aWd2gr9/bkmOuaamswBCroH/27LVA==}
+  duckdb@1.1.3:
+    resolution: {integrity: sha512-tIpZr2NsSkYmfGC1ETl75RuVsaDyjvR3yAOrECcIyw7bdluzcyzEXOXoiuT+4t54hT+CppZv43gk/HiZdKW9Vw==}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -4278,15 +4272,7 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  duckdb-async@1.1.1(encoding@0.1.13):
-    dependencies:
-      duckdb: 1.1.1(encoding@0.1.13)
-    transitivePeerDependencies:
-      - bluebird
-      - encoding
-      - supports-color
-
-  duckdb@1.1.1(encoding@0.1.13):
+  duckdb@1.1.3(encoding@0.1.13):
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11(encoding@0.1.13)
       node-addon-api: 7.1.1

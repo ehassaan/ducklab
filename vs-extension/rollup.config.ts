@@ -39,32 +39,19 @@ const config = [
                 //     "./lib/**/*.node",
                 // ]
             }),
-            // copy({
-            //     hook: "buildEnd",
-            //     targets: [
-            //         {
-            //             src: "package.json",
-            //             dest: "out/"
-            //         },
-            //         {
-            //             src: ".vscodeignore",
-            //             dest: "out/"
-            //         },
-            //         {
-            //             src: 'LICENSE',
-            //             dest: 'out/'
-            //         },
-            //         {
-            //             src: 'README.md',
-            //             dest: 'out/'
-            //         },
-            //         {
-            //             src: 'logo.png',
-            //             dest: 'out/'
-            //         },
-            // ]
-            // }),
-            // updatePackageJson("out/package.json", { "main": "index.cjs" })
+            copy({
+                hook: "buildEnd",
+                targets: [
+                    {
+                        src: "node_modules/duckdb/lib/*",
+                        dest: "lib/"
+                    },
+                    {
+                        src: "assets/*",
+                        dest: "out/assets/"
+                    },
+                ]
+            }),
         ],
         external: [
             ...builtinModules,
